@@ -23,19 +23,19 @@
   <meta name="description" content="前言 GBDT应该是我了解到的最能打的传统机器学习算法了，即使在当前各种基于深度学习模型泛滥的当下，依旧在一些中小型规模的数据集上有着非常亮眼的表现，如kaggle和天池上的一些比赛，高分的模型基本上都是使用的基于GBDT框架的xgboost、catboost、lightgbm。本文将介绍下这个最基础的GBDT算法，方便之后其他模型的学习，这次虽然花了很多时间看了不少资料，但是限于个人水平，对于">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GBDT提升树算法原理">
-<meta property="og:url" content="http://example.com/2018/07/05/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:url" content="http://example.com/2021/06/30/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="Smallviller的博客">
 <meta property="og:description" content="前言 GBDT应该是我了解到的最能打的传统机器学习算法了，即使在当前各种基于深度学习模型泛滥的当下，依旧在一些中小型规模的数据集上有着非常亮眼的表现，如kaggle和天池上的一些比赛，高分的模型基本上都是使用的基于GBDT框架的xgboost、catboost、lightgbm。本文将介绍下这个最基础的GBDT算法，方便之后其他模型的学习，这次虽然花了很多时间看了不少资料，但是限于个人水平，对于">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546%20referrerpolicy=%22no-referrer%22%3E">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917260219-846072de-d101-46ff-9674-9907085d1ff0.png#align=left&amp;display=inline&amp;height=286&amp;%20referrerpolicy=%22no-referrer%22%3E">
-<meta property="article:published_time" content="2018-07-05T04:01:30.000Z">
-<meta property="article:modified_time" content="2021-06-29T16:55:25.413Z">
+<meta property="article:published_time" content="2021-06-29T17:31:06.668Z">
+<meta property="article:modified_time" content="2021-06-29T18:39:45.737Z">
 <meta property="article:author" content="Smallviller">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546%20referrerpolicy=%22no-referrer%22%3E">
 
-<link rel="canonical" href="http://example.com/2018/07/05/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+<link rel="canonical" href="http://example.com/2021/06/30/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
 
 
 <script id="page-configurations">
@@ -171,7 +171,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="http://example.com/2018/07/05/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -193,16 +193,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2018-07-05 12:01:30" itemprop="dateCreated datePublished" datetime="2018-07-05T12:01:30+08:00">2018-07-05</time>
+              <time title="创建时间：2021-06-30 01:31:06 / 修改时间：02:39:45" itemprop="dateCreated datePublished" datetime="2021-06-30T01:31:06+08:00">2021-06-30</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-30 00:55:25" itemprop="dateModified" datetime="2021-06-30T00:55:25+08:00">2021-06-30</time>
-              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -231,41 +225,39 @@
       
         <h1 id="前言">前言</h1>
 <p>GBDT应该是我了解到的最能打的传统机器学习算法了，即使在当前各种基于深度学习模型泛滥的当下，依旧在一些中小型规模的数据集上有着非常亮眼的表现，如kaggle和天池上的一些比赛，高分的模型基本上都是使用的基于GBDT框架的xgboost、catboost、lightgbm。本文将介绍下这个最基础的GBDT算法，方便之后其他模型的学习，这次虽然花了很多时间看了不少资料，但是限于个人水平，对于一些细节的地方还是一知半解，只能结合自己的理解，尽力把一些最精华和比较难懂的地方稍微总结一下，有不恰当的地方还请指正！ # GBDT核心思想 GBDT，全称为Gradient Boosting Decision Tree，顾名思义，分为两部分， Gradient Boosting和Decision Tree，具体来说，就是使用<strong>决策树</strong>为基学习器的<strong>梯度提升算法</strong>，因此分别了解下这两部分的原理就可以很好的学习GBDT的思想。 ## Decision Tree 先说决策树部分，由于在GBDT中，每次迭代都需要用到<strong>负梯度</strong>，求<strong>负梯度</strong>就需要用到连续值，因此GBDT用的决策树都是CART（classification and regression tree）回归树，而不是分类树，CART回归树一般使用的节点分裂准则为平均平方误差MSE，即在节点分裂时穷举每一个特征的每一个阈值，来寻找最优切分特征和最优切分点，衡量的方法是平方误差最小化，这部分算法在很多机器学习的书中都有涉及，这里不详细展开。 ## Gradient Boosting 在说Gradient Boosting之前，先讲下boosting算法，所谓的boosting，就是使用前向分布算法（Forward Stagewise Algorithm）来训练加法模型，这个加法模型表现如下： <span class="math display">\[f_M(x)=\sum_{i=1}^{M}T_(x,\Theta)\\\]</span></p>
-<p>这里<span class="math display">\[f_M(x)\]</span>表示的就是经过M次迭代后最终得到的模型，而<span class="math display">\[T_(x,\Theta)\]</span>代表的就是单颗CART回归树，这里的<span class="math display">\[\Theta
-\]</span>代表树的参数，这个模型的意义就是每次训练一个弱学习器<span class="math display">\[T(x,\Theta)\]</span>，经过M次之后给他们加总起来得到一个强的学习器<span class="math display">\[f_M(x)\]</span>，那么怎么来训练这个加法模型呢？ 我们的目标是使得最后的预测误差尽可能的小，但是预测集我们事先是不知道的，我们只能使得训练集的训练误差最小，那么如何使得这种加法模型的训练误差最小？有一个方法就是在每次训练模型的时候都拟合上一个模型预测值与真实值之间的差值<span class="math display">\[y-\hat{y}\]</span>，也就是残差，然后在把这个模型加到原来的模型中，这样就可以使得更新后的模型的预测误差更小，这种方法也被称为前向分布算法，如果基学习器是线性回归的话就是前向分布回归，关于前向分布回归可以参考我上一篇文章：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/369732767">前向分步回归Forward Stagewise Regression原理及Python实现</a>，而这里我们用的基学习器是树模型，这种方法也被称为提升树（boosting tree），具体步骤如下：</p>
+<p>这里<span class="math inline">\(f_M(x)\)</span>表示的就是经过M次迭代后最终得到的模型，而<span class="math inline">\(T_(x,\Theta)\)</span>代表的就是单颗CART回归树，这里的<span class="math inline">\(\Theta\)</span>代表树的参数，这个模型的意义就是每次训练一个弱学习器<span class="math inline">\(T(x,\Theta)\)</span>，经过M次之后给他们加总起来得到一个强的学习器<span class="math inline">\(f_M(x)\)</span>，那么怎么来训练这个加法模型呢？ 我们的目标是使得最后的预测误差尽可能的小，但是预测集我们事先是不知道的，我们只能使得训练集的训练误差最小，那么如何使得这种加法模型的训练误差最小？有一个方法就是在每次训练模型的时候都拟合上一个模型预测值与真实值之间的差值<span class="math inline">\(y-\hat{y}\)</span>，也就是残差，然后在把这个模型加到原来的模型中，这样就可以使得更新后的模型的预测误差更小，这种方法也被称为前向分布算法，如果基学习器是线性回归的话就是前向分布回归，关于前向分布回归可以参考我上一篇文章：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/369732767">前向分步回归Forward Stagewise Regression原理及Python实现</a>，而这里我们用的基学习器是树模型，这种方法也被称为提升树（boosting tree），具体步骤如下：</p>
 <ol type="1">
-<li>初始化<span class="math display">\[f_0(x)=0
-\]</span></li>
-<li>对于<span class="math display">\[m=1,2,3...M\]</span>
+<li>初始化<span class="math inline">\(f_0(x)=0\)</span></li>
+<li>对于<span class="math inline">\(m=1,2,3...M\)</span>
 <ol type="1">
-<li>计算残差：<span class="math display">\[r_{mi}=y_i-f_{m-1}(x),i=1,2,3,..N\]</span></li>
-<li>以残差<span class="math display">\[r_{mi}\]</span>为预测值，训练一个回归树<span class="math display">\[T_m(x,\Theta)\]</span></li>
-<li>更新<span class="math display">\[f_m(x)=f_{m-1}(x)+T_m(x,\Theta)\]</span></li>
+<li>计算残差：<span class="math inline">\(r_{mi}=y_i-f_{m-1}(x),i=1,2,3,..N\)</span></li>
+<li>以残差<span class="math inline">\(r_{mi}\)</span>为预测值，训练一个回归树<span class="math inline">\(T_m(x,\Theta)\)</span></li>
+<li>更新<span class="math inline">\(f_m(x)=f_{m-1}(x)+T_m(x,\Theta)\)</span></li>
 </ol></li>
-<li>经过M次迭代后得到最终的提升树模型：<span class="math display">\[f_{M}(x)=\sum_{i=1}^{M}T(x,\Theta)\]</span></li>
+<li>经过M次迭代后得到最终的提升树模型：<span class="math inline">\(f_{M}(x)=\sum_{i=1}^{M}T(x,\Theta)\)</span></li>
 </ol>
-<p>提升树每次迭代都拟合上一次模型中所没有能够学习到的东西，也就是残差，这使得提升树是肯定比一般决策树要强的，但是呢，这种拟合残差的方式也会存在一定的缺陷，这个先留到后面说，因此，基于提升树的改进算法就诞生了，也就是GBDT。 从上述提升树算法中，我们可以发现，boosting的核心思想就是在每次训练模型的时候，都用新的模型来弥补之前模型的不足，使得模型越来越好，这实际上就是一个优化问题，提升树每次迭代的时候优化的就是残差，那有没有存在更好的优化方式呢？当然有，就是将这个模型的“不足”用损失函数的方式来表示，在每次迭代时优化这个损失函数就行了！ 损失函数可以用<span class="math display">\[L(y,f(x))\]</span>，这里先用一个通用的形式来表示，具体的损失函数可以是各种各样的，比如回归问题的MSE,MAE，分类问题的交叉熵，然后我们的目标就是使得这个损失函数最小，问题就来了，怎么优化这个损失函数使他变小呢？ 根据凸优化的理论，梯度的方向是函数值增长最快的方向，那么负梯度的方向自然就是函数值下降最快的方向，所以根据负梯度就可以找到函数值最小的地方，那么，我们就可以通过拟合负梯度的形式来优化损失函数，也就是说，<strong>在每次训练一个新模型的时候，都拟合上一个模型的损失函数的负梯度值，然后把这个新模型加到原来的模型中，这样必然使得更新后的模型的损失函数更小</strong>，这个就是Gradient Boosting了，具体步骤如下：</p>
+<p>提升树每次迭代都拟合上一次模型中所没有能够学习到的东西，也就是残差，这使得提升树是肯定比一般决策树要强的，但是呢，这种拟合残差的方式也会存在一定的缺陷，这个先留到后面说，因此，基于提升树的改进算法就诞生了，也就是GBDT。 从上述提升树算法中，我们可以发现，boosting的核心思想就是在每次训练模型的时候，都用新的模型来弥补之前模型的不足，使得模型越来越好，这实际上就是一个优化问题，提升树每次迭代的时候优化的就是残差，那有没有存在更好的优化方式呢？当然有，就是将这个模型的“不足”用损失函数的方式来表示，在每次迭代时优化这个损失函数就行了！ 损失函数可以用<span class="math inline">\(L(y,f(x))\)</span>，这里先用一个通用的形式来表示，具体的损失函数可以是各种各样的，比如回归问题的MSE,MAE，分类问题的交叉熵，然后我们的目标就是使得这个损失函数最小，问题就来了，怎么优化这个损失函数使他变小呢？ 根据凸优化的理论，梯度的方向是函数值增长最快的方向，那么负梯度的方向自然就是函数值下降最快的方向，所以根据负梯度就可以找到函数值最小的地方，那么，我们就可以通过拟合负梯度的形式来优化损失函数，也就是说，<strong>在每次训练一个新模型的时候，都拟合上一个模型的损失函数的负梯度值，然后把这个新模型加到原来的模型中，这样必然使得更新后的模型的损失函数更小</strong>，这个就是Gradient Boosting了，具体步骤如下：</p>
 <ol type="1">
-<li>初始化：<span class="math display">\[f_0(x)=0
-\]</span></li>
-<li>对于<span class="math display">\[m=1,2,3...M\]</span>
+<li><p>初始化：<span class="math inline">\(f_0(x)=0\)</span></p></li>
+<li><p>对于<span class="math inline">\(m=1,2,3...M\)</span></p>
 <ol type="1">
 <li>计算负梯度：</li>
+</ol>
+<p><span class="math inline">\(-g_m(x_i)=-[\frac{\partial L(y,f(x_i))}{\partial f(x_i)}]_{f(x)=f_{m-1}(x)}\\\)</span></p>
+<ol start="2" type="1">
+<li><p>以负梯度<span class="math inline">\(-g_m(x_i)\)</span>为预测值，训练一个回归树<span class="math inline">\(T_m(x,\Theta)\)</span></p></li>
+<li><p>更新：</p>
+<p><span class="math display">\[f_m(x)=f_{m-1}(x)+\rho T_m(x,\Theta)\]</span></p></li>
 </ol></li>
+<li><p>经过M次迭代后得到最终的提升树模型：<span class="math inline">\(f_{M}(x)=\sum_{i=1}^{M}\rho T(x,\Theta)\)</span></p></li>
 </ol>
-<p><span class="math display">\[-g_m(x_i)=-[\frac{\partial L(y,f(x_i))}{\partial f(x_i)}]_{f(x)=f_{m-1}(x)}\\\]</span></p>
-<ol type="1">
-<li>以负梯度<span class="math display">\[-g_m(x_i)\]</span>为预测值，训练一个回归树<span class="math display">\[T_m(x,\Theta)\]</span></li>
-<li>更新<span class="math display">\[f_m(x)=f_{m-1}(x)+\rho T_m(x,\Theta)\]</span></li>
-<li>经过M次迭代后得到最终的提升树模型：<span class="math display">\[f_{M}(x)=\sum_{i=1}^{M}\rho T(x,\Theta)\]</span></li>
-</ol>
-<p>注意到这里对于每次迭代的决策树都加了一个系数<span class="math display">\[\rho\]</span>，这个<span class="math display">\[\rho\]</span>也被称为学习率（learning rate），为什么要加这个学习率呢？是因为如果将学习率设为1，就等于一下子学习全部的不足，会导致过拟合。据说在调参的时候，可以通过设置较小的学习率和较大的迭代次数以得到一个较优的模型，当然，这是以计算效率为代价的。</p>
+<p>注意到这里对于每次迭代的决策树都加了一个系数<span class="math inline">\(\rho\)</span>，这个<span class="math inline">\(\rho\)</span>也被称为学习率（learning rate），为什么要加这个学习率呢？是因为如果将学习率设为1，就等于一下子学习全部的不足，会导致过拟合。据说在调参的时候，可以通过设置较小的学习率和较大的迭代次数以得到一个较优的模型，当然，这是以计算效率为代价的。</p>
 <h2 id="gbdt为什么使用负梯度而不是残差">GBDT为什么使用负梯度而不是残差？</h2>
-<p>好了，现在可以说说为什么GBDT要使用负梯度而不是直接使用残差了，这也是我之前比较困惑的点，原因就是残差只是损失函数负梯度的一种特例，而采用负梯度更加通用，可以使用不同的损失函数。 为什么说残差只是一种特例呢？我们考虑下面这个损失函数： <span class="math display">\[L(y,f(x))=\frac{(y-f(x))^2}{2}\\\]</span> 这也就是平均平方误差MSE，然后他的负梯度就是： <span class="math display">\[-[\frac{\partial L(y,f(x))}{\partial f(x)}]=y-f(x)\\\]</span> 这不就是上面说的残差吗？也就是说，残差就等价于当损失函数采用MSE时的负梯度，而损失函数采用MSE其实会有一些缺点，比如对异常值敏感，所以在实际问题中我们有可能采用MAE或者更为折中的Huber损失函数以避免这一缺陷，如图： <img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546%20referrerpolicy=%22no-referrer%22%3E" /> 并且呢，这些损失函数的负梯度其实也可以看作是残差的一个近似，如图：</p>
+<p>好了，现在可以说说为什么GBDT要使用负梯度而不是直接使用残差了，这也是我之前比较困惑的点，原因就是残差只是损失函数负梯度的一种特例，而采用负梯度更加通用，可以使用不同的损失函数。 为什么说残差只是一种特例呢？我们考虑下面这个损失函数： <span class="math inline">\(L(y,f(x))=\frac{(y-f(x))^2}{2}\\\)</span> 这也就是平均平方误差MSE，然后他的负梯度就是： <span class="math inline">\(-[\frac{\partial L(y,f(x))}{\partial f(x)}]=y-f(x)\\\)</span> 这不就是上面说的残差吗？也就是说，残差就等价于当损失函数采用MSE时的负梯度，而损失函数采用MSE其实会有一些缺点，比如对异常值敏感，所以在实际问题中我们有可能采用MAE或者更为折中的Huber损失函数以避免这一缺陷，如图： <img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546%20referrerpolicy=%22no-referrer%22%3E" /> 并且呢，这些损失函数的负梯度其实也可以看作是残差的一个近似，如图：</p>
 <figure>
 <img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917260219-846072de-d101-46ff-9674-9907085d1ff0.png#align=left&amp;display=inline&amp;height=286&amp;%20referrerpolicy=%22no-referrer%22%3E" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
 </figure>
-<p>而且，由于决策树容易过拟合的特点，我们通常也会采用一些正则化的手段控制模型的复杂度来改进损失函数，如控制树的深度等 <span class="math display">\[obj=L(y,f(x))+\Omega(\Theta)\\\]</span> 这里的<span class="math display">\[\Omega(\Theta)\]</span>是正则项，用来控制模型的复杂度，使得模型在保持良好的性能的同时尽可能简单，以防止过拟合，这也是xgboost相对于GBDT的优化手段之一。 综上，由于负梯度可以应付各种各样千奇百怪的损失函数，所以GBDT用负梯度来拟合明显相比于残差是有着巨大的优势的。</p>
+<p>而且，由于决策树容易过拟合的特点，我们通常也会采用一些正则化的手段控制模型的复杂度来改进损失函数，如控制树的深度等 <span class="math inline">\(obj=L(y,f(x))+\Omega(\Theta)\\\)</span> 这里的<span class="math inline">\(\Omega(\Theta)\)</span>是正则项，用来控制模型的复杂度，使得模型在保持良好的性能的同时尽可能简单，以防止过拟合，这也是xgboost相对于GBDT的优化手段之一。 综上，由于负梯度可以应付各种各样千奇百怪的损失函数，所以GBDT用负梯度来拟合明显相比于残差是有着巨大的优势的。</p>
 <h1 id="总结">总结</h1>
 <p>本文主要介绍了GBDT的核心思想，先引入基于加法模型和前向分布算法的提升树模型，提升树模型每次迭代的拟合的是残差，然后介绍了GBDT，GBDT每次迭代拟合的是负梯度，通过拟合负梯度使得每次迭代后的损失函数值都能下降最快，最后说明了为什么负梯度与残差的关联以及为什么拟合负梯度更好。 # 参考</p>
 <ol type="1">
@@ -291,8 +283,8 @@
     <div class="post-nav">
       <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2021/06/30/hello-world/" rel="next" title="Hello World">
-      Hello World <i class="fa fa-chevron-right"></i>
+    <a href="/2021/06/30/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/" rel="next" title="云服务器配置远程jupyter notebook环境">
+      云服务器配置远程jupyter notebook环境 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -368,7 +360,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -418,7 +410,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">6 分钟</span>
+    <span title="站点阅读时长">5 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
@@ -469,6 +461,8 @@
 
 
 
+
+  
 
   
 
