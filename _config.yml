@@ -110,7 +110,7 @@ symbols_count_time:
   suffix: "mins."
 
 excerpt:
-  depth: 2
+  depth: 1
   excerpt_excludes: []
   more_excludes: []
   hideWholePostExcerpts: true
