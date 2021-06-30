@@ -176,7 +176,7 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  GitHub: https://github.com/Smallviller || fab fa-github
+  #GitHub: https://github.com/Smallviller || fab fa-github
   E-Mail: mailto:suzhaopei1999@gmail.com || fa fa-envelope
   知乎: https://www.zhihu.com/people/su-zhao-pei ||fab fa-zhihu
   #Weibo: https://weibo.com/yourname || fab fa-weibo
@@ -210,7 +210,7 @@ toc:
   # Automatically add list number to toc.
   number: true
   # If true, all words will placed on next lines if header width longer then sidebar width.
-  wrap: false
+  wrap: true
   # If true, all level of TOC in a post will be displayed, rather than the activated part of it.
   expand_all: false
   # Maximum heading depth of generated toc.
@@ -275,9 +275,10 @@ reward:
 # Usage: `Key: permalink || icon` (Font Awesome)
 follow_me:
   #Twitter: https://twitter.com/username || fab fa-twitter
+  知乎: https://www.zhihu.com/people/su-zhao-pei ||fab fa-zhihu
   #Telegram: https://t.me/channel_name || fab fa-telegram
   #WeChat: /images/wechat_channel.jpg || fab fa-weixin
-  #RSS: /atom.xml || fa fa-rss
+  RSS: /atom.xml || fa fa-rss
 
 # Related popular posts
 # Dependencies: https://github.com/tea3/hexo-related-popular-posts
