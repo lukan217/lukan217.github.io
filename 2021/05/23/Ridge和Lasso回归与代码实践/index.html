@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"smallviller.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前言 线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ridge和Lasso回归与代码实践">
-<meta property="og:url" content="http://example.com/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:url" content="https://smallviller.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/index.html">
 <meta property="og:site_name" content="Smallviller&#39;s Blog">
 <meta property="og:description" content="前言 线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。">
 <meta property="og:locale" content="zh_CN">
@@ -37,7 +37,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob">
 
-<link rel="canonical" href="http://example.com/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
+<link rel="canonical" href="https://smallviller.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
 
 
 <script id="page-configurations">
@@ -183,7 +183,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
+    <link itemprop="mainEntityOfPage" href="https://smallviller.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
