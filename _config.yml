@@ -114,6 +114,30 @@ excerpt:
   excerpt_excludes: []
   more_excludes: []
   hideWholePostExcerpts: true
+# Markdown-it config
+## Docs: https://github.com/celsomiranda/hexo-renderer-markdown-it/wiki/
+markdown:
+  render:
+    html: true
+    xhtmlOut: false
+    breaks: true
+    linkify: true
+    typographer: true
+    quotes: '“”‘’'
+  plugins:
+  anchors:
+    level: 2
+    collisionSuffix: ''
+
+math:
+  engine: 'katex'   
+  katex:
+    css: https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css
+    js: https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js
+    config:
+      # KaTeX config
+      throwOnError: false
+      errorColor: "#cc0000"
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
