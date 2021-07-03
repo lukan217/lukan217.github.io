@@ -129,15 +129,10 @@ markdown:
     level: 2
     collisionSuffix: ''
 
-math:
-  engine: 'katex'   
-  katex:
-    css: https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css
-    js: https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js
-    config:
-      # KaTeX config
-      throwOnError: false
-      errorColor: "#cc0000"
+sitemap: 
+  path: sitemap.xml
+baidusitemap: 
+  path: baidusitemap.xml
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
