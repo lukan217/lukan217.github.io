@@ -137,7 +137,7 @@ baidusitemap:
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: git
-  repo: git@github.com:Smallviller/smallviller.github.io.git
-  branch: main
-
+   type: git
+   repo: git@github.com:Smallviller/smallviller.github.io.git
+   branch: main
+  
