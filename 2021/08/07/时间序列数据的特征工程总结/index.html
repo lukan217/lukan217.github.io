@@ -25,13 +25,13 @@
   <meta name="description" content="当下时间序列预测的方法主要有三种吧，第一个是传统的时间序列预测方法，典型代表有ARIMA和指数平滑法；第二个是基于机器学习的方法，目前用的最多的是lightgbm和xgboost，在很多时序预测比赛前几名的方案都可以看到这两种方法；第三个是基于深度学习的方法，如RNN、LSTM等。现在传统时序预测的方法的预测精度都已经不如基于机器学习和深度学习的方法了，但是后者依赖于特征工程，特征调教的好的话是可">
 <meta property="og:type" content="article">
 <meta property="og:title" content="时间序列数据的特征工程总结">
-<meta property="og:url" content="https://smallviller.github.io/2021/07/11/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:url" content="https://smallviller.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Smallviller&#39;s Blog">
 <meta property="og:description" content="当下时间序列预测的方法主要有三种吧，第一个是传统的时间序列预测方法，典型代表有ARIMA和指数平滑法；第二个是基于机器学习的方法，目前用的最多的是lightgbm和xgboost，在很多时序预测比赛前几名的方案都可以看到这两种方法；第三个是基于深度学习的方法，如RNN、LSTM等。现在传统时序预测的方法的预测精度都已经不如基于机器学习和深度学习的方法了，但是后者依赖于特征工程，特征调教的好的话是可">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1625930948808-5fa93c14-0cbd-4aa6-bcb3-72da3ce43176.png#align=left&amp;display=inline&amp;height=151">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1625934882012-f1feb04c-b9a7-4dda-85db-53aef26727ca.jpeg">
-<meta property="article:published_time" content="2021-07-10T16:53:34.807Z">
+<meta property="article:published_time" content="2021-08-06T17:54:19.175Z">
 <meta property="article:modified_time" content="2021-07-10T17:04:17.272Z">
 <meta property="article:author" content="Smallviller">
 <meta property="article:tag" content="时间序列">
@@ -39,7 +39,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1625930948808-5fa93c14-0cbd-4aa6-bcb3-72da3ce43176.png#align=left&amp;display=inline&amp;height=151">
 
-<link rel="canonical" href="https://smallviller.github.io/2021/07/11/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/">
+<link rel="canonical" href="https://smallviller.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/">
 
 
 <script id="page-configurations">
@@ -189,7 +189,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://smallviller.github.io/2021/07/11/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="https://smallviller.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -211,10 +211,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-07-11 00:53:34 / 修改时间：01:04:17" itemprop="dateCreated datePublished" datetime="2021-07-11T00:53:34+08:00">2021-07-11</time>
+              <time title="创建时间：2021-08-07 01:54:19" itemprop="dateCreated datePublished" datetime="2021-08-07T01:54:19+08:00">2021-08-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-11 01:04:17" itemprop="dateModified" datetime="2021-07-11T01:04:17+08:00">2021-07-11</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -353,11 +359,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/07/03/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/" rel="prev" title="逻辑回归的交叉熵损失函数原理">
-      <i class="fa fa-chevron-left"></i> 逻辑回归的交叉熵损失函数原理
+    <a href="/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/" rel="prev" title="云服务器配置远程jupyter notebook环境">
+      <i class="fa fa-chevron-left"></i> 云服务器配置远程jupyter notebook环境
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/07/15/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A4%9A%E6%AD%A5%E9%A2%84%E6%B5%8B%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" rel="next" title="时间序列的多步预测方法总结">
+    <a href="/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A4%9A%E6%AD%A5%E9%A2%84%E6%B5%8B%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" rel="next" title="时间序列的多步预测方法总结">
       时间序列的多步预测方法总结 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -440,7 +446,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -453,7 +459,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -497,12 +503,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">35k</span>
+    <span title="站点总字数">43k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">58 分钟</span>
+    <span title="站点阅读时长">1:12</span>
 </div>
 
         
