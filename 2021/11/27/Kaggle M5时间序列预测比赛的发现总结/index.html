@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="womgfV2TbURRpAFqJs5AXSGKA6bk9Ahb3-8dRPb6ghY" />
+  <meta name="baidu-site-verification" content="code-ZP0nMAaqHA" />
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"smallviller.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="谈到时序预测，2020年kaggle上举办的那场M5沃尔玛销量预测比赛肯定是最值得学习的，有人甚至直接根据这场比赛写了两篇论文（见文末）发在 International Journal of Forecasting上，来总结这场比赛用到的一些方法，这里就把论文中的一些关键发现列出来供学习参考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云服务器配置远程jupyter notebook环境">
+<meta property="og:url" content="https://smallviller.github.io/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Smallviller&#39;s Blog">
+<meta property="og:description" content="谈到时序预测，2020年kaggle上举办的那场M5沃尔玛销量预测比赛肯定是最值得学习的，有人甚至直接根据这场比赛写了两篇论文（见文末）发在 International Journal of Forecasting上，来总结这场比赛用到的一些方法，这里就把论文中的一些关键发现列出来供学习参考。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-27T08:52:00.501Z">
+<meta property="article:modified_time" content="2021-11-27T13:51:34.279Z">
+<meta property="article:author" content="Smallviller">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="时间序列">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://smallviller.github.io/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>云服务器配置远程jupyter notebook环境 | Smallviller's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?1e002f076dbdbdaac343445ccb024dcc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="Smallviller's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Smallviller's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录点滴成长</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <meta name="referrer" content="no-referrer" />
+    <link itemprop="mainEntityOfPage" href="https://smallviller.github.io/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Smallviller">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Smallviller's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          云服务器配置远程jupyter notebook环境
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-11-27 16:52:00 / 修改时间：21:51:34" itemprop="dateCreated datePublished" datetime="2021-11-27T16:52:00+08:00">2021-11-27</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>谈到时序预测，2020年kaggle上举办的那场M5沃尔玛销量预测比赛肯定是最值得学习的，有人甚至直接根据这场比赛写了两篇论文（见文末）发在 International Journal of Forecasting上，来总结这场比赛用到的一些方法，这里就把论文中的一些关键发现列出来供学习参考。 <a name="Y2CJP"></a></p>
+<h1 id="机器学习方法的优越性"><strong>机器学习方法的优越性</strong></h1>
+<p>多年来，经验发现，简单的方法与复杂的或统计上复杂的方法一样准确。由于有限的数据可用性、算法的低效性、预处理的需要以及受限的计算能力，此前机器学习方法和统计学方法相比准确性都有所不足。M4是第一个发现两个ML方法明显比简单的统计方法更准确的预测竞赛，突出了ML方法对更准确预测的潜在价值。赢得M4竞赛的第一名是混合了RNN和指数平滑的混合方法，而排名第二的方法是使用XGBoost对标准时间序列预测方法产生的预测进行优化加权。尽管M4的两个获奖作品在本质上都是ML，但它们都建立在统计学、系列的特定功能上，同时也与四种统计学方法的简单组合有着差不多的准确性。然而，M5是第一个所有表现最好的方法都是 "纯 "ML方法，并且明显优于所有统计基准及其组合的比赛。LightGBM证明了它可以有效地用于处理大量相关的时间序列序列和外生变量，并减少预测误差。此外，像DeepAR和N-BEATS这样的深度学习方法，也显示出预测的潜力。 <a name="scDUJ"></a> # <strong>模型融合的价值</strong> M5 Accuracy竞赛表明融合不同方法的预测，即使是相对简单的方法，也能从总体上提高精确度。M5 Accuracy竞赛的冠军采用了一个非常简单的简单平均融合，涉及6个模型，每个模型利用不同的学习方法和训练集。同样，亚军采用了5个模型的简单平均融合，每个模型对趋势有不同的估计，而第三名的方法，是43个NN的简单平均融合。排名14th, 17th, 21st, 24th, 25th和44th方法也使用了模型的简单平均融合。 在这些融合方法中，只有排名25的方法考虑了对单个方法的不平等加权融合。模型融合的价值也被竞争的baleline之间的比较所支持：指数平滑模型和ARIMA模型的融合比单个方法的表现更好，自上而下和自下而上的调和预测的融合则比自上而下和自下而上的表现都好。 <a name="KXkQA"></a> # <strong>"时间序列交叉学习 "的价值</strong> 在以前的M系列竞赛中，大多数时间序列都是不相关的，属于不同的频率和领域，而且时间上也不对齐。因此，尽管M4比赛中表现最好的两个参赛者都同时考虑了从多个序列中"交叉学习"，而不是一次一个系列，但他们的方法在实践中难以有效实施，也没有充分展示出该方法的潜力。相比之下，由于M5是由排列整齐、高度相关的时间序列组成的，而且是分层结构的，所以 "交叉学习 "更容易应用，与逐个时间序列训练的方法相比，取得了很好的效果。同时，除了可以提高准确率，"交叉学习 "意味着可以在多个时间序列上只使用一个模型，因为这些序列是一起训练的，而不用针对每个时间序列都训练一个模型，因此减少了整体的计算成本，缓解了与有限的历史观察相关的困难。基本上，M5中所有表现最好的50个方法都使用了 "交叉学习"，利用了数据集提供的所有信息。 <a name="R2rMu"></a> # <strong>获胜的方法和用于销售预测的baseline之间存在重大差异</strong> M5 Accuracy竞赛考虑了24个通常用于销售预测应用的各种类型的baseline，包括传统的和最先进的统计方法、ML方法和他们的融合。但与这些baseline相比，获胜的作品明显提供了更准确的预测，并且在WRMSSE方面也平均高出20%以上。尽管较低的聚集水平上表现差不多，但结果仍清楚地表明了它们的优越性，并促使在ML预测方法领域进行更多的研究，这些方法可用于预测时间序列之间复杂的非线性关系，同时也能够方便的引入外生/解释变量。 <a name="HxvtW"></a> # <strong>从模型外部校正预测的价值</strong> 当预测者利用外部信息、内部知识以及他们的专业知识来提高预测精度时，通常会使用预测调整。在M5 Accuracy竞赛中，一些表现最好的方法，如排名第2和第5的方法，以乘数的形式利用这种调整来提高ML模型的预测（即在原先的预测结果上乘以一个系数，如0.95-1.05来校正预测结果，这个实际上是因为lightgbm外推能力差，在有趋势的序列上容易高估预测或者低估预测）。尽管这些调整并不完全基于判断，而是基于最低聚合水平产生的预测与较高聚合水平的预测之间的分析进行调整，但这些调整被证明是有用的，能够帮助预测模型减少偏差，更好地说明在较高聚合水平上更容易观察到的长期趋势。 然后，这种调整的实际价值需要进一步调查，但在预测领域，调和在不同聚集水平产生的预测的概念并不新鲜，许多研究实证证明了它的好处，特别是当预测和来自完整层次的信息被利用时。 <a name="LOU5s"></a> # <strong>有效的CV（交叉验证）策略的价值</strong> 在处理复杂的预测任务时，采用有效的CV策略对于提高样本外预测的准确性、避免过拟合和减轻不确定性至关重要。采用这种策略的重要性在M5 Accuracy竞赛的结果中得到了证明，选择进行CV的时间段，验证时间窗口的大小，这些窗口的更新方式，以及用于衡量预测表现的标准，都是预测者必须考虑的一些因素。在M5精确度竞赛中，表现最好的四种方法和前50名提交的绝大多数都考虑了这样的一种CV策略，即至少使用最后四个28天长的可用的数据窗口来做交叉验证以评估预测精确度，从而对样本外的表现提供一个合理的近似。除了这个CV方案之外，第一名的方案还同时测量了他所开发的模型CV结果的平均值和标准偏差。根据他的验证，他的方法中的递归模型被发现平均比非递归模型更准确，但更不稳定。因此，他决定将这两个模型结合起来，以确保产生的预测既是准确和稳定。在评估预测方法时，必须考虑到预测误差的全部分布，特别是其尾部，这表明稳健性是实现高准确度的前提条件。我们希望M5的结果将鼓励在这一领域的更多研究，并有助于开发更强大的CV策略。 <a name="VfP42"></a> # <strong>外生/解释变量的重要性</strong> 时间序列方法通常足以识别和捕捉其历史数据模式（水平、趋势和季节性），通过推断这种模式并产生准确的预测。然而，仅仅依靠历史数据的时间序列方法不能有效地说明节假日、特殊事件、促销活动、价格以及可能的天气的影响。在这种情况下，来自外生/解释变量的信息对于提高预测精度显得至关重要。在M5 Accuracy预测竞赛中，所有获奖作品都利用外部信息来提高其模型的预测性能。例如，monsaraida和其他团队发现，几个与价格相关的特征对于提高他们模型结果的准确性具有重要意义。此外，外生/解释变量的重要性也在几个简单统计学模型中得到的支持，例如，使用促销信息和特殊事件作为外生变量的指数平滑模型比普通的指数平滑模型精确度要高6%。ARIMA模型的情况也是如此，ARIMAX的精度比普通的ARIMA要高13%。 <a name="mDxVC"></a> # 参考</p>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/344487258_The_M5_Accuracy_competition_Results_findings_and_conclusions">The M5 Accuracy competition: Results, findings and conclusions</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/346493740_The_M5_Uncertainty_competition_Results_findings_and_conclusions">The M5 Uncertainty competition: Results, findings and conclusions</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://www.zhihu.com/people/su-zhao-pei">
+            <span class="icon">
+              <i class="fab fa-zhihu"></i>
+            </span>
+
+            <span class="label">知乎</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag"># 时间序列</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/29/Git%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E6%80%BB%E7%BB%93/" rel="prev" title="Git常用操作总结">
+      <i class="fa fa-chevron-left"></i> Git常用操作总结
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="Smallviller/smallviller.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E7%9A%84%E4%BC%98%E8%B6%8A%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">机器学习方法的优越性</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Smallviller"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Smallviller</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:suzhaopei1999@gmail.com" title="E-Mail → mailto:suzhaopei1999@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/su-zhao-pei" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;su-zhao-pei" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Smallviller</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">49k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:21</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
