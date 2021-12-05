@@ -1,16 +1,11 @@
-\---
-
+---
 title: 一个简约的beamer模板
-
 tags:
-
-\- latex
-
+- beamer
+- latex
 categories:
-
-\- 教程
-
-\---
+- 教程
+---
 
 开组会啥的，要做ppt，但感觉还是用beamer比较方便，用默认的模板改了改，看着也还行
 ​
