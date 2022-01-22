@@ -22,31 +22,27 @@
     var CONFIG = {"hostname":"smallviller.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="开组会啥的，要做ppt，但感觉还是用beamer比较方便，用默认的模板改了改，看着也还行 ​">
+  <meta name="description" content="黑盒优化问题">
 <meta property="og:type" content="article">
-<meta property="og:title" content="一个简约的beamer模板">
-<meta property="og:url" content="https://smallviller.github.io/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/index.html">
+<meta property="og:title" content="贝叶斯优化基本原理总结">
+<meta property="og:url" content="https://smallviller.github.io/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Smallviller&#39;s Blog">
-<meta property="og:description" content="开组会啥的，要做ppt，但感觉还是用beamer比较方便，用默认的模板改了改，看着也还行 ​">
+<meta property="og:description" content="黑盒优化问题">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638592-6975409f-6254-4735-8062-0b436f49051b.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u2147a6de&amp;margin=%5Bobject%20Object%5D&amp;name=0001.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=82132&amp;status=done&amp;style=none&amp;taskId=u14532634-3b60-409f-9605-bb6f6f05ca2">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638348-e5ff3e5b-f79d-4782-8e55-0c30b903ba5f.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u3af9e72d&amp;margin=%5Bobject%20Object%5D&amp;name=0002.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=54464&amp;status=done&amp;style=none&amp;taskId=u06378bdd-14f5-4d70-8234-2de0e293ae7">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638612-1fe8e3f9-6a92-4e37-ae33-b5b6ab56f8e2.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u8c014218&amp;margin=%5Bobject%20Object%5D&amp;name=0003.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=93115&amp;status=done&amp;style=none&amp;taskId=u2ea290d5-3e0e-4325-8026-ef36ee6ca4f">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638621-2ea8a6c3-280f-42aa-b3c0-ad26cfaa4c76.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u36cfdf6d&amp;margin=%5Bobject%20Object%5D&amp;name=0004.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=78021&amp;status=done&amp;style=none&amp;taskId=u1217dd56-073b-4fa2-b583-b8fb2918500">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638656-448960af-454b-40ab-8d10-cd79c533bf18.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u3b90e5c0&amp;margin=%5Bobject%20Object%5D&amp;name=0005.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=91360&amp;status=done&amp;style=none&amp;taskId=u9030a713-073c-4dd9-8d48-af400e2ad07">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638958-0c02aa64-99e9-4ea3-ba8c-531ac03c087b.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u80084e0b&amp;margin=%5Bobject%20Object%5D&amp;name=0006.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=57523&amp;status=done&amp;style=none&amp;taskId=ua805a004-b4b3-4624-a5b3-87eea69d808">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691639346-c7384931-218f-4b0b-b9f3-d022f11872fe.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=ufb0038af&amp;margin=%5Bobject%20Object%5D&amp;name=0007.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=82696&amp;status=done&amp;style=none&amp;taskId=ud7d2d344-949b-44c7-a352-376c052870f">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691639446-6f42c330-ccdb-401e-93dc-4be4c74550e2.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u79b63874&amp;margin=%5Bobject%20Object%5D&amp;name=0008.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=70224&amp;status=done&amp;style=none&amp;taskId=u33f6e90c-dad6-4134-ab5e-d189eff53c1">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691639692-a5053fac-411d-40d1-8501-6c7fe318e305.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=ud5f6369d&amp;margin=%5Bobject%20Object%5D&amp;name=0009.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=51952&amp;status=done&amp;style=none&amp;taskId=u6b9d7536-8999-465a-9817-ce762930acf">
-<meta property="article:published_time" content="2021-12-05T10:24:04.588Z">
-<meta property="article:modified_time" content="2021-12-05T10:28:32.190Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1642518880682-ca49f801-c6dd-406d-965d-9ba3690c74a6.png#clientId=u3fe6f5be-444f-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=52&amp;id=SNVtL">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862207488-61095c80-c151-4cb2-848d-74c44f23901f.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u10477eea">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862350662-cfeab91b-ee4f-4395-8cae-1c9c1df4d8c1.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u93bcdc6a">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862456555-21005371-dd1b-419e-9c9c-2c4e28d83ddf.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=uc7daab55">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1642870783116-4e643df2-ec8f-4b2c-84e2-f5d11c2cfac2.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u912a5632">
+<meta property="article:published_time" content="2022-01-22T17:50:03.926Z">
+<meta property="article:modified_time" content="2022-01-22T17:49:37.775Z">
 <meta property="article:author" content="Smallviller">
-<meta property="article:tag" content="beamer">
-<meta property="article:tag" content="latex">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="最优化">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638592-6975409f-6254-4735-8062-0b436f49051b.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u2147a6de&amp;margin=%5Bobject%20Object%5D&amp;name=0001.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=82132&amp;status=done&amp;style=none&amp;taskId=u14532634-3b60-409f-9605-bb6f6f05ca2">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1642518880682-ca49f801-c6dd-406d-965d-9ba3690c74a6.png#clientId=u3fe6f5be-444f-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=52&amp;id=SNVtL">
 
-<link rel="canonical" href="https://smallviller.github.io/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/">
+<link rel="canonical" href="https://smallviller.github.io/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/">
 
 
 <script id="page-configurations">
@@ -59,7 +55,7 @@
   };
 </script>
 
-  <title>一个简约的beamer模板 | Smallviller's Blog</title>
+  <title>贝叶斯优化基本原理总结 | Smallviller's Blog</title>
   
 
 
@@ -196,7 +192,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://smallviller.github.io/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/">
+    <link itemprop="mainEntityOfPage" href="https://smallviller.github.io/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -209,7 +205,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          一个简约的beamer模板
+          贝叶斯优化基本原理总结
         </h1>
 
         <div class="post-meta">
@@ -220,7 +216,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-12-05 18:24:04 / 修改时间：18:28:32" itemprop="dateCreated datePublished" datetime="2021-12-05T18:24:04+08:00">2021-12-05</time>
+              <time title="创建时间：2022-01-23 01:50:03 / 修改时间：01:49:37" itemprop="dateCreated datePublished" datetime="2022-01-23T01:50:03+08:00">2022-01-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -238,14 +234,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>96</span>
+              <span>2.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -257,8 +253,53 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>开组会啥的，要做ppt，但感觉还是用beamer比较方便，用默认的模板改了改，看着也还行 ​</p>
-<p>项目链接：<a target="_blank" rel="noopener" href="https://github.com/Smallviller/beamer_template">https://github.com/Smallviller/beamer_template</a> <img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638592-6975409f-6254-4735-8062-0b436f49051b.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u2147a6de&amp;margin=%5Bobject%20Object%5D&amp;name=0001.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=82132&amp;status=done&amp;style=none&amp;taskId=u14532634-3b60-409f-9605-bb6f6f05ca2" alt="0001.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638348-e5ff3e5b-f79d-4782-8e55-0c30b903ba5f.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u3af9e72d&amp;margin=%5Bobject%20Object%5D&amp;name=0002.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=54464&amp;status=done&amp;style=none&amp;taskId=u06378bdd-14f5-4d70-8234-2de0e293ae7" alt="0002.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638612-1fe8e3f9-6a92-4e37-ae33-b5b6ab56f8e2.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u8c014218&amp;margin=%5Bobject%20Object%5D&amp;name=0003.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=93115&amp;status=done&amp;style=none&amp;taskId=u2ea290d5-3e0e-4325-8026-ef36ee6ca4f" alt="0003.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638621-2ea8a6c3-280f-42aa-b3c0-ad26cfaa4c76.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u36cfdf6d&amp;margin=%5Bobject%20Object%5D&amp;name=0004.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=78021&amp;status=done&amp;style=none&amp;taskId=u1217dd56-073b-4fa2-b583-b8fb2918500" alt="0004.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638656-448960af-454b-40ab-8d10-cd79c533bf18.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u3b90e5c0&amp;margin=%5Bobject%20Object%5D&amp;name=0005.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=91360&amp;status=done&amp;style=none&amp;taskId=u9030a713-073c-4dd9-8d48-af400e2ad07" alt="0005.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691638958-0c02aa64-99e9-4ea3-ba8c-531ac03c087b.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u80084e0b&amp;margin=%5Bobject%20Object%5D&amp;name=0006.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=57523&amp;status=done&amp;style=none&amp;taskId=ua805a004-b4b3-4624-a5b3-87eea69d808" alt="0006.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691639346-c7384931-218f-4b0b-b9f3-d022f11872fe.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=ufb0038af&amp;margin=%5Bobject%20Object%5D&amp;name=0007.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=82696&amp;status=done&amp;style=none&amp;taskId=ud7d2d344-949b-44c7-a352-376c052870f" alt="0007.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691639446-6f42c330-ccdb-401e-93dc-4be4c74550e2.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=u79b63874&amp;margin=%5Bobject%20Object%5D&amp;name=0008.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=70224&amp;status=done&amp;style=none&amp;taskId=u33f6e90c-dad6-4134-ab5e-d189eff53c1" alt="0008.jpg" /><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1638691639692-a5053fac-411d-40d1-8501-6c7fe318e305.jpeg#clientId=uca4f431b-7c8d-4&amp;from=drop&amp;id=ud5f6369d&amp;margin=%5Bobject%20Object%5D&amp;name=0009.jpg&amp;originHeight=1063&amp;originWidth=1890&amp;originalType=binary&amp;ratio=1&amp;size=51952&amp;status=done&amp;style=none&amp;taskId=u6b9d7536-8999-465a-9817-ce762930acf" alt="0009.jpg" /></p>
+        <h1 id="黑盒优化问题">黑盒优化问题</h1>
+<p>贝叶斯优化（Bayesian Optimization），主要用来解决计算成本昂贵的黑盒优化问题，这种问题有着以下两个特点：</p>
+<ol type="1">
+<li>目标函数<span class="math display">\[f(x)\]</span>及其导数未知，否则就可以用梯度下降等方法求解</li>
+<li>计算目标函数时间成本大，意味着像蚁群算法、遗传算法这种方法也失效了，因为计算一次要花费很多时间</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642518880682-ca49f801-c6dd-406d-965d-9ba3690c74a6.png#clientId=u3fe6f5be-444f-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=52&amp;id=SNVtL" alt="image.png" /><br />这种问题最典型的就是机器学习里面的超参数优化，使用的模型为 <span class="math display">\[f\]</span>，超参数为输入的 <span class="math display">\[x\]</span>，评估指标（MSE, AUC等）为输出的目标函数值，在这个场景下，很多机器学习的入门课程都会提到网格搜索和随机搜索，但是这两个其实本质上也是一种类似于穷举的方式，随便选取一组可能的<span class="math display">\[x\]</span>，然后分别计算目标值，最后对比所有的结果得到最好的解，可以看出来这种求解是很低效的，因此，解决这种问题需要设计一种高效的算法，来在有限的时间里面找到一个相对不错的解，这就是贝叶斯优化。<br />贝叶斯优化，是一种使用贝叶斯定理来指导搜索以找到目标函数的最小值或最大值的方法，就是在每次迭代的时候，利用之前观测到的历史信息（先验知识)来进行下一次优化，通俗点讲，就是在进行一次迭代的时候，先回顾下之前的迭代结果，结果太差的<span class="math display">\[x\]</span>附近就不去找了，尽量往结果好一点的<span class="math display">\[x\]</span>附近去找最优解，这样一来搜索的效率就大大提高了，这其实和人的思维方式也有点像，每次在学习中试错，并且在下次的时候根据这些经验来找到最优的策略。 <a name="raVsx"></a></p>
+<h1 id="贝叶斯优化过程">贝叶斯优化过程</h1>
+<p>首先，假设有一个这样的函数<span class="math display">\[c(x)\]</span>，我们需要找到他的最小值，如下图所示，这也是我们所需要优化的目标函数，但是我们并不能够知道他的具体形状以及表达形式是怎么样的。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862207488-61095c80-c151-4cb2-848d-74c44f23901f.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u10477eea" alt="image.png" /><br />贝叶斯优化是通过一种叫做代理优化的方式来进行的，就是不知道真实的目标函数长什么样，我们就用一个代理函数（surrogate function）来代替目标函数，而这个代理函数就可以通过先采样几个点，再通过这几个点来给他拟合出来，如下图虚线所示：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862350662-cfeab91b-ee4f-4395-8cae-1c9c1df4d8c1.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u93bcdc6a" alt="image.png" /><br />基于构造的代理函数，我们就可以在可能是最小值的点附近采集更多的点，或者在还没有采样过的区域来采集更多的点，有了更多点，就可以更新代理函数，使之更逼近真实的目标函数的形状，这样的话也更容易找到目标函数的最小值，这个采样的过程同样可以通过构建一个采集函数来表示，也就是知道了当前代理函数的形状，如何选择下一个<span class="math display">\[x\]</span>使得收益最大。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862456555-21005371-dd1b-419e-9c9c-2c4e28d83ddf.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=uc7daab55" alt="image.png" /><br />然后重复以上过程，最终就可以找到函数的最小值点了，这大致就是贝叶斯优化的一个过程：</p>
+<ol type="1">
+<li>初始化一个代理函数的先验分布</li>
+<li>选择数据点<span class="math display">\[x\]</span>，使得采集函数<span class="math display">\[a(x)\]</span>取最大值</li>
+<li>在目标函数 <span class="math display">\[c(x)\]</span>中评估数据点<span class="math display">\[x\]</span>并获取其结果 <span class="math display">\[y\]</span></li>
+<li>使用新数据<span class="math display">\[(x,y)\]</span>更新代理函数，得到一个后验分布（作为下一步的先验分布）</li>
+<li>重复2-4步，直到达到最大迭代次数</li>
+</ol>
+<p>举个例子，如图所示，一开始只有两个点（t=2），代理函数的分布是紫色的区域那块，然后根据代理函数算出一个采集函数（绿色线），取采集函数的最大值所在的<span class="math display">\[x\]</span>（红色三角处），算出<span class="math display">\[y\]</span>，然后根据新的点<span class="math display">\[(x,y)\]</span>更新代理函数和采集函数（t=3），继续重复上面步骤，选择新的采集函数最大值所在的<span class="math display">\[x\]</span>，算出<span class="math display">\[y\]</span>，再更新代理函数和采集函数，然后继续迭代<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642870783116-4e643df2-ec8f-4b2c-84e2-f5d11c2cfac2.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u912a5632" alt="image.png" /><br />问题的核心就在于代理函数和采集函数如何构建，常用的代理函数有：</p>
+<ol type="1">
+<li>高斯过程（Gaussian processes）</li>
+<li>Tree Parzer Estimator</li>
+<li>概率随机森林：针对类别型变量</li>
+</ol>
+<p>采集函数则需要兼顾两方面的性质：</p>
+<ol type="1">
+<li>利用当前已开发的区域（Exploitation）：即在当前最小值附近继续搜索</li>
+<li>探索尚未开发的区域（Exploration）：即在还没有搜索过的区域里面搜索，可能那里才是全局最优解</li>
+</ol>
+<p>常用的采集函数有：</p>
+<ol type="1">
+<li><p>Probability of improvement（PI）</p></li>
+<li><p>Expected improvement（EI）</p></li>
+<li><p>Confidence bound criteria，包括LCB和UCB <a name="lYgNb"></a></p></li>
+</ol>
+<h1 id="可用的贝叶斯优化框架">可用的贝叶斯优化框架</h1>
+<ol type="1">
+<li>BayesianOptimization：<a target="_blank" rel="noopener" href="https://github.com/fmfn/BayesianOptimization">https://github.com/fmfn/BayesianOptimization</a></li>
+<li>清华开源的openbox：<a target="_blank" rel="noopener" href="https://open-box.readthedocs.io/zh_CN/latest/index.html">https://open-box.readthedocs.io/zh_CN/latest/index.html</a></li>
+<li>华为开源的HEBO：<a target="_blank" rel="noopener" href="https://github.com/huawei-noah/HEBO">https://github.com/huawei-noah/HEBO</a></li>
+<li>Hyperopt：<a target="_blank" rel="noopener" href="http://hyperopt.github.io/hyperopt/">http://hyperopt.github.io/hyperopt/</a></li>
+</ol>
+<p>个人觉得1和2就挺好用的 <a name="ZDkC6"></a></p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://towardsdatascience.com/the-beauty-of-bayesian-optimization-explained-in-simple-terms-81f3ee13b10f">https://towardsdatascience.com/the-beauty-of-bayesian-optimization-explained-in-simple-terms-81f3ee13b10f</a></li>
+<li><a target="_blank" rel="noopener" href="https://chengfeng96.com/blog/2019/09/08/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E7%AC%94%E8%AE%B0/">https://chengfeng96.com/blog/2019/09/08/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E7%AC%94%E8%AE%B0/</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/459110020">https://zhuanlan.zhihu.com/p/459110020</a></li>
+</ol>
 
     </div>
 
@@ -297,8 +338,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/beamer/" rel="tag"># beamer</a>
-              <a href="/tags/latex/" rel="tag"># latex</a>
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%9C%80%E4%BC%98%E5%8C%96/" rel="tag"># 最优化</a>
           </div>
 
         
@@ -307,13 +348,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/" rel="prev" title="Kaggle M5时间序列预测比赛的发现总结">
-      <i class="fa fa-chevron-left"></i> Kaggle M5时间序列预测比赛的发现总结
+    <a href="/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/" rel="prev" title="一个简约的beamer模板">
+      <i class="fa fa-chevron-left"></i> 一个简约的beamer模板
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/" rel="next" title="贝叶斯优化基本原理总结">
-      贝叶斯优化基本原理总结 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -378,6 +416,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BB%91%E7%9B%92%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">黑盒优化问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">贝叶斯优化过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E6%A1%86%E6%9E%B6"><span class="nav-number">3.</span> <span class="nav-text">可用的贝叶斯优化框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
