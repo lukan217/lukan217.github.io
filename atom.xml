@@ -3,11 +3,11 @@
   <title>Lukan&#39;s Blog</title>
   
   <subtitle>记录点滴成长</subtitle>
-  <link href="https://lukan797.github.io/atom.xml" rel="self"/>
+  <link href="https://lukan.github.io/atom.xml" rel="self"/>
   
-  <link href="https://lukan797.github.io/"/>
+  <link href="https://lukan.github.io/"/>
   <updated>2022-01-22T17:52:42.006Z</updated>
-  <id>https://lukan797.github.io/</id>
+  <id>https://lukan.github.io/</id>
   
   <author>
     <name>Lukan</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>贝叶斯优化基本原理总结</title>
-    <link href="https://lukan797.github.io/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/"/>
-    <id>https://lukan797.github.io/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/</id>
+    <link href="https://lukan.github.io/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/"/>
+    <id>https://lukan.github.io/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/</id>
     <published>2022-01-22T17:50:03.926Z</published>
     <updated>2022-01-22T17:52:42.006Z</updated>
     
@@ -30,19 +30,19 @@
     
     
     
-    <category term="教程" scheme="https://lukan797.github.io/categories/%E6%95%99%E7%A8%8B/"/>
+    <category term="教程" scheme="https://lukan.github.io/categories/%E6%95%99%E7%A8%8B/"/>
     
     
-    <category term="机器学习" scheme="https://lukan797.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <category term="机器学习" scheme="https://lukan.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="最优化" scheme="https://lukan797.github.io/tags/%E6%9C%80%E4%BC%98%E5%8C%96/"/>
+    <category term="最优化" scheme="https://lukan.github.io/tags/%E6%9C%80%E4%BC%98%E5%8C%96/"/>
     
   </entry>
   
   <entry>
     <title>一个简约的beamer模板</title>
-    <link href="https://lukan797.github.io/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/"/>
-    <id>https://lukan797.github.io/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/</id>
+    <link href="https://lukan.github.io/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/"/>
+    <id>https://lukan.github.io/2021/12/05/%E4%B8%80%E4%B8%AA%E7%AE%80%E7%BA%A6%E7%9A%84beamer%E6%A8%A1%E6%9D%BF/</id>
     <published>2021-12-05T10:24:04.588Z</published>
     <updated>2021-12-05T10:28:32.190Z</updated>
     
@@ -53,19 +53,19 @@
     
     
     
-    <category term="教程" scheme="https://lukan797.github.io/categories/%E6%95%99%E7%A8%8B/"/>
+    <category term="教程" scheme="https://lukan.github.io/categories/%E6%95%99%E7%A8%8B/"/>
     
     
-    <category term="beamer" scheme="https://lukan797.github.io/tags/beamer/"/>
+    <category term="beamer" scheme="https://lukan.github.io/tags/beamer/"/>
     
-    <category term="latex" scheme="https://lukan797.github.io/tags/latex/"/>
+    <category term="latex" scheme="https://lukan.github.io/tags/latex/"/>
     
   </entry>
   
   <entry>
     <title>Kaggle M5时间序列预测比赛的发现总结</title>
-    <link href="https://lukan797.github.io/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/"/>
-    <id>https://lukan797.github.io/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/</id>
+    <link href="https://lukan.github.io/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/"/>
+    <id>https://lukan.github.io/2021/11/27/Kaggle%20M5%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E6%AF%94%E8%B5%9B%E7%9A%84%E5%8F%91%E7%8E%B0%E6%80%BB%E7%BB%93/</id>
     <published>2021-11-27T08:52:00.501Z</published>
     <updated>2021-11-28T08:51:21.530Z</updated>
     
@@ -77,16 +77,16 @@
     
     
     
-    <category term="机器学习" scheme="https://lukan797.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <category term="机器学习" scheme="https://lukan.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="时间序列" scheme="https://lukan797.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
+    <category term="时间序列" scheme="https://lukan.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>Git常用操作总结</title>
-    <link href="https://lukan797.github.io/2021/08/29/Git%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E6%80%BB%E7%BB%93/"/>
-    <id>https://lukan797.github.io/2021/08/29/Git%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E6%80%BB%E7%BB%93/</id>
+    <link href="https://lukan.github.io/2021/08/29/Git%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E6%80%BB%E7%BB%93/"/>
+    <id>https://lukan.github.io/2021/08/29/Git%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E6%80%BB%E7%BB%93/</id>
     <published>2021-08-28T18:31:42.115Z</published>
     <updated>2021-08-28T18:43:37.696Z</updated>
     
@@ -97,17 +97,17 @@
     
     
     
-    <category term="教程" scheme="https://lukan797.github.io/categories/%E6%95%99%E7%A8%8B/"/>
+    <category term="教程" scheme="https://lukan.github.io/categories/%E6%95%99%E7%A8%8B/"/>
     
     
-    <category term="git" scheme="https://lukan797.github.io/tags/git/"/>
+    <category term="git" scheme="https://lukan.github.io/tags/git/"/>
     
   </entry>
   
   <entry>
     <title>科大讯飞|线下商店销量预测挑战赛top7方案</title>
-    <link href="https://lukan797.github.io/2021/08/21/%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E_%E7%BA%BF%E4%B8%8B%E5%95%86%E5%BA%97%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B%E6%8C%91%E6%88%98%E8%B5%9Btop7%E6%96%B9%E6%A1%88/"/>
-    <id>https://lukan797.github.io/2021/08/21/%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E_%E7%BA%BF%E4%B8%8B%E5%95%86%E5%BA%97%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B%E6%8C%91%E6%88%98%E8%B5%9Btop7%E6%96%B9%E6%A1%88/</id>
+    <link href="https://lukan.github.io/2021/08/21/%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E_%E7%BA%BF%E4%B8%8B%E5%95%86%E5%BA%97%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B%E6%8C%91%E6%88%98%E8%B5%9Btop7%E6%96%B9%E6%A1%88/"/>
+    <id>https://lukan.github.io/2021/08/21/%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E_%E7%BA%BF%E4%B8%8B%E5%95%86%E5%BA%97%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B%E6%8C%91%E6%88%98%E8%B5%9Btop7%E6%96%B9%E6%A1%88/</id>
     <published>2021-08-21T11:10:08.518Z</published>
     <updated>2021-08-21T11:15:42.634Z</updated>
     
@@ -118,19 +118,19 @@
     
     
     
-    <category term="机器学习实践" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
+    <category term="机器学习实践" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="时间序列" scheme="https://lukan797.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
+    <category term="时间序列" scheme="https://lukan.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
     
-    <category term="销量预测" scheme="https://lukan797.github.io/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/"/>
+    <category term="销量预测" scheme="https://lukan.github.io/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/"/>
     
   </entry>
   
   <entry>
     <title>逻辑回归的交叉熵损失函数原理</title>
-    <link href="https://lukan797.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/"/>
-    <id>https://lukan797.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/</id>
+    <link href="https://lukan.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/"/>
+    <id>https://lukan.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/</id>
     <published>2021-08-06T17:54:19.354Z</published>
     <updated>2021-07-03T14:40:53.018Z</updated>
     
@@ -141,19 +141,19 @@
     
     
     
-    <category term="机器学习算法" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
+    <category term="机器学习算法" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
     
     
-    <category term="逻辑回归" scheme="https://lukan797.github.io/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/"/>
+    <category term="逻辑回归" scheme="https://lukan.github.io/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/"/>
     
-    <category term="损失函数" scheme="https://lukan797.github.io/tags/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/"/>
+    <category term="损失函数" scheme="https://lukan.github.io/tags/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/"/>
     
   </entry>
   
   <entry>
     <title>时间序列的多步预测方法总结</title>
-    <link href="https://lukan797.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A4%9A%E6%AD%A5%E9%A2%84%E6%B5%8B%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/"/>
-    <id>https://lukan797.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A4%9A%E6%AD%A5%E9%A2%84%E6%B5%8B%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/</id>
+    <link href="https://lukan.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A4%9A%E6%AD%A5%E9%A2%84%E6%B5%8B%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/"/>
+    <id>https://lukan.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%A4%9A%E6%AD%A5%E9%A2%84%E6%B5%8B%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/</id>
     <published>2021-08-06T17:54:19.202Z</published>
     <updated>2021-07-16T11:15:03.894Z</updated>
     
@@ -164,19 +164,19 @@
     
     
     
-    <category term="机器学习实践" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
+    <category term="机器学习实践" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="机器学习" scheme="https://lukan797.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <category term="机器学习" scheme="https://lukan.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="时间序列" scheme="https://lukan797.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
+    <category term="时间序列" scheme="https://lukan.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>时间序列数据的特征工程总结</title>
-    <link href="https://lukan797.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/"/>
-    <id>https://lukan797.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/</id>
+    <link href="https://lukan.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/"/>
+    <id>https://lukan.github.io/2021/08/07/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B%E6%80%BB%E7%BB%93/</id>
     <published>2021-08-06T17:54:19.175Z</published>
     <updated>2021-07-10T17:04:17.272Z</updated>
     
@@ -187,19 +187,19 @@
     
     
     
-    <category term="机器学习实践" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
+    <category term="机器学习实践" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="时间序列" scheme="https://lukan797.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
+    <category term="时间序列" scheme="https://lukan.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/"/>
     
-    <category term="特征工程" scheme="https://lukan797.github.io/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"/>
+    <category term="特征工程" scheme="https://lukan.github.io/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"/>
     
   </entry>
   
   <entry>
     <title>云服务器配置远程jupyter notebook环境</title>
-    <link href="https://lukan797.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/"/>
-    <id>https://lukan797.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/</id>
+    <link href="https://lukan.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/"/>
+    <id>https://lukan.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/</id>
     <published>2021-08-06T17:54:19.076Z</published>
     <updated>2021-06-30T18:36:39.236Z</updated>
     
@@ -210,19 +210,19 @@
     
     
     
-    <category term="教程" scheme="https://lukan797.github.io/categories/%E6%95%99%E7%A8%8B/"/>
+    <category term="教程" scheme="https://lukan.github.io/categories/%E6%95%99%E7%A8%8B/"/>
     
     
-    <category term="jupyter notebook" scheme="https://lukan797.github.io/tags/jupyter-notebook/"/>
+    <category term="jupyter notebook" scheme="https://lukan.github.io/tags/jupyter-notebook/"/>
     
-    <category term="云服务器" scheme="https://lukan797.github.io/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <category term="云服务器" scheme="https://lukan.github.io/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
     
   </entry>
   
   <entry>
     <title>GBDT梯度提升树算法原理</title>
-    <link href="https://lukan797.github.io/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/"/>
-    <id>https://lukan797.github.io/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/</id>
+    <link href="https://lukan.github.io/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/"/>
+    <id>https://lukan.github.io/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/</id>
     <published>2021-06-16T16:00:00.000Z</published>
     <updated>2021-06-30T18:35:14.700Z</updated>
     
@@ -233,21 +233,21 @@
     
     
     
-    <category term="机器学习算法" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
+    <category term="机器学习算法" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
     
     
-    <category term="机器学习" scheme="https://lukan797.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <category term="机器学习" scheme="https://lukan.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="GBDT" scheme="https://lukan797.github.io/tags/GBDT/"/>
+    <category term="GBDT" scheme="https://lukan.github.io/tags/GBDT/"/>
     
-    <category term="boosting" scheme="https://lukan797.github.io/tags/boosting/"/>
+    <category term="boosting" scheme="https://lukan.github.io/tags/boosting/"/>
     
   </entry>
   
   <entry>
     <title>Ridge和Lasso回归与代码实践</title>
-    <link href="https://lukan797.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/"/>
-    <id>https://lukan797.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/</id>
+    <link href="https://lukan.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/"/>
+    <id>https://lukan.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/</id>
     <published>2021-05-22T16:00:00.000Z</published>
     <updated>2021-06-30T18:35:23.880Z</updated>
     
@@ -258,19 +258,19 @@
     
     
     
-    <category term="机器学习算法" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
+    <category term="机器学习算法" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
     
     
-    <category term="机器学习" scheme="https://lukan797.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <category term="机器学习" scheme="https://lukan.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="回归算法" scheme="https://lukan797.github.io/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/"/>
+    <category term="回归算法" scheme="https://lukan.github.io/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
   <entry>
     <title>前向分步回归Forward Stagewise Regression原理及Python实现</title>
-    <link href="https://lukan797.github.io/2021/05/04/%E5%89%8D%E5%90%91%E5%88%86%E6%AD%A5%E5%9B%9E%E5%BD%92Forward%20Stagewise%20Regression%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/"/>
-    <id>https://lukan797.github.io/2021/05/04/%E5%89%8D%E5%90%91%E5%88%86%E6%AD%A5%E5%9B%9E%E5%BD%92Forward%20Stagewise%20Regression%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/</id>
+    <link href="https://lukan.github.io/2021/05/04/%E5%89%8D%E5%90%91%E5%88%86%E6%AD%A5%E5%9B%9E%E5%BD%92Forward%20Stagewise%20Regression%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/"/>
+    <id>https://lukan.github.io/2021/05/04/%E5%89%8D%E5%90%91%E5%88%86%E6%AD%A5%E5%9B%9E%E5%BD%92Forward%20Stagewise%20Regression%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/</id>
     <published>2021-05-03T16:00:00.000Z</published>
     <updated>2021-06-30T18:36:29.572Z</updated>
     
@@ -281,21 +281,21 @@
     
     
     
-    <category term="机器学习算法" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
+    <category term="机器学习算法" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/"/>
     
     
-    <category term="机器学习" scheme="https://lukan797.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    <category term="机器学习" scheme="https://lukan.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
-    <category term="boosting" scheme="https://lukan797.github.io/tags/boosting/"/>
+    <category term="boosting" scheme="https://lukan.github.io/tags/boosting/"/>
     
-    <category term="回归算法" scheme="https://lukan797.github.io/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/"/>
+    <category term="回归算法" scheme="https://lukan.github.io/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
   <entry>
     <title>爬取58同城厦门二手房数据进行数据分析（二）</title>
-    <link href="https://lukan797.github.io/2020/12/11/%E7%88%AC%E5%8F%96%E5%8E%A6%E9%97%A858%E5%90%8C%E5%9F%8E%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
-    <id>https://lukan797.github.io/2020/12/11/%E7%88%AC%E5%8F%96%E5%8E%A6%E9%97%A858%E5%90%8C%E5%9F%8E%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/</id>
+    <link href="https://lukan.github.io/2020/12/11/%E7%88%AC%E5%8F%96%E5%8E%A6%E9%97%A858%E5%90%8C%E5%9F%8E%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <id>https://lukan.github.io/2020/12/11/%E7%88%AC%E5%8F%96%E5%8E%A6%E9%97%A858%E5%90%8C%E5%9F%8E%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/</id>
     <published>2020-12-10T16:00:00.000Z</published>
     <updated>2021-06-30T18:36:21.370Z</updated>
     
@@ -306,17 +306,17 @@
     
     
     
-    <category term="机器学习实践" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
+    <category term="机器学习实践" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="数据分析" scheme="https://lukan797.github.io/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"/>
+    <category term="数据分析" scheme="https://lukan.github.io/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"/>
     
   </entry>
   
   <entry>
     <title>爬取58同城厦门二手房数据进行数据分析（一）</title>
-    <link href="https://lukan797.github.io/2020/12/04/%E7%88%AC%E5%8F%9658%E5%90%8C%E5%9F%8E%E5%8E%A6%E9%97%A8%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/"/>
-    <id>https://lukan797.github.io/2020/12/04/%E7%88%AC%E5%8F%9658%E5%90%8C%E5%9F%8E%E5%8E%A6%E9%97%A8%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/</id>
+    <link href="https://lukan.github.io/2020/12/04/%E7%88%AC%E5%8F%9658%E5%90%8C%E5%9F%8E%E5%8E%A6%E9%97%A8%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+    <id>https://lukan.github.io/2020/12/04/%E7%88%AC%E5%8F%9658%E5%90%8C%E5%9F%8E%E5%8E%A6%E9%97%A8%E4%BA%8C%E6%89%8B%E6%88%BF%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/</id>
     <published>2020-12-03T16:00:00.000Z</published>
     <updated>2021-06-30T18:35:44.731Z</updated>
     
@@ -327,17 +327,17 @@
     
     
     
-    <category term="机器学习实践" scheme="https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
+    <category term="机器学习实践" scheme="https://lukan.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AE%9E%E8%B7%B5/"/>
     
     
-    <category term="爬虫" scheme="https://lukan797.github.io/tags/%E7%88%AC%E8%99%AB/"/>
+    <category term="爬虫" scheme="https://lukan.github.io/tags/%E7%88%AC%E8%99%AB/"/>
     
   </entry>
   
   <entry>
     <title>2020美赛参赛经验</title>
-    <link href="https://lukan797.github.io/2020/05/03/2020%E7%BE%8E%E8%B5%9B%E5%8F%82%E8%B5%9B%E7%BB%8F%E9%AA%8C/"/>
-    <id>https://lukan797.github.io/2020/05/03/2020%E7%BE%8E%E8%B5%9B%E5%8F%82%E8%B5%9B%E7%BB%8F%E9%AA%8C/</id>
+    <link href="https://lukan.github.io/2020/05/03/2020%E7%BE%8E%E8%B5%9B%E5%8F%82%E8%B5%9B%E7%BB%8F%E9%AA%8C/"/>
+    <id>https://lukan.github.io/2020/05/03/2020%E7%BE%8E%E8%B5%9B%E5%8F%82%E8%B5%9B%E7%BB%8F%E9%AA%8C/</id>
     <published>2020-05-02T16:00:00.000Z</published>
     <updated>2021-06-30T18:34:59.168Z</updated>
     
@@ -348,12 +348,12 @@
     
     
     
-    <category term="经验" scheme="https://lukan797.github.io/categories/%E7%BB%8F%E9%AA%8C/"/>
+    <category term="经验" scheme="https://lukan.github.io/categories/%E7%BB%8F%E9%AA%8C/"/>
     
     
-    <category term="数学建模" scheme="https://lukan797.github.io/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/"/>
+    <category term="数学建模" scheme="https://lukan.github.io/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/"/>
     
-    <category term="美赛" scheme="https://lukan797.github.io/tags/%E7%BE%8E%E8%B5%9B/"/>
+    <category term="美赛" scheme="https://lukan.github.io/tags/%E7%BE%8E%E8%B5%9B/"/>
     
   </entry>
   

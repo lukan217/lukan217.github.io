@@ -19,13 +19,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"lukan797.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"lukan.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="去年年初疫情，阿里云搞了一个在家实践的活动，就免费领了半年的云服务器，从此打开了新世界的大门，比如写一些脚本在挂服务器上跑一些代码，搭一个网站，还有一个就是可以在服务器上搭一个jupyter notebook的环境，通过网址就可以直接打开notebook写代码了，适合方便快速地写一些小型的代码，或者在手头的电脑没有anaconda环境时直接使用，甚至用ipad或者手机也可以写，大致的效果如下：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="云服务器配置远程jupyter notebook环境">
-<meta property="og:url" content="https://lukan797.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:url" content="https://lukan.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/index.html">
 <meta property="og:site_name" content="Lukan&#39;s Blog">
 <meta property="og:description" content="去年年初疫情，阿里云搞了一个在家实践的活动，就免费领了半年的云服务器，从此打开了新世界的大门，比如写一些脚本在挂服务器上跑一些代码，搭一个网站，还有一个就是可以在服务器上搭一个jupyter notebook的环境，通过网址就可以直接打开notebook写代码了，适合方便快速地写一些小型的代码，或者在手头的电脑没有anaconda环境时直接使用，甚至用ipad或者手机也可以写，大致的效果如下：">
 <meta property="og:locale" content="zh_CN">
@@ -47,7 +47,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1624879339187-e21ea69c-5a13-4f9e-9a78-278e3a86edb6.png#height=365&amp;id=dR0gt&amp;">
 
-<link rel="canonical" href="https://lukan797.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/">
+<link rel="canonical" href="https://lukan.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/">
 
 
 <script id="page-configurations">
@@ -193,7 +193,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://lukan797.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/">
+    <link itemprop="mainEntityOfPage" href="https://lukan.github.io/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
