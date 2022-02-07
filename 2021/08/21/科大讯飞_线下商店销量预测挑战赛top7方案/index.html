@@ -245,65 +245,108 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近参加了科大讯飞的线下商店销量预测挑战赛，线上成绩0.66，最终排名第七，这里把自己的方案分享出来，欢迎大家交流讨论！代码和数据均已上传到GitHub：<br /><a target="_blank" rel="noopener" href="https://github.com/Smallviller/KDXF_sales_forecast_competition">https://github.com/Smallviller/KDXF_sales_forecast_competition</a> <a name="hjSac"></a></p>
-<h1 id="赛题说明">赛题说明</h1>
-<p>比赛传送门：<a target="_blank" rel="noopener" href="https://challenge.xfyun.cn/topic/info?type=offline-store-sales-forecast">https://challenge.xfyun.cn/topic/info?type=offline-store-sales-forecast</a> <a name="WNhyD"></a></p>
-<h2 id="赛题任务">赛题任务</h2>
-<p>给定商店销量历史相关数据和时间等信息，预测商店对应商品的周销量。 <a name="j2N5j"></a></p>
-<h2 id="数据说明">数据说明</h2>
+        <p>最近参加了科大讯飞的线下商店销量预测挑战赛，线上成绩0.66，最终排名第七，这里把自己的方案分享出来，欢迎大家交流讨论！代码和数据均已上传到GitHub：<br /><a target="_blank" rel="noopener" href="https://github.com/Smallviller/KDXF_sales_forecast_competition">https://github.com/Smallviller/KDXF_sales_forecast_competition</a><br />
+<a name="hjSac"></a></p>
+<h1 id="赛题说明"><a class="markdownIt-Anchor" href="#赛题说明"></a> 赛题说明</h1>
+<p>比赛传送门：<a target="_blank" rel="noopener" href="https://challenge.xfyun.cn/topic/info?type=offline-store-sales-forecast">https://challenge.xfyun.cn/topic/info?type=offline-store-sales-forecast</a><br />
+<a name="WNhyD"></a></p>
+<h2 id="赛题任务"><a class="markdownIt-Anchor" href="#赛题任务"></a> 赛题任务</h2>
+<p>给定商店销量历史相关数据和时间等信息，预测商店对应商品的周销量。<br />
+<a name="j2N5j"></a></p>
+<h2 id="数据说明"><a class="markdownIt-Anchor" href="#数据说明"></a> 数据说明</h2>
 <p>训练集：33周的历史销量数据<br />测试集：34周的销量<br />数据字段：字段shop_id（店铺id）、 item_id（商品id）、week（周标识）、item_price（商品价格）、item_category_id（商品品类id）、weekly_sales（周销量）组成。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1629537615118-1f4a390d-5a87-4d37-8629-ffc0700e24ed.png" alt="image.png" /><br />可以发现这里的shop_id、item_id、week和item_category_id进行了脱敏处理，经过简单探索，发现：</p>
-<ol type="1">
-<li><p>shop_id共有32个，item_id共有523个、item_category_id共有34个，shop和item是多对多的关系，通过shop*item可标识唯一商品。</p></li>
-<li><p>item_price存在大量空值，比率达73%</p></li>
-<li><p>weekly_sales大多偏低，集中在0和1，存在间歇性需求的问题 <a name="mQdqi"></a></p></li>
+<ol>
+<li>
+<p>shop_id共有32个，item_id共有523个、item_category_id共有34个，shop和item是多对多的关系，通过shop*item可标识唯一商品。</p>
+</li>
+<li>
+<p>item_price存在大量空值，比率达73%</p>
+</li>
+<li>
+<p>weekly_sales大多偏低，集中在0和1，存在间歇性需求的问题<br />
+<a name="mQdqi"></a></p>
+</li>
 </ol>
-<h1 id="特征工程">特征工程</h1>
-<p>一般销量预测，特征工程主要从这几个方面入手：时间相关特征、历史销量相关特征、价格相关特征...不过这里的时间特征被脱敏了，用不到，所以特征工程主要从销量和价格入手。 <a name="mib5L"></a></p>
-<h2 id="销量相关特征">销量相关特征</h2>
-<ol type="1">
-<li><p>滞后特征：滞后 1-14周的销量</p></li>
-<li><p>滑动特征：滑动2-14周销量的min/max/median/mean/std</p></li>
-<li><p>类别encoding特征：每个item、shop、item_category、shop*item_category、shop*item销量的mean和std</p></li>
-<li><p>类别滞后特征：每个item、shop、item_category滞后1-14周的销量 <a name="m6Ypo"></a></p></li>
+<h1 id="特征工程"><a class="markdownIt-Anchor" href="#特征工程"></a> 特征工程</h1>
+<p>一般销量预测，特征工程主要从这几个方面入手：时间相关特征、历史销量相关特征、价格相关特征…不过这里的时间特征被脱敏了，用不到，所以特征工程主要从销量和价格入手。<br />
+<a name="mib5L"></a></p>
+<h2 id="销量相关特征"><a class="markdownIt-Anchor" href="#销量相关特征"></a> 销量相关特征</h2>
+<ol>
+<li>
+<p>滞后特征：滞后 1-14周的销量</p>
+</li>
+<li>
+<p>滑动特征：滑动2-14周销量的min/max/median/mean/std</p>
+</li>
+<li>
+<p>类别encoding特征：每个item、shop、item_category、shop*item_category、shop*item销量的mean和std</p>
+</li>
+<li>
+<p>类别滞后特征：每个item、shop、item_category滞后1-14周的销量<br />
+<a name="m6Ypo"></a></p>
+</li>
 </ol>
-<h2 id="价格相关特征">价格相关特征</h2>
-<ol type="1">
-<li><p>价格原始值：包含原始特征和填充特征，填充策略采用先向前填补再向后填补，最后没填补到的在用众数填补</p></li>
-<li><p>类别encoding特征：每个item、shop、item_category、shop*item_category、shop*item价格的mean和std</p></li>
-<li><p>价格差异特征：当前价格与shop、item、item_cat、shop_cat、shop_item的价格均值的差值</p></li>
-<li><p>价格变动特征：当前价格与上周价格/上个月平均价格的差值 <a name="Ty2SW"></a></p></li>
+<h2 id="价格相关特征"><a class="markdownIt-Anchor" href="#价格相关特征"></a> 价格相关特征</h2>
+<ol>
+<li>
+<p>价格原始值：包含原始特征和填充特征，填充策略采用先向前填补再向后填补，最后没填补到的在用众数填补</p>
+</li>
+<li>
+<p>类别encoding特征：每个item、shop、item_category、shop*item_category、shop*item价格的mean和std</p>
+</li>
+<li>
+<p>价格差异特征：当前价格与shop、item、item_cat、shop_cat、shop_item的价格均值的差值</p>
+</li>
+<li>
+<p>价格变动特征：当前价格与上周价格/上个月平均价格的差值<br />
+<a name="Ty2SW"></a></p>
+</li>
 </ol>
-<h1 id="模型">模型</h1>
+<h1 id="模型"><a class="markdownIt-Anchor" href="#模型"></a> 模型</h1>
 <p><a name="Fxz2m"></a></p>
-<h2 id="模型-1">模型</h2>
-<p>只使用了lightgbm <a name="JQtAZ"></a></p>
-<h2 id="损失函数">损失函数</h2>
-<p>训练的损失函数采用tweedie，由于存在间歇性需求的问题，很多商品的销量的销量为0，满足tweedie分布，因此采用tweedie作为损失函数效果要比mse要更好 <a name="Ls2BR"></a></p>
-<h2 id="交叉验证策略">交叉验证策略</h2>
+<h2 id="模型-2"><a class="markdownIt-Anchor" href="#模型-2"></a> 模型</h2>
+<p>只使用了lightgbm<br />
+<a name="JQtAZ"></a></p>
+<h2 id="损失函数"><a class="markdownIt-Anchor" href="#损失函数"></a> 损失函数</h2>
+<p>训练的损失函数采用tweedie，由于存在间歇性需求的问题，很多商品的销量的销量为0，满足tweedie分布，因此采用tweedie作为损失函数效果要比mse要更好<br />
+<a name="Ls2BR"></a></p>
+<h2 id="交叉验证策略"><a class="markdownIt-Anchor" href="#交叉验证策略"></a> 交叉验证策略</h2>
 <p>由于时间序列的数据存在先后，只能用历史来预测未来，因此在交叉验证的时候就得格外小心，不能使用随机划分，因为这样会泄露未来的数据，但是时序也有自己的一套交叉验证方法，我这里使用了三折交叉。<br />使用三折交叉验证，建立三个lgb模型：</p>
-<ol type="1">
+<ol>
 <li>模型1：训练集使用1-30周数据，验证集使用31周数据，早停100轮</li>
 <li>模型2：训练集使用1-31周数据，验证集使用32周数据，早停100轮</li>
 <li>模型3：训练集使用1-32周数据，验证集使用33周数据，早停100轮</li>
 </ol>
-<p>特征工程、模型的调参等都是基于这个交叉策略来做的，最后将这三个模型取简单平均。<br />为什么不用五折交叉？五折交叉融合的效果不太好，经试验3折融合的成绩是最好的 <a name="wELKW"></a></p>
-<h2 id="后处理">后处理</h2>
-<p>由于树模型无法捕捉到趋势，只能学习到历史的东西，不能外推，预测的时候就容易偏高或者偏低，所以提交的时候其实还试着给结果乘上了一个系数1.025，这也是kaggle上很多时序比赛用的一个trick，结果大概能提升0.005个点吧 <a name="okZbV"></a></p>
-<h1 id="一些本地有效果但线上不能提分的尝试">一些本地有效果但线上不能提分的尝试</h1>
-<ol type="1">
-<li><p>分shop、item、item_category建模，以及这几种方式得到结果的简单平均融合，按理来说在数据量足够的情况下，对每个类别分别建一个模型应该是比全部数据一起建模效果要好的，不过线上无提升</p></li>
-<li><p>去掉部分重要度特征不高的特征后建模，用到的特征有159个之多，试着使用特征过滤的手段去掉部分无用特征，仍然是本地有提升，线上无提升</p></li>
-<li><p>训练集删掉前15周的数据进行建模，由于构造了很多lag特征，导致了前15周一些特征都是空值的情况，试着把这部分数据删掉，并且越早的数据对于之后的预测越没用，所以按理删掉这些数据应该是能有所提升的，但是还是本地有提升，线上无提升</p></li>
-<li><p>... <a name="Q9Xyh"></a></p></li>
+<p>特征工程、模型的调参等都是基于这个交叉策略来做的，最后将这三个模型取简单平均。<br />为什么不用五折交叉？五折交叉融合的效果不太好，经试验3折融合的成绩是最好的<br />
+<a name="wELKW"></a></p>
+<h2 id="后处理"><a class="markdownIt-Anchor" href="#后处理"></a> 后处理</h2>
+<p>由于树模型无法捕捉到趋势，只能学习到历史的东西，不能外推，预测的时候就容易偏高或者偏低，所以提交的时候其实还试着给结果乘上了一个系数1.025，这也是kaggle上很多时序比赛用的一个trick，结果大概能提升0.005个点吧<br />
+<a name="okZbV"></a></p>
+<h1 id="一些本地有效果但线上不能提分的尝试"><a class="markdownIt-Anchor" href="#一些本地有效果但线上不能提分的尝试"></a> 一些本地有效果但线上不能提分的尝试</h1>
+<ol>
+<li>
+<p>分shop、item、item_category建模，以及这几种方式得到结果的简单平均融合，按理来说在数据量足够的情况下，对每个类别分别建一个模型应该是比全部数据一起建模效果要好的，不过线上无提升</p>
+</li>
+<li>
+<p>去掉部分重要度特征不高的特征后建模，用到的特征有159个之多，试着使用特征过滤的手段去掉部分无用特征，仍然是本地有提升，线上无提升</p>
+</li>
+<li>
+<p>训练集删掉前15周的数据进行建模，由于构造了很多lag特征，导致了前15周一些特征都是空值的情况，试着把这部分数据删掉，并且越早的数据对于之后的预测越没用，所以按理删掉这些数据应该是能有所提升的，但是还是本地有提升，线上无提升</p>
+</li>
+<li>
+<p>…<br />
+<a name="Q9Xyh"></a></p>
+</li>
 </ol>
-<h1 id="总结">总结</h1>
-<p>第一次比较投入的去参加这种比赛，感觉还是蛮靠运气和一些trick的，最后怎么弄都上不了分，不知道瓶颈卡在哪了，或许对数据做更多的探索，以及换一些深度的模型能上分吧，再接再励！ <a name="f2Vxd"></a></p>
-<h1 id="代码">代码</h1>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>第一次比较投入的去参加这种比赛，感觉还是蛮靠运气和一些trick的，最后怎么弄都上不了分，不知道瓶颈卡在哪了，或许对数据做更多的探索，以及换一些深度的模型能上分吧，再接再励！<br />
+<a name="f2Vxd"></a></p>
+<h1 id="代码"><a class="markdownIt-Anchor" href="#代码"></a> 代码</h1>
 <p><a name="qjE5G"></a></p>
-<h2 id="数据预处理">数据预处理</h2>
+<h2 id="数据预处理"><a class="markdownIt-Anchor" href="#数据预处理"></a> 数据预处理</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并训练测试</span></span><br><span class="line">train = pd.read_csv(<span class="string">&#x27;./线下商店销量预测_数据集/train.csv&#x27;</span>)</span><br><span class="line">test = pd.read_csv(<span class="string">&#x27;./线下商店销量预测_数据集/test.csv&#x27;</span>)</span><br><span class="line">df=pd.concat([train,test]).reset_index(drop=<span class="literal">True</span>)</span><br><span class="line">df=df.sort_values([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>,<span class="string">&#x27;week&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用来做滑动和滞后特征的函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">makelag</span>(<span class="params">data,values,shift</span>):</span></span><br><span class="line">    lags=[i+shift <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">15</span>)]</span><br><span class="line">    rollings=[i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>,<span class="number">15</span>)]</span><br><span class="line">    <span class="keyword">for</span> lag <span class="keyword">in</span> lags:</span><br><span class="line">        data[<span class="string">f&#x27;lag_<span class="subst">&#123;lag&#125;</span>&#x27;</span>]=values.shift(lag)</span><br><span class="line">    <span class="keyword">for</span> rolling <span class="keyword">in</span> rollings:</span><br><span class="line">        data[<span class="string">f&#x27;s_<span class="subst">&#123;shift&#125;</span>_roll_<span class="subst">&#123;rolling&#125;</span>_min&#x27;</span>]=values.shift(shift).rolling(window=rolling).<span class="built_in">min</span>()</span><br><span class="line">        data[<span class="string">f&#x27;s_<span class="subst">&#123;shift&#125;</span>_roll_<span class="subst">&#123;rolling&#125;</span>_max&#x27;</span>]=values.shift(shift).rolling(window=rolling).<span class="built_in">max</span>()</span><br><span class="line">        data[<span class="string">f&#x27;s_<span class="subst">&#123;shift&#125;</span>_roll_<span class="subst">&#123;rolling&#125;</span>_median&#x27;</span>]=values.shift(shift).rolling(window=rolling).median()</span><br><span class="line">        data[<span class="string">f&#x27;s_<span class="subst">&#123;shift&#125;</span>_roll_<span class="subst">&#123;rolling&#125;</span>_std&#x27;</span>]=values.shift(shift).rolling(window=rolling).std()</span><br><span class="line">        data[<span class="string">f&#x27;s_<span class="subst">&#123;shift&#125;</span>_roll_<span class="subst">&#123;rolling&#125;</span>_mean&#x27;</span>]=values.shift(shift).rolling(window=rolling).mean()</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对每个item都做滞后和滑动特征</span></span><br><span class="line">df=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>]).apply(<span class="keyword">lambda</span> x:makelag(x,x[<span class="string">&#x27;weekly_sales&#x27;</span>],<span class="number">1</span>))</span><br><span class="line"><span class="comment"># 价格填充特征，先用前一个值填补，再向后填补，最后没填补到的用那个item的价格众数填补</span></span><br><span class="line">df[<span class="string">&#x27;item_price_fill&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;item_price&#x27;</span>].apply(<span class="keyword">lambda</span> x: x.ffill().bfill())</span><br><span class="line">df[<span class="string">&#x27;item_price_fill&#x27;</span>]=df.groupby([<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;item_price_fill&#x27;</span>].apply(<span class="keyword">lambda</span> x: x.fillna(x.mode()[<span class="number">0</span>]))</span><br><span class="line"><span class="comment"># 对于每个shop,item,item_cat,shop*item_cat,shop*item分别做价格和销量的mean/std encoding，</span></span><br><span class="line"><span class="keyword">for</span> func <span class="keyword">in</span> [<span class="string">&#x27;mean&#x27;</span>,<span class="string">&#x27;std&#x27;</span>]:</span><br><span class="line">    df[<span class="string">f&#x27;shop_sale_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>])[<span class="string">&#x27;weekly_sales&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;category_sale_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;item_category_id&#x27;</span>])[<span class="string">&#x27;weekly_sales&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;item_sale_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;weekly_sales&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;shop_cat_sale_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_category_id&#x27;</span>])[<span class="string">&#x27;weekly_sales&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;shop_item_sale_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;weekly_sales&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;shop_price_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>])[<span class="string">&#x27;item_price&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;category_price_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;item_category_id&#x27;</span>])[<span class="string">&#x27;item_price&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;shop_cat_price_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_category_id&#x27;</span>])[<span class="string">&#x27;item_price_fill&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;item_price_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;item_price&#x27;</span>].transform(func)</span><br><span class="line">    df[<span class="string">f&#x27;shop_item_price_<span class="subst">&#123;func&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;item_price_fill&#x27;</span>].transform(func)</span><br><span class="line"><span class="comment"># 价格差异特征，当前价格与shop、item、item_cat、shop_cat、shop_item的价格均值的差值</span></span><br><span class="line">df[<span class="string">&#x27;shop_price_diff&#x27;</span>]=df[<span class="string">&#x27;shop_price_mean&#x27;</span>]-df[<span class="string">&#x27;item_price_fill&#x27;</span>]</span><br><span class="line">df[<span class="string">&#x27;item_price_diff&#x27;</span>]=df[<span class="string">&#x27;item_price_mean&#x27;</span>]-df[<span class="string">&#x27;item_price_fill&#x27;</span>]</span><br><span class="line">df[<span class="string">&#x27;cat_price_diff&#x27;</span>]=df[<span class="string">&#x27;category_price_mean&#x27;</span>]-df[<span class="string">&#x27;item_price_fill&#x27;</span>]</span><br><span class="line">df[<span class="string">&#x27;shop_cat_price_diff&#x27;</span>]=df[<span class="string">&#x27;shop_cat_price_mean&#x27;</span>]-df[<span class="string">&#x27;item_price_fill&#x27;</span>]</span><br><span class="line">df[<span class="string">&#x27;shop_item_price_diff&#x27;</span>]=df[<span class="string">&#x27;shop_item_price_mean&#x27;</span>]-df[<span class="string">&#x27;item_price_fill&#x27;</span>]</span><br><span class="line"><span class="comment"># 当前价格与上周价格的差值，当前价格与上个月价格均值的差值</span></span><br><span class="line">df[<span class="string">&#x27;week_price_diff&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;item_price_fill&#x27;</span>].apply(<span class="keyword">lambda</span> x: x-x.shift(<span class="number">1</span>))</span><br><span class="line">df[<span class="string">&#x27;month_price_diff&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>])[<span class="string">&#x27;item_price_fill&#x27;</span>].apply(<span class="keyword">lambda</span> x: x-x.shift(<span class="number">1</span>).rolling(<span class="number">4</span>).mean())</span><br><span class="line"><span class="comment"># 销量的滞后特征，对于每个item、item_cat、shop的聚合平均值</span></span><br><span class="line"><span class="keyword">for</span> lag <span class="keyword">in</span> [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">16</span>)]:</span><br><span class="line">    df[<span class="string">f&#x27;item_lag_<span class="subst">&#123;lag&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;item_id&#x27;</span>,<span class="string">&#x27;week&#x27;</span>])[<span class="string">f&#x27;lag_<span class="subst">&#123;lag&#125;</span>&#x27;</span>].transform(<span class="string">&#x27;mean&#x27;</span>)</span><br><span class="line">    df[<span class="string">f&#x27;cat_lag_<span class="subst">&#123;lag&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;item_category_id&#x27;</span>,<span class="string">&#x27;week&#x27;</span>])[<span class="string">f&#x27;lag_<span class="subst">&#123;lag&#125;</span>&#x27;</span>].transform(<span class="string">&#x27;mean&#x27;</span>)</span><br><span class="line">    df[<span class="string">f&#x27;shop_lag_<span class="subst">&#123;lag&#125;</span>&#x27;</span>]=df.groupby([<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;week&#x27;</span>])[<span class="string">f&#x27;lag_<span class="subst">&#123;lag&#125;</span>&#x27;</span>].transform(<span class="string">&#x27;mean&#x27;</span>)</span><br><span class="line"></span><br><span class="line">df.to_pickle(<span class="string">&#x27;data.pkl&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <p><a name="UicNz"></a></p>
-<h2 id="模型-2">模型</h2>
+<h2 id="模型-3"><a class="markdownIt-Anchor" href="#模型-3"></a> 模型</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">df=pd.read_pickle(<span class="string">&#x27;data.pkl&#x27;</span>)</span><br><span class="line"><span class="comment"># 三折交叉</span></span><br><span class="line">cvs=[<span class="number">32</span>,<span class="number">31</span>,<span class="number">30</span>]</span><br><span class="line">params = &#123;</span><br><span class="line">        <span class="string">&#x27;objective&#x27;</span>: <span class="string">&#x27;tweedie&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;tweedie_variance_power&#x27;</span>:<span class="number">1.6</span>,</span><br><span class="line">        <span class="string">&#x27;metric&#x27;</span>: <span class="string">&#x27;mse&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;num_leaves&#x27;</span>: <span class="number">2</span>**<span class="number">7</span>-<span class="number">1</span>,</span><br><span class="line">        <span class="string">&#x27;reg_lambda&#x27;</span>: <span class="number">50</span>,</span><br><span class="line">        <span class="string">&#x27;colsample_bytree&#x27;</span>: <span class="number">0.6</span>,</span><br><span class="line">        <span class="string">&#x27;subsample&#x27;</span>: <span class="number">0.6</span>,</span><br><span class="line">        <span class="string">&#x27;subsample_freq&#x27;</span>: <span class="number">4</span>,</span><br><span class="line">        <span class="string">&#x27;learning_rate&#x27;</span>: <span class="number">0.015</span>,</span><br><span class="line">        <span class="string">&#x27;n_estimators&#x27;</span>:<span class="number">2000</span>,</span><br><span class="line">        <span class="string">&#x27;seed&#x27;</span>: <span class="number">1024</span>,</span><br><span class="line">        <span class="string">&#x27;n_jobs&#x27;</span>:-<span class="number">1</span>,</span><br><span class="line">        <span class="string">&#x27;silent&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&#x27;verbose&#x27;</span>: -<span class="number">1</span>,</span><br><span class="line">    &#125;</span><br><span class="line">y_preds=[]</span><br><span class="line">scores=[]</span><br><span class="line"><span class="keyword">for</span> cv <span class="keyword">in</span> cvs:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;=&#x27;</span>*<span class="number">10</span>+<span class="built_in">str</span>(cv)+<span class="string">&#x27;=&#x27;</span>*<span class="number">10</span>)</span><br><span class="line">    train=df[df[<span class="string">&#x27;week&#x27;</span>]&lt;cv]</span><br><span class="line">    val=df[df[<span class="string">&#x27;week&#x27;</span>]==cv]</span><br><span class="line">    test=df[df[<span class="string">&#x27;week&#x27;</span>]==<span class="number">33</span>]</span><br><span class="line">    X_train=train.drop(columns=[<span class="string">&#x27;weekly_sales&#x27;</span>])</span><br><span class="line">    y_train=train[<span class="string">&#x27;weekly_sales&#x27;</span>]</span><br><span class="line">    X_test=test.drop(columns=[<span class="string">&#x27;weekly_sales&#x27;</span>]</span><br><span class="line">    y_test=test[<span class="string">&#x27;weekly_sales&#x27;</span>]</span><br><span class="line">    X_val=val.drop(columns=[<span class="string">&#x27;weekly_sales&#x27;</span>])</span><br><span class="line">    y_val=val[<span class="string">&#x27;weekly_sales&#x27;</span>]</span><br><span class="line">    model=lgb.LGBMRegressor(**params)</span><br><span class="line">    model.fit(X_train,y_train,eval_set=[(X_train,y_train),(X_val,y_val)],eval_metric=[<span class="string">&#x27;mse&#x27;</span>],verbose=<span class="literal">False</span>,categorical_feature=[<span class="string">&#x27;shop_id&#x27;</span>,<span class="string">&#x27;item_id&#x27;</span>,<span class="string">&#x27;item_category_id&#x27;</span>],early_stopping_rounds=<span class="number">100</span>)</span><br><span class="line">    val_pred=model.predict(X_val)*<span class="number">0.995</span></span><br><span class="line">    mse=mean_squared_error(y_val,val_pred)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;MSE: <span class="subst">&#123;mse&#125;</span>&#x27;</span>)</span><br><span class="line">    scores.append(mse)</span><br><span class="line">    y_pred=model.predict(X_test)</span><br><span class="line">    y_preds.append(y_pred)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;三折交叉的score<span class="subst">&#123;scores&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;三折交叉平均score<span class="subst">&#123;np.mean(scores)&#125;</span>&#x27;</span>)</span><br><span class="line">y_pred=np.zeros_like(y_pred)</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> y_preds:</span><br><span class="line">    y_pred+=t*<span class="number">1</span>/<span class="number">3</span></span><br><span class="line">sample_submit = pd.read_csv(<span class="string">&#x27;./线下商店销量预测_数据集/sample_submit.csv&#x27;</span>)</span><br><span class="line">sample_submit[<span class="string">&#x27;weekly_sales&#x27;</span>] = y_pred</span><br><span class="line">sample_submit[<span class="string">&#x27;weekly_sales&#x27;</span>] = sample_submit[<span class="string">&#x27;weekly_sales&#x27;</span>].apply(<span class="keyword">lambda</span> x:x <span class="keyword">if</span> x&gt;<span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span>).values</span><br><span class="line">sample_submit.to_csv(<span class="string">&#x27;submit.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
 
     </div>
@@ -424,7 +467,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%9B%E9%A2%98%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">赛题说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%9B%E9%A2%98%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.1.</span> <span class="nav-text">赛题任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E"><span class="nav-number">1.2.</span> <span class="nav-text">数据说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%80%E9%87%8F%E7%9B%B8%E5%85%B3%E7%89%B9%E5%BE%81"><span class="nav-number">2.1.</span> <span class="nav-text">销量相关特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%B7%E6%A0%BC%E7%9B%B8%E5%85%B3%E7%89%B9%E5%BE%81"><span class="nav-number">2.2.</span> <span class="nav-text">价格相关特征</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-1"><span class="nav-number">3.1.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E7%AD%96%E7%95%A5"><span class="nav-number">3.3.</span> <span class="nav-text">交叉验证策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E5%A4%84%E7%90%86"><span class="nav-number">3.4.</span> <span class="nav-text">后处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%9C%AC%E5%9C%B0%E6%9C%89%E6%95%88%E6%9E%9C%E4%BD%86%E7%BA%BF%E4%B8%8A%E4%B8%8D%E8%83%BD%E6%8F%90%E5%88%86%E7%9A%84%E5%B0%9D%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">一些本地有效果但线上不能提分的尝试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">6.1.</span> <span class="nav-text">数据预处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-2"><span class="nav-number">6.2.</span> <span class="nav-text">模型</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%9B%E9%A2%98%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text"> 赛题说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%9B%E9%A2%98%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.1.</span> <span class="nav-text"> 赛题任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E"><span class="nav-number">1.2.</span> <span class="nav-text"> 数据说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> 特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%80%E9%87%8F%E7%9B%B8%E5%85%B3%E7%89%B9%E5%BE%81"><span class="nav-number">2.1.</span> <span class="nav-text"> 销量相关特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%B7%E6%A0%BC%E7%9B%B8%E5%85%B3%E7%89%B9%E5%BE%81"><span class="nav-number">2.2.</span> <span class="nav-text"> 价格相关特征</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text"> 模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-2"><span class="nav-number">3.1.</span> <span class="nav-text"> 模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text"> 损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E7%AD%96%E7%95%A5"><span class="nav-number">3.3.</span> <span class="nav-text"> 交叉验证策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E5%A4%84%E7%90%86"><span class="nav-number">3.4.</span> <span class="nav-text"> 后处理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%9C%AC%E5%9C%B0%E6%9C%89%E6%95%88%E6%9E%9C%E4%BD%86%E7%BA%BF%E4%B8%8A%E4%B8%8D%E8%83%BD%E6%8F%90%E5%88%86%E7%9A%84%E5%B0%9D%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text"> 一些本地有效果但线上不能提分的尝试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text"> 总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text"> 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">6.1.</span> <span class="nav-text"> 数据预处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-3"><span class="nav-number">6.2.</span> <span class="nav-text"> 模型</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -497,12 +540,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">51k</span>
+    <span title="站点总字数">52k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:25</span>
+    <span title="站点阅读时长">1:26</span>
 </div>
 
         
