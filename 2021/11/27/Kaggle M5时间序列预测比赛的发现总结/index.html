@@ -221,7 +221,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.9k</span>
+              <span>2.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -240,31 +240,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>谈到时序预测，2020年kaggle上举办的那场M5沃尔玛销量预测比赛肯定是最值得学习的，有人甚至直接根据这场比赛写了两篇论文（见文末）发在 International Journal of Forecasting上，来总结这场比赛用到的一些方法，这里就把论文中的一些关键发现列出来供学习参考。<br />
-<a name="Y2CJP"></a></p>
-<h1 id="机器学习方法的优越性"><a class="markdownIt-Anchor" href="#机器学习方法的优越性"></a> <strong>机器学习方法的优越性</strong></h1>
-<p>多年来，经验发现，简单的方法与复杂的或统计上复杂的方法一样准确。由于有限的数据可用性、算法的低效性、预处理的需要以及受限的计算能力，此前机器学习方法和统计学方法相比准确性都有所不足。M4是第一个发现两个ML方法明显比简单的统计方法更准确的预测竞赛，突出了ML方法对更准确预测的潜在价值。赢得M4竞赛的第一名是混合了RNN和指数平滑的混合方法，而排名第二的方法是使用XGBoost对标准时间序列预测方法产生的预测进行优化加权。尽管M4的两个获奖作品在本质上都是ML，但它们都建立在统计学、系列的特定功能上，同时也与四种统计学方法的简单组合有着差不多的准确性。然而，M5是第一个所有表现最好的方法都是 &quot;纯 &quot;ML方法，并且明显优于所有统计基准及其组合的比赛。LightGBM证明了它可以有效地用于处理大量相关的时间序列序列和外生变量，并减少预测误差。此外，像DeepAR和N-BEATS这样的深度学习方法，也显示出预测的潜力。<br />
-<a name="scDUJ"></a></p>
-<h1 id="模型融合的价值"><a class="markdownIt-Anchor" href="#模型融合的价值"></a> <strong>模型融合的价值</strong></h1>
-<p>M5 Accuracy竞赛表明融合不同方法的预测，即使是相对简单的方法，也能从总体上提高精确度。M5 Accuracy竞赛的冠军采用了一个非常简单的简单平均融合，涉及6个模型，每个模型利用不同的学习方法和训练集。同样，亚军采用了5个模型的简单平均融合，每个模型对趋势有不同的估计，而第三名的方法，是43个NN的简单平均融合。排名14th, 17th, 21st, 24th, 25th和44th方法也使用了模型的简单平均融合。 在这些融合方法中，只有排名25的方法考虑了对单个方法的不平等加权融合。模型融合的价值也被竞争的baleline之间的比较所支持：指数平滑模型和ARIMA模型的融合比单个方法的表现更好，自上而下和自下而上的调和预测的融合则比自上而下和自下而上的表现都好。<br />
-<a name="KXkQA"></a></p>
-<h1 id="时间序列交叉学习-的价值"><a class="markdownIt-Anchor" href="#时间序列交叉学习-的价值"></a> <strong>&quot;时间序列交叉学习 &quot;的价值</strong></h1>
-<p>在以前的M系列竞赛中，大多数时间序列都是不相关的，属于不同的频率和领域，而且时间上也不对齐。因此，尽管M4比赛中表现最好的两个参赛者都同时考虑了从多个序列中&quot;交叉学习&quot;，而不是一次一个系列，但他们的方法在实践中难以有效实施，也没有充分展示出该方法的潜力。相比之下，由于M5是由排列整齐、高度相关的时间序列组成的，而且是分层结构的，所以 &quot;交叉学习 &quot;更容易应用，与逐个时间序列训练的方法相比，取得了很好的效果。同时，除了可以提高准确率，&quot;交叉学习 &quot;意味着可以在多个时间序列上只使用一个模型，因为这些序列是一起训练的，而不用针对每个时间序列都训练一个模型，因此减少了整体的计算成本，缓解了与有限的历史观察相关的困难。基本上，M5中所有表现最好的50个方法都使用了 “交叉学习”，利用了数据集提供的所有信息。<br />
-<a name="R2rMu"></a></p>
-<h1 id="获胜的方法和用于销售预测的baseline之间存在重大差异"><a class="markdownIt-Anchor" href="#获胜的方法和用于销售预测的baseline之间存在重大差异"></a> <strong>获胜的方法和用于销售预测的baseline之间存在重大差异</strong></h1>
-<p>M5 Accuracy竞赛考虑了24个通常用于销售预测应用的各种类型的baseline，包括传统的和最先进的统计方法、ML方法和他们的融合。但与这些baseline相比，获胜的作品明显提供了更准确的预测，并且在WRMSSE方面也平均高出20%以上。尽管较低的聚集水平上表现差不多，但结果仍清楚地表明了它们的优越性，并促使在ML预测方法领域进行更多的研究，这些方法可用于预测时间序列之间复杂的非线性关系，同时也能够方便的引入外生/解释变量。<br />
-<a name="HxvtW"></a></p>
-<h1 id="从模型外部校正预测的价值"><a class="markdownIt-Anchor" href="#从模型外部校正预测的价值"></a> <strong>从模型外部校正预测的价值</strong></h1>
-<p>当预测者利用外部信息、内部知识以及他们的专业知识来提高预测精度时，通常会使用预测调整。在M5 Accuracy竞赛中，一些表现最好的方法，如排名第2和第5的方法，以乘数的形式利用这种调整来提高ML模型的预测（即在原先的预测结果上乘以一个系数，如0.95-1.05来校正预测结果，这个实际上是因为lightgbm外推能力差，在有趋势的序列上容易高估预测或者低估预测）。尽管这些调整并不完全基于判断，而是基于最低聚合水平产生的预测与较高聚合水平的预测之间的分析进行调整，但这些调整被证明是有用的，能够帮助预测模型减少偏差，更好地说明在较高聚合水平上更容易观察到的长期趋势。 然后，这种调整的实际价值需要进一步调查，但在预测领域，调和在不同聚集水平产生的预测的概念并不新鲜，许多研究实证证明了它的好处，特别是当预测和来自完整层次的信息被利用时。<br />
-<a name="LOU5s"></a></p>
-<h1 id="有效的cv交叉验证策略的价值"><a class="markdownIt-Anchor" href="#有效的cv交叉验证策略的价值"></a> <strong>有效的CV（交叉验证）策略的价值</strong></h1>
-<p>在处理复杂的预测任务时，采用有效的CV策略对于提高样本外预测的准确性、避免过拟合和减轻不确定性至关重要。采用这种策略的重要性在M5 Accuracy竞赛的结果中得到了证明，选择进行CV的时间段，验证时间窗口的大小，这些窗口的更新方式，以及用于衡量预测表现的标准，都是预测者必须考虑的一些因素。在M5精确度竞赛中，表现最好的四种方法和前50名提交的绝大多数都考虑了这样的一种CV策略，即至少使用最后四个28天长的可用的数据窗口来做交叉验证以评估预测精确度，从而对样本外的表现提供一个合理的近似。除了这个CV方案之外，第一名的方案还同时测量了他所开发的模型CV结果的平均值和标准偏差。根据他的验证，他的方法中的递归模型被发现平均比非递归模型更准确，但更不稳定。因此，他决定将这两个模型结合起来，以确保产生的预测既是准确和稳定。在评估预测方法时，必须考虑到预测误差的全部分布，特别是其尾部，这表明稳健性是实现高准确度的前提条件。我们希望M5的结果将鼓励在这一领域的更多研究，并有助于开发更强大的CV策略。<br />
-<a name="VfP42"></a></p>
-<h1 id="外生解释变量的重要性"><a class="markdownIt-Anchor" href="#外生解释变量的重要性"></a> <strong>外生/解释变量的重要性</strong></h1>
-<p>时间序列方法通常足以识别和捕捉其历史数据模式（水平、趋势和季节性），通过推断这种模式并产生准确的预测。然而，仅仅依靠历史数据的时间序列方法不能有效地说明节假日、特殊事件、促销活动、价格以及可能的天气的影响。在这种情况下，来自外生/解释变量的信息对于提高预测精度显得至关重要。在M5 Accuracy预测竞赛中，所有获奖作品都利用外部信息来提高其模型的预测性能。例如，monsaraida和其他团队发现，几个与价格相关的特征对于提高他们模型结果的准确性具有重要意义。此外，外生/解释变量的重要性也在几个简单统计学模型中得到的支持，例如，使用促销信息和特殊事件作为外生变量的指数平滑模型比普通的指数平滑模型精确度要高6%。ARIMA模型的情况也是如此，ARIMAX的精度比普通的ARIMA要高13%。<br />
-<a name="mDxVC"></a></p>
-<h1 id="参考"><a class="markdownIt-Anchor" href="#参考"></a> 参考</h1>
-<ol>
+        <p>谈到时序预测，2020年kaggle上举办的那场M5沃尔玛销量预测比赛肯定是最值得学习的，有人甚至直接根据这场比赛写了两篇论文（见文末）发在 International Journal of Forecasting上，来总结这场比赛用到的一些方法，这里就把论文中的一些关键发现列出来供学习参考。 <a name="Y2CJP"></a></p>
+<h1 id="机器学习方法的优越性"><strong>机器学习方法的优越性</strong></h1>
+<p>多年来，经验发现，简单的方法与复杂的或统计上复杂的方法一样准确。由于有限的数据可用性、算法的低效性、预处理的需要以及受限的计算能力，此前机器学习方法和统计学方法相比准确性都有所不足。M4是第一个发现两个ML方法明显比简单的统计方法更准确的预测竞赛，突出了ML方法对更准确预测的潜在价值。赢得M4竞赛的第一名是混合了RNN和指数平滑的混合方法，而排名第二的方法是使用XGBoost对标准时间序列预测方法产生的预测进行优化加权。尽管M4的两个获奖作品在本质上都是ML，但它们都建立在统计学、系列的特定功能上，同时也与四种统计学方法的简单组合有着差不多的准确性。然而，M5是第一个所有表现最好的方法都是 "纯 "ML方法，并且明显优于所有统计基准及其组合的比赛。LightGBM证明了它可以有效地用于处理大量相关的时间序列序列和外生变量，并减少预测误差。此外，像DeepAR和N-BEATS这样的深度学习方法，也显示出预测的潜力。 <a name="scDUJ"></a></p>
+<h1 id="模型融合的价值"><strong>模型融合的价值</strong></h1>
+<p>M5 Accuracy竞赛表明融合不同方法的预测，即使是相对简单的方法，也能从总体上提高精确度。M5 Accuracy竞赛的冠军采用了一个非常简单的简单平均融合，涉及6个模型，每个模型利用不同的学习方法和训练集。同样，亚军采用了5个模型的简单平均融合，每个模型对趋势有不同的估计，而第三名的方法，是43个NN的简单平均融合。排名14th, 17th, 21st, 24th, 25th和44th方法也使用了模型的简单平均融合。 在这些融合方法中，只有排名25的方法考虑了对单个方法的不平等加权融合。模型融合的价值也被竞争的baleline之间的比较所支持：指数平滑模型和ARIMA模型的融合比单个方法的表现更好，自上而下和自下而上的调和预测的融合则比自上而下和自下而上的表现都好。 <a name="KXkQA"></a></p>
+<h1 id="时间序列交叉学习-的价值"><strong>"时间序列交叉学习 "的价值</strong></h1>
+<p>在以前的M系列竞赛中，大多数时间序列都是不相关的，属于不同的频率和领域，而且时间上也不对齐。因此，尽管M4比赛中表现最好的两个参赛者都同时考虑了从多个序列中"交叉学习"，而不是一次一个系列，但他们的方法在实践中难以有效实施，也没有充分展示出该方法的潜力。相比之下，由于M5是由排列整齐、高度相关的时间序列组成的，而且是分层结构的，所以 "交叉学习 "更容易应用，与逐个时间序列训练的方法相比，取得了很好的效果。同时，除了可以提高准确率，"交叉学习 "意味着可以在多个时间序列上只使用一个模型，因为这些序列是一起训练的，而不用针对每个时间序列都训练一个模型，因此减少了整体的计算成本，缓解了与有限的历史观察相关的困难。基本上，M5中所有表现最好的50个方法都使用了 "交叉学习"，利用了数据集提供的所有信息。 <a name="R2rMu"></a></p>
+<h1 id="获胜的方法和用于销售预测的baseline之间存在重大差异"><strong>获胜的方法和用于销售预测的baseline之间存在重大差异</strong></h1>
+<p>M5 Accuracy竞赛考虑了24个通常用于销售预测应用的各种类型的baseline，包括传统的和最先进的统计方法、ML方法和他们的融合。但与这些baseline相比，获胜的作品明显提供了更准确的预测，并且在WRMSSE方面也平均高出20%以上。尽管较低的聚集水平上表现差不多，但结果仍清楚地表明了它们的优越性，并促使在ML预测方法领域进行更多的研究，这些方法可用于预测时间序列之间复杂的非线性关系，同时也能够方便的引入外生/解释变量。 <a name="HxvtW"></a></p>
+<h1 id="从模型外部校正预测的价值"><strong>从模型外部校正预测的价值</strong></h1>
+<p>当预测者利用外部信息、内部知识以及他们的专业知识来提高预测精度时，通常会使用预测调整。在M5 Accuracy竞赛中，一些表现最好的方法，如排名第2和第5的方法，以乘数的形式利用这种调整来提高ML模型的预测（即在原先的预测结果上乘以一个系数，如0.95-1.05来校正预测结果，这个实际上是因为lightgbm外推能力差，在有趋势的序列上容易高估预测或者低估预测）。尽管这些调整并不完全基于判断，而是基于最低聚合水平产生的预测与较高聚合水平的预测之间的分析进行调整，但这些调整被证明是有用的，能够帮助预测模型减少偏差，更好地说明在较高聚合水平上更容易观察到的长期趋势。 然后，这种调整的实际价值需要进一步调查，但在预测领域，调和在不同聚集水平产生的预测的概念并不新鲜，许多研究实证证明了它的好处，特别是当预测和来自完整层次的信息被利用时。 <a name="LOU5s"></a></p>
+<h1 id="有效的cv交叉验证策略的价值"><strong>有效的CV（交叉验证）策略的价值</strong></h1>
+<p>在处理复杂的预测任务时，采用有效的CV策略对于提高样本外预测的准确性、避免过拟合和减轻不确定性至关重要。采用这种策略的重要性在M5 Accuracy竞赛的结果中得到了证明，选择进行CV的时间段，验证时间窗口的大小，这些窗口的更新方式，以及用于衡量预测表现的标准，都是预测者必须考虑的一些因素。在M5精确度竞赛中，表现最好的四种方法和前50名提交的绝大多数都考虑了这样的一种CV策略，即至少使用最后四个28天长的可用的数据窗口来做交叉验证以评估预测精确度，从而对样本外的表现提供一个合理的近似。除了这个CV方案之外，第一名的方案还同时测量了他所开发的模型CV结果的平均值和标准偏差。根据他的验证，他的方法中的递归模型被发现平均比非递归模型更准确，但更不稳定。因此，他决定将这两个模型结合起来，以确保产生的预测既是准确和稳定。在评估预测方法时，必须考虑到预测误差的全部分布，特别是其尾部，这表明稳健性是实现高准确度的前提条件。我们希望M5的结果将鼓励在这一领域的更多研究，并有助于开发更强大的CV策略。 <a name="VfP42"></a></p>
+<h1 id="外生解释变量的重要性"><strong>外生/解释变量的重要性</strong></h1>
+<p>时间序列方法通常足以识别和捕捉其历史数据模式（水平、趋势和季节性），通过推断这种模式并产生准确的预测。然而，仅仅依靠历史数据的时间序列方法不能有效地说明节假日、特殊事件、促销活动、价格以及可能的天气的影响。在这种情况下，来自外生/解释变量的信息对于提高预测精度显得至关重要。在M5 Accuracy预测竞赛中，所有获奖作品都利用外部信息来提高其模型的预测性能。例如，monsaraida和其他团队发现，几个与价格相关的特征对于提高他们模型结果的准确性具有重要意义。此外，外生/解释变量的重要性也在几个简单统计学模型中得到的支持，例如，使用促销信息和特殊事件作为外生变量的指数平滑模型比普通的指数平滑模型精确度要高6%。ARIMA模型的情况也是如此，ARIMAX的精度比普通的ARIMA要高13%。 <a name="mDxVC"></a></p>
+<h1 id="参考">参考</h1>
+<ol type="1">
 <li><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/344487258_The_M5_Accuracy_competition_Results_findings_and_conclusions">The M5 Accuracy competition: Results, findings and conclusions</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/346493740_The_M5_Uncertainty_competition_Results_findings_and_conclusions">The M5 Uncertainty competition: Results, findings and conclusions</a></li>
 </ol>
@@ -387,7 +379,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E7%9A%84%E4%BC%98%E8%B6%8A%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text"> 机器学习方法的优越性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%9E%8D%E5%90%88%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">2.</span> <span class="nav-text"> 模型融合的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E4%BA%A4%E5%8F%89%E5%AD%A6%E4%B9%A0-%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">3.</span> <span class="nav-text"> &quot;时间序列交叉学习 &quot;的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E8%83%9C%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E7%94%A8%E4%BA%8E%E9%94%80%E5%94%AE%E9%A2%84%E6%B5%8B%E7%9A%84baseline%E4%B9%8B%E9%97%B4%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%A7%E5%B7%AE%E5%BC%82"><span class="nav-number">4.</span> <span class="nav-text"> 获胜的方法和用于销售预测的baseline之间存在重大差异</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E6%A8%A1%E5%9E%8B%E5%A4%96%E9%83%A8%E6%A0%A1%E6%AD%A3%E9%A2%84%E6%B5%8B%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">5.</span> <span class="nav-text"> 从模型外部校正预测的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E6%95%88%E7%9A%84cv%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E7%AD%96%E7%95%A5%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">6.</span> <span class="nav-text"> 有效的CV（交叉验证）策略的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%96%E7%94%9F%E8%A7%A3%E9%87%8A%E5%8F%98%E9%87%8F%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">7.</span> <span class="nav-text"> 外生&#x2F;解释变量的重要性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">8.</span> <span class="nav-text"> 参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E7%9A%84%E4%BC%98%E8%B6%8A%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">机器学习方法的优越性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%9E%8D%E5%90%88%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">2.</span> <span class="nav-text">模型融合的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E4%BA%A4%E5%8F%89%E5%AD%A6%E4%B9%A0-%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">3.</span> <span class="nav-text">&quot;时间序列交叉学习 &quot;的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%8E%B7%E8%83%9C%E7%9A%84%E6%96%B9%E6%B3%95%E5%92%8C%E7%94%A8%E4%BA%8E%E9%94%80%E5%94%AE%E9%A2%84%E6%B5%8B%E7%9A%84baseline%E4%B9%8B%E9%97%B4%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%A7%E5%B7%AE%E5%BC%82"><span class="nav-number">4.</span> <span class="nav-text">获胜的方法和用于销售预测的baseline之间存在重大差异</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E6%A8%A1%E5%9E%8B%E5%A4%96%E9%83%A8%E6%A0%A1%E6%AD%A3%E9%A2%84%E6%B5%8B%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">5.</span> <span class="nav-text">从模型外部校正预测的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E6%95%88%E7%9A%84cv%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E7%AD%96%E7%95%A5%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">6.</span> <span class="nav-text">有效的CV（交叉验证）策略的价值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%96%E7%94%9F%E8%A7%A3%E9%87%8A%E5%8F%98%E9%87%8F%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">7.</span> <span class="nav-text">外生&#x2F;解释变量的重要性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -460,12 +452,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">52k</span>
+    <span title="站点总字数">51k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:26</span>
+    <span title="站点阅读时长">1:25</span>
 </div>
 
         
