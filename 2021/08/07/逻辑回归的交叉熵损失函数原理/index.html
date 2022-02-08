@@ -19,13 +19,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"lukan.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"lukan797.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前阵子两次面试，都被问到了逻辑回归的损失函数是什么，我知道是交叉熵，也很顺利的脱口说出了他的函数表达式，但是接下来被问到了为什么要用这个损失函数，我之前见过那张图，就是这个交叉熵函数的曲面是比平方损失函数（MSE）的曲面要陡峭，更方便梯度下降算法的迭代求解，但是再被往下深挖，问还有别的原因吗，这背后的存在的数学逻辑是什么？接着又被问了一堆的极大似然估计啥啥啥数理统计的东西，就有点说不出来了，所以查">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逻辑回归的交叉熵损失函数原理">
-<meta property="og:url" content="https://lukan.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:url" content="https://lukan797.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="Lukan&#39;s Blog">
 <meta property="og:description" content="前阵子两次面试，都被问到了逻辑回归的损失函数是什么，我知道是交叉熵，也很顺利的脱口说出了他的函数表达式，但是接下来被问到了为什么要用这个损失函数，我之前见过那张图，就是这个交叉熵函数的曲面是比平方损失函数（MSE）的曲面要陡峭，更方便梯度下降算法的迭代求解，但是再被往下深挖，问还有别的原因吗，这背后的存在的数学逻辑是什么？接着又被问了一堆的极大似然估计啥啥啥数理统计的东西，就有点说不出来了，所以查">
 <meta property="og:locale" content="zh_CN">
@@ -38,7 +38,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1625298163597-63b86d09-180b-4c0d-a6e3-ab1cab0f20d9.png">
 
-<link rel="canonical" href="https://lukan.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/">
+<link rel="canonical" href="https://lukan797.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/">
 
 
 <script id="page-configurations">
@@ -184,7 +184,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://lukan.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="https://lukan797.github.io/2021/08/07/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
