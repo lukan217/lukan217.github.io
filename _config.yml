@@ -91,6 +91,7 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
+  - .nojekyll
 exclude:
 ignore:
 
@@ -104,7 +105,7 @@ symbols_count_time:
   time: true                   # 文章阅读时长
   total_symbols: true          # 站点总字数统计
   total_time: true             # 站点总阅读时长
-  exclude_codeblock: false     # 排除代码字数统计
+  exclude_codeblock: true     # 排除代码字数统计
   awl: 2
   wpm: 300
   suffix: "mins."
@@ -140,4 +141,5 @@ deploy:
    type: git
    repo: git@github.com:lukan797/lukan797.github.io.git
    branch: main
+   ignore_hidden: false
   
