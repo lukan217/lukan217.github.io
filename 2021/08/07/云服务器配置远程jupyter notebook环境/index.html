@@ -248,7 +248,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -268,33 +268,55 @@
 
       
         <p>去年年初疫情，阿里云搞了一个在家实践的活动，就免费领了半年的云服务器，从此打开了新世界的大门，比如写一些脚本在挂服务器上跑一些代码，搭一个网站，还有一个就是可以在服务器上搭一个jupyter notebook的环境，通过网址就可以直接打开notebook写代码了，适合方便快速地写一些小型的代码，或者在手头的电脑没有anaconda环境时直接使用，甚至用ipad或者手机也可以写，大致的效果如下：</p>
-<ol type="1">
+<ol>
 <li>通过网址随时随地都能打开编程</li>
 <li>配置了适合编程的主题色调</li>
 <li>加入了插件补全功能</li>
 </ol>
 <p><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624879339187-e21ea69c-5a13-4f9e-9a78-278e3a86edb6.png#height=365&amp;id=dR0gt&amp;" alt="image.png" /><br />前几天因为折腾自己的服务器环境给搞崩了，数据库出了点问题，所以只能重装系统，导致jupyter notebook又要重装一遍，然后几个月后服务器到期，估计又要重新配一遍环境，就索性写一篇教程，供自己日后和有需要的人参考。</p>
-<h1 id="云服务器选购">云服务器选购</h1>
+<h1 id="云服务器选购"><a class="markdownIt-Anchor" href="#云服务器选购"></a> 云服务器选购</h1>
 <p>首先需要选购一个云服务器，推荐腾讯云或者阿里云，有学生认证的话一年大概100左右，操作系统推荐是用目前主流的两个Linux发行版，ubuntu和cent OS，两个系统在一些安装软件的命令上会有小差异，我这里用的是ubuntu。</p>
-<h1 id="安装anaconda">安装Anaconda</h1>
-<p>在买好云服务器后，就通过ssh连接，就可以用命令行进行操作了，首先第一步是安装anaconda，先要下载anaconda的安装包，输入命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh</span><br></pre></td></tr></table></figure> 下载好后直接安装： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Anaconda3-2021.05-Linux-x86_64.sh</span><br></pre></td></tr></table></figure> <img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624898431857-7b2a0ec6-2970-4c6f-9af3-07dc336f9a3d.png#height=72&amp;id=DlHXa&amp;" alt="image.png" /><br />会弹出这样一个界面，直接一直回车，然后输入yes继续回车，等待安装完成即可，安装完成会有这样一个界面，就代表安装完成了<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624898994446-2e991619-5f16-4b5f-bd61-3292b2fc53f7.png#height=126&amp;id=P7Dy3" alt="image.png" /></p>
-<h1 id="配置jupyter-notebook环境">配置jupyter notebook环境</h1>
-<p>接下来就可以配置jupyter notebook环境了，首先需要生成一个配置文件，输入命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --generate-config</span><br></pre></td></tr></table></figure> 因为服务器的安全性，配置远程访问是需要设置一个密码的，输入命令，生成密钥： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook password</span><br></pre></td></tr></table></figure> 输入两次密码，这里就会生成一个密钥放在用户文件夹的.jupyter文件夹下，和刚刚的配置文件路径一样，这两个文件会自动关联起来，在修改配置文件的时候就不需要加跟密钥相关的命令了。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624899427258-a0a09979-4f70-4935-9933-d058534df757.png#height=52&amp;id=i9wwI" alt="image.png" /><br />接下来就可以直接修改刚刚生成的那个配置文件了，使用vim打开，输入命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.jupyter/jupyter_notebook_config.py</span><br></pre></td></tr></table></figure> 按键盘的i键进入编辑模式，直接在开头添加以下内容： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.ip=&#x27;*&#x27; # 代表任意ip是都可以访问jupyter</span><br><span class="line">c.NotebookApp.notebook_dir=&#x27;/home/ubuntu/jupyter&#x27; # notebook的工作目录，可以自己的实际情况修改，注意要确保目录存在</span><br><span class="line">c.NotebookApp.open_browser = False # 不打开浏览器</span><br><span class="line">c.NotebookApp.port =8888  #可自行指定一个端口, 访问时使用该端口</span><br></pre></td></tr></table></figure> 按Esc键退出编辑模式，然后输入:wq保存即可。</p>
-<h1 id="开启远程访问">开启远程访问</h1>
-<p>我们在上一步中指定了端口为8888，也让所有ip都能够访问这个端口了，但是在云服务器中还需要把这个端口开启起来，以腾讯云为例，进入安全组中，添加入站规则，按如下设置，然后在出站规则里点击一键放通，入站规则和出站规则都需要配置好<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624900683679-df0724ff-dcb9-4091-bf70-b9cb926120f2.png#height=205&amp;id=p7ggP" alt="image.png" /><br />接下来就可以将jupyter notebook打开了，不过我们需要能够将notebook一直在后台挂着，所以这里就输入这个命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup jupyter notebook &gt; jupyter.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure> 这里nohup（no hang up）是不挂起的意思，用于在系统后台不挂断地运行命令，退出终端不会影响程序的运行，最后面的<strong>&amp;</strong>是让命令在后台执行，终端退出后命令仍旧执行，&gt; jupyter.log 2&gt;&amp;1是输出日志的意思，把命令的输出和错误都写到jupyter.log这个文件中，方便监控。<br />接下来我们在浏览器中输入：服务器公网ip:端口号，即可访问jupyter，如图所示，再输入刚刚设置的密码就行了<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624903214506-5212ba31-e39b-497e-bbb4-200892853bb9.png#height=390&amp;id=y6mOt" alt="image.png" /><br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624903977925-09aa1daf-f1f3-40e2-ad21-8d1f42269d66.png#height=229&amp;id=SPHn7" alt="image.png" /></p>
-<h1 id="装代码补全插件与更换主题">装代码补全插件与更换主题</h1>
+<h1 id="安装anaconda"><a class="markdownIt-Anchor" href="#安装anaconda"></a> 安装Anaconda</h1>
+<p>在买好云服务器后，就通过ssh连接，就可以用命令行进行操作了，首先第一步是安装anaconda，先要下载anaconda的安装包，输入命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh</span><br></pre></td></tr></table></figure>
+<p>下载好后直接安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Anaconda3-2021.05-Linux-x86_64.sh</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624898431857-7b2a0ec6-2970-4c6f-9af3-07dc336f9a3d.png#height=72&amp;id=DlHXa&amp;" alt="image.png" /><br />会弹出这样一个界面，直接一直回车，然后输入yes继续回车，等待安装完成即可，安装完成会有这样一个界面，就代表安装完成了<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624898994446-2e991619-5f16-4b5f-bd61-3292b2fc53f7.png#height=126&amp;id=P7Dy3" alt="image.png" /></p>
+<h1 id="配置jupyter-notebook环境"><a class="markdownIt-Anchor" href="#配置jupyter-notebook环境"></a> 配置jupyter notebook环境</h1>
+<p>接下来就可以配置jupyter notebook环境了，首先需要生成一个配置文件，输入命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --generate-config</span><br></pre></td></tr></table></figure>
+<p>因为服务器的安全性，配置远程访问是需要设置一个密码的，输入命令，生成密钥：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook password</span><br></pre></td></tr></table></figure>
+<p>输入两次密码，这里就会生成一个密钥放在用户文件夹的.jupyter文件夹下，和刚刚的配置文件路径一样，这两个文件会自动关联起来，在修改配置文件的时候就不需要加跟密钥相关的命令了。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624899427258-a0a09979-4f70-4935-9933-d058534df757.png#height=52&amp;id=i9wwI" alt="image.png" /><br />接下来就可以直接修改刚刚生成的那个配置文件了，使用vim打开，输入命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.jupyter/jupyter_notebook_config.py</span><br></pre></td></tr></table></figure>
+<p>按键盘的i键进入编辑模式，直接在开头添加以下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.ip=&#x27;*&#x27; # 代表任意ip是都可以访问jupyter</span><br><span class="line">c.NotebookApp.notebook_dir=&#x27;/home/ubuntu/jupyter&#x27; # notebook的工作目录，可以自己的实际情况修改，注意要确保目录存在</span><br><span class="line">c.NotebookApp.open_browser = False # 不打开浏览器</span><br><span class="line">c.NotebookApp.port =8888  #可自行指定一个端口, 访问时使用该端口</span><br></pre></td></tr></table></figure>
+<p>按Esc键退出编辑模式，然后输入:wq保存即可。</p>
+<h1 id="开启远程访问"><a class="markdownIt-Anchor" href="#开启远程访问"></a> 开启远程访问</h1>
+<p>我们在上一步中指定了端口为8888，也让所有ip都能够访问这个端口了，但是在云服务器中还需要把这个端口开启起来，以腾讯云为例，进入安全组中，添加入站规则，按如下设置，然后在出站规则里点击一键放通，入站规则和出站规则都需要配置好<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624900683679-df0724ff-dcb9-4091-bf70-b9cb926120f2.png#height=205&amp;id=p7ggP" alt="image.png" /><br />接下来就可以将jupyter notebook打开了，不过我们需要能够将notebook一直在后台挂着，所以这里就输入这个命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup jupyter notebook &gt; jupyter.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<p>这里nohup（no hang up）是不挂起的意思，用于在系统后台不挂断地运行命令，退出终端不会影响程序的运行，最后面的**&amp;**是让命令在后台执行，终端退出后命令仍旧执行，&gt; jupyter.log 2&gt;&amp;1是输出日志的意思，把命令的输出和错误都写到jupyter.log这个文件中，方便监控。<br />接下来我们在浏览器中输入：服务器公网ip:端口号，即可访问jupyter，如图所示，再输入刚刚设置的密码就行了<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624903214506-5212ba31-e39b-497e-bbb4-200892853bb9.png#height=390&amp;id=y6mOt" alt="image.png" /><br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624903977925-09aa1daf-f1f3-40e2-ad21-8d1f42269d66.png#height=229&amp;id=SPHn7" alt="image.png" /></p>
+<h1 id="装代码补全插件与更换主题"><a class="markdownIt-Anchor" href="#装代码补全插件与更换主题"></a> 装代码补全插件与更换主题</h1>
 <p>在上一步中，我们已经配置好了一个可以远程访问的jupyter notebook，但是呢，这个notebook的主题是默认的，白色太亮眼不适合编程，而且，默认的jupyter notebook也没有补全代码的功能，所以就通过插件的方式来解决这两个问题。</p>
-<h2 id="补全代码插件">补全代码插件</h2>
-<p>依次执行以下命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyter_contrib_nbextensions </span><br><span class="line">jupyter contrib nbextension install --user</span><br><span class="line">pip install jupyter_nbextensions_configurator</span><br><span class="line">jupyter nbextensions_configurator enable --user</span><br></pre></td></tr></table></figure> 这样插件就装好了</p>
-<h2 id="更换主题">更换主题</h2>
-<p>首先安装jupyterthemes： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyterthemes</span><br></pre></td></tr></table></figure> jupyterthemes是一个为jupyter notebook设置主题的插件，可以在github上查看他们的使用手册，<br /> 这里推荐自己的一套配置方案，在命令行输入：</p>
+<h2 id="补全代码插件"><a class="markdownIt-Anchor" href="#补全代码插件"></a> 补全代码插件</h2>
+<p>依次执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyter_contrib_nbextensions </span><br><span class="line">jupyter contrib nbextension install --user</span><br><span class="line">pip install jupyter_nbextensions_configurator</span><br><span class="line">jupyter nbextensions_configurator enable --user</span><br></pre></td></tr></table></figure>
+<p>这样插件就装好了</p>
+<h2 id="更换主题"><a class="markdownIt-Anchor" href="#更换主题"></a> 更换主题</h2>
+<p>首先安装jupyterthemes：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyterthemes</span><br></pre></td></tr></table></figure>
+<p>jupyterthemes是一个为jupyter notebook设置主题的插件，可以在github上查看他们的使用手册，<br /><br />
+这里推荐自己的一套配置方案，在命令行输入：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jt -t chesterish -f roboto -fs 12 -ofs 105 -dfs 95 -lineh 150</span><br></pre></td></tr></table></figure>
-<h2 id="重启jupyter-notebook">重启jupyter notebook</h2>
-<p>如果你的notebook在运行中，就需要重启一下才能使得上一步的修改生效，首先找到运行jupyter notebook的进程id，然后杀掉这个进程，再重启就可以了 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ps -aux|grep jupyter</span><br><span class="line">sudo kill -9 进程id</span><br><span class="line">nohup jupyter notebook &gt; jupyter.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure> 可以发现，现在界面已经跟刚才的不一样了：<br /></p>
+<h2 id="重启jupyter-notebook"><a class="markdownIt-Anchor" href="#重启jupyter-notebook"></a> 重启jupyter notebook</h2>
+<p>如果你的notebook在运行中，就需要重启一下才能使得上一步的修改生效，首先找到运行jupyter notebook的进程id，然后杀掉这个进程，再重启就可以了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ps -aux|grep jupyter</span><br><span class="line">sudo kill -9 进程id</span><br><span class="line">nohup jupyter notebook &gt; jupyter.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+<p>可以发现，现在界面已经跟刚才的不一样了：<br /></p>
 <p><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624904807402-493d550d-ae8c-4963-82bf-69a99fff310e.png#height=435&amp;id=gz8pT" alt="image.png" /><br /></p>
-<p>然后还需要在Nbextensions中开启下Hinterland，也就是我们的补全插件<br /> <br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624384565647-dab6f490-7909-4501-a903-1cab72df72e0.png?x-oss-process=image%2Fresize%2Cw_1404#height=722&amp;id=AIyRA&amp;originHeight=722&amp;originWidth=1404&amp;originalType=binary&amp;ratio=1&amp;status=done&amp;style=none&amp;width=1404" /></p>
+<p>然后还需要在Nbextensions中开启下Hinterland，也就是我们的补全插件<br /><br />
+<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624384565647-dab6f490-7909-4501-a903-1cab72df72e0.png?x-oss-process=image%2Fresize%2Cw_1404#height=722&amp;id=AIyRA&amp;originHeight=722&amp;originWidth=1404&amp;originalType=binary&amp;ratio=1&amp;status=done&amp;style=none&amp;width=1404" alt="" /></p>
 <p>然后就大功告成了，有一个养眼的界面和补全代码的功能，就可以随时随地都能用搭建好的这个环境写一些代码了</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624904949851-5191b2d7-4550-423d-b53c-71f609b93a10.png#height=404&amp;id=QiYzW" /></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1624904949851-5191b2d7-4550-423d-b53c-71f609b93a10.png#height=404&amp;id=QiYzW" alt="" /></p>
 
     </div>
 
@@ -414,7 +436,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%80%89%E8%B4%AD"><span class="nav-number">1.</span> <span class="nav-text">云服务器选购</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85anaconda"><span class="nav-number">2.</span> <span class="nav-text">安装Anaconda</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEjupyter-notebook%E7%8E%AF%E5%A2%83"><span class="nav-number">3.</span> <span class="nav-text">配置jupyter notebook环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE"><span class="nav-number">4.</span> <span class="nav-text">开启远程访问</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A3%85%E4%BB%A3%E7%A0%81%E8%A1%A5%E5%85%A8%E6%8F%92%E4%BB%B6%E4%B8%8E%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">装代码补全插件与更换主题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%A8%E4%BB%A3%E7%A0%81%E6%8F%92%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">补全代码插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98"><span class="nav-number">5.2.</span> <span class="nav-text">更换主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AFjupyter-notebook"><span class="nav-number">5.3.</span> <span class="nav-text">重启jupyter notebook</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%80%89%E8%B4%AD"><span class="nav-number">1.</span> <span class="nav-text"> 云服务器选购</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85anaconda"><span class="nav-number">2.</span> <span class="nav-text"> 安装Anaconda</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEjupyter-notebook%E7%8E%AF%E5%A2%83"><span class="nav-number">3.</span> <span class="nav-text"> 配置jupyter notebook环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE"><span class="nav-number">4.</span> <span class="nav-text"> 开启远程访问</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A3%85%E4%BB%A3%E7%A0%81%E8%A1%A5%E5%85%A8%E6%8F%92%E4%BB%B6%E4%B8%8E%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text"> 装代码补全插件与更换主题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%A8%E4%BB%A3%E7%A0%81%E6%8F%92%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text"> 补全代码插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98"><span class="nav-number">5.2.</span> <span class="nav-text"> 更换主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AFjupyter-notebook"><span class="nav-number">5.3.</span> <span class="nav-text"> 重启jupyter notebook</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -488,20 +510,17 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">32k</span>
+    <span title="站点总字数">33k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">53 分钟</span>
+    <span title="站点阅读时长">54 分钟</span>
 </div>
 
 
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span>总访问量: <span id="busuanzi_value_site_pv"></span>次</span>
-    <span class="post-meta-divider">|</span>
-    <span">总访客数: <span id="busuanzi_value_site_uv"></span>人</span>
 
 
         
@@ -510,7 +529,7 @@
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="fa fa-user"></i>
-      </span>
+      </span>总访客数：
       <span class="site-uv" title="总访客量">
         <span id="busuanzi_value_site_uv"></span>
       </span>
@@ -519,7 +538,7 @@
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="fa fa-eye"></i>
-      </span>
+      </span>总访问量: 
       <span class="site-pv" title="总访问量">
         <span id="busuanzi_value_site_pv"></span>
       </span>
