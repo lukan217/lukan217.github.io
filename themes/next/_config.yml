@@ -648,7 +648,7 @@ gitalk:
 
 utteranc:
   enable: true
-  repo: lukan797/lukan797.github.io
+  # repo: lukan797/lukan797.github.io
   pathname: pathname
   # theme: github-light,github-dark,github-dark-orange
   theme: github-light
