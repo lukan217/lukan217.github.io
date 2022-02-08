@@ -64,7 +64,7 @@ footer:
     color: "#ff0000"
 
   # If not defined, `author` from Hexo `_config.yml` will be used.
-  copyright: Smallviller
+  copyright: 
 
   # Powered by Hexo & NexT
   powered: false
@@ -647,7 +647,7 @@ gitalk:
 
 utteranc:
   enable: true
-  repo: Smallviller/smallviller.github.io
+  repo: lukan797/lukan797.github.io
   pathname: pathname
   # theme: github-light,github-dark,github-dark-orange
   theme: github-light
@@ -719,7 +719,7 @@ firestore:
 # Show Views / Visitors of the website / page with busuanzi.
 # Get more information on http://ibruce.info/2015/04/04/busuanzi
 busuanzi_count:
-  enable: false
+  enable: true
   total_visitors: true
   total_visitors_icon: fa fa-user
   total_views: true
