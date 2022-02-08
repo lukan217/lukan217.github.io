@@ -250,7 +250,7 @@
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -263,56 +263,47 @@
 
       
         <p>贝叶斯优化（Bayesian Optimization），主要用来解决计算成本昂贵的黑盒优化问题，这种问题有着以下两个特点：</p>
-<ol>
-<li>目标函数<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>及其导数未知，否则就可以用梯度下降等方法求解</li>
+<ol type="1">
+<li>目标函数<span class="math inline">\(f(x)\)</span>及其导数未知，否则就可以用梯度下降等方法求解</li>
 <li>计算目标函数时间成本大，意味着像蚁群算法、遗传算法这种方法也失效了，因为计算一次要花费很多时间</li>
 </ol>
-<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642518880682-ca49f801-c6dd-406d-965d-9ba3690c74a6.png#clientId=u3fe6f5be-444f-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=52&amp;id=SNVtL" alt="image.png" /><br />这种问题最典型的就是机器学习里面的超参数优化，使用的模型为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span></span>，超参数为输入的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>，评估指标（MSE, AUC等）为输出的目标函数值，在这个场景下，很多机器学习的入门课程都会提到网格搜索和随机搜索，但是这两个其实本质上也是一种类似于穷举的方式，随便选取一组可能的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>，然后分别计算目标值，最后对比所有的结果得到最好的解，可以看出来这种求解是很低效的，因此，解决这种问题需要设计一种高效的算法，来在有限的时间里面找到一个相对不错的解，这就是贝叶斯优化。<br />贝叶斯优化，是一种使用贝叶斯定理来指导搜索以找到目标函数的最小值或最大值的方法，就是在每次迭代的时候，利用之前观测到的历史信息（先验知识)来进行下一次优化，通俗点讲，就是在进行一次迭代的时候，先回顾下之前的迭代结果，结果太差的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>附近就不去找了，尽量往结果好一点的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>附近去找最优解，这样一来搜索的效率就大大提高了，这其实和人的思维方式也有点像，每次在学习中试错，并且在下次的时候根据这些经验来找到最优的策略。<br />
-<a name="raVsx"></a></p>
-<h1 id="贝叶斯优化过程"><a class="markdownIt-Anchor" href="#贝叶斯优化过程"></a> 贝叶斯优化过程</h1>
-<p>首先，假设有一个这样的函数<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">c(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">c</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>，我们需要找到他的最小值，如下图所示，这也是我们所需要优化的目标函数，但是我们并不能够知道他的具体形状以及表达形式是怎么样的。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862207488-61095c80-c151-4cb2-848d-74c44f23901f.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u10477eea" alt="image.png" /><br />贝叶斯优化是通过一种叫做代理优化的方式来进行的，就是不知道真实的目标函数长什么样，我们就用一个代理函数（surrogate function）来代替目标函数，而这个代理函数就可以通过先采样几个点，再通过这几个点来给他拟合出来，如下图虚线所示：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862350662-cfeab91b-ee4f-4395-8cae-1c9c1df4d8c1.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u93bcdc6a" alt="image.png" /><br />基于构造的代理函数，我们就可以在可能是最小值的点附近采集更多的点，或者在还没有采样过的区域来采集更多的点，有了更多点，就可以更新代理函数，使之更逼近真实的目标函数的形状，这样的话也更容易找到目标函数的最小值，这个采样的过程同样可以通过构建一个采集函数来表示，也就是知道了当前代理函数的形状，如何选择下一个<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>使得收益最大。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862456555-21005371-dd1b-419e-9c9c-2c4e28d83ddf.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=uc7daab55" alt="image.png" /><br />然后重复以上过程，最终就可以找到函数的最小值点了，这大致就是贝叶斯优化的一个过程：</p>
-<ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642518880682-ca49f801-c6dd-406d-965d-9ba3690c74a6.png#clientId=u3fe6f5be-444f-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=52&amp;id=SNVtL" alt="image.png" /><br />这种问题最典型的就是机器学习里面的超参数优化，使用的模型为 <span class="math inline">\(f\)</span>，超参数为输入的 <span class="math inline">\(x\)</span>，评估指标（MSE, AUC等）为输出的目标函数值，在这个场景下，很多机器学习的入门课程都会提到网格搜索和随机搜索，但是这两个其实本质上也是一种类似于穷举的方式，随便选取一组可能的<span class="math inline">\(x\)</span>，然后分别计算目标值，最后对比所有的结果得到最好的解，可以看出来这种求解是很低效的，因此，解决这种问题需要设计一种高效的算法，来在有限的时间里面找到一个相对不错的解，这就是贝叶斯优化。<br />贝叶斯优化，是一种使用贝叶斯定理来指导搜索以找到目标函数的最小值或最大值的方法，就是在每次迭代的时候，利用之前观测到的历史信息（先验知识)来进行下一次优化，通俗点讲，就是在进行一次迭代的时候，先回顾下之前的迭代结果，结果太差的<span class="math inline">\(x\)</span>附近就不去找了，尽量往结果好一点的<span class="math inline">\(x\)</span>附近去找最优解，这样一来搜索的效率就大大提高了，这其实和人的思维方式也有点像，每次在学习中试错，并且在下次的时候根据这些经验来找到最优的策略。 <a name="raVsx"></a></p>
+<h1 id="贝叶斯优化过程">贝叶斯优化过程</h1>
+<p>首先，假设有一个这样的函数<span class="math inline">\(c(x)\)</span>，我们需要找到他的最小值，如下图所示，这也是我们所需要优化的目标函数，但是我们并不能够知道他的具体形状以及表达形式是怎么样的。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862207488-61095c80-c151-4cb2-848d-74c44f23901f.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u10477eea" alt="image.png" /><br />贝叶斯优化是通过一种叫做代理优化的方式来进行的，就是不知道真实的目标函数长什么样，我们就用一个代理函数（surrogate function）来代替目标函数，而这个代理函数就可以通过先采样几个点，再通过这几个点来给他拟合出来，如下图虚线所示：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862350662-cfeab91b-ee4f-4395-8cae-1c9c1df4d8c1.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u93bcdc6a" alt="image.png" /><br />基于构造的代理函数，我们就可以在可能是最小值的点附近采集更多的点，或者在还没有采样过的区域来采集更多的点，有了更多点，就可以更新代理函数，使之更逼近真实的目标函数的形状，这样的话也更容易找到目标函数的最小值，这个采样的过程同样可以通过构建一个采集函数来表示，也就是知道了当前代理函数的形状，如何选择下一个<span class="math inline">\(x\)</span>使得收益最大。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642862456555-21005371-dd1b-419e-9c9c-2c4e28d83ddf.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=uc7daab55" alt="image.png" /><br />然后重复以上过程，最终就可以找到函数的最小值点了，这大致就是贝叶斯优化的一个过程：</p>
+<ol type="1">
 <li>初始化一个代理函数的先验分布</li>
-<li>选择数据点<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>，使得采集函数<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">a(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">a</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>取最大值</li>
-<li>在目标函数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">c(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">c</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>中评估数据点<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>并获取其结果 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span></span></span></li>
-<li>使用新数据<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>更新代理函数，得到一个后验分布（作为下一步的先验分布）</li>
+<li>选择数据点<span class="math inline">\(x\)</span>，使得采集函数<span class="math inline">\(a(x)\)</span>取最大值</li>
+<li>在目标函数 <span class="math inline">\(c(x)\)</span>中评估数据点<span class="math inline">\(x\)</span>并获取其结果 <span class="math inline">\(y\)</span></li>
+<li>使用新数据<span class="math inline">\((x,y)\)</span>更新代理函数，得到一个后验分布（作为下一步的先验分布）</li>
 <li>重复2-4步，直到达到最大迭代次数</li>
 </ol>
-<p>举个例子，如图所示，一开始只有两个点（t=2），代理函数的分布是紫色的区域那块，然后根据代理函数算出一个采集函数（绿色线），取采集函数的最大值所在的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>（红色三角处），算出<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span></span></span>，然后根据新的点<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>更新代理函数和采集函数（t=3），继续重复上面步骤，选择新的采集函数最大值所在的<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>，算出<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span></span></span>，再更新代理函数和采集函数，然后继续迭代<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642870783116-4e643df2-ec8f-4b2c-84e2-f5d11c2cfac2.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u912a5632" alt="image.png" /><br />问题的核心就在于代理函数和采集函数如何构建，常用的代理函数有：</p>
-<ol>
+<p>举个例子，如图所示，一开始只有两个点（t=2），代理函数的分布是紫色的区域那块，然后根据代理函数算出一个采集函数（绿色线），取采集函数的最大值所在的<span class="math inline">\(x\)</span>（红色三角处），算出<span class="math inline">\(y\)</span>，然后根据新的点<span class="math inline">\((x,y)\)</span>更新代理函数和采集函数（t=3），继续重复上面步骤，选择新的采集函数最大值所在的<span class="math inline">\(x\)</span>，算出<span class="math inline">\(y\)</span>，再更新代理函数和采集函数，然后继续迭代<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1642870783116-4e643df2-ec8f-4b2c-84e2-f5d11c2cfac2.png#clientId=u86233cce-d6bd-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u912a5632" alt="image.png" /><br />问题的核心就在于代理函数和采集函数如何构建，常用的代理函数有：</p>
+<ol type="1">
 <li>高斯过程（Gaussian processes）</li>
 <li>Tree Parzer Estimator</li>
 <li>概率随机森林：针对类别型变量</li>
 </ol>
 <p>采集函数则需要兼顾两方面的性质：</p>
-<ol>
+<ol type="1">
 <li>利用当前已开发的区域（Exploitation）：即在当前最小值附近继续搜索</li>
 <li>探索尚未开发的区域（Exploration）：即在还没有搜索过的区域里面搜索，可能那里才是全局最优解</li>
 </ol>
 <p>常用的采集函数有：</p>
-<ol>
-<li>
-<p>Probability of improvement（PI）</p>
-</li>
-<li>
-<p>Expected improvement（EI）</p>
-</li>
-<li>
-<p>Confidence bound criteria，包括LCB和UCB<br />
-<a name="lYgNb"></a></p>
-</li>
+<ol type="1">
+<li><p>Probability of improvement（PI）</p></li>
+<li><p>Expected improvement（EI）</p></li>
+<li><p>Confidence bound criteria，包括LCB和UCB <a name="lYgNb"></a></p></li>
 </ol>
-<h1 id="可用的贝叶斯优化框架"><a class="markdownIt-Anchor" href="#可用的贝叶斯优化框架"></a> 可用的贝叶斯优化框架</h1>
-<ol>
+<h1 id="可用的贝叶斯优化框架">可用的贝叶斯优化框架</h1>
+<ol type="1">
 <li>BayesianOptimization：<a target="_blank" rel="noopener" href="https://github.com/fmfn/BayesianOptimization">https://github.com/fmfn/BayesianOptimization</a></li>
 <li>清华开源的openbox：<a target="_blank" rel="noopener" href="https://open-box.readthedocs.io/zh_CN/latest/index.html">https://open-box.readthedocs.io/zh_CN/latest/index.html</a></li>
 <li>华为开源的HEBO：<a target="_blank" rel="noopener" href="https://github.com/huawei-noah/HEBO">https://github.com/huawei-noah/HEBO</a></li>
 <li>Hyperopt：<a target="_blank" rel="noopener" href="http://hyperopt.github.io/hyperopt/">http://hyperopt.github.io/hyperopt/</a></li>
 </ol>
-<p>个人觉得1和2就挺好用的<br />
-<a name="ZDkC6"></a></p>
-<h1 id="参考"><a class="markdownIt-Anchor" href="#参考"></a> 参考</h1>
-<ol>
+<p>个人觉得1和2就挺好用的 <a name="ZDkC6"></a></p>
+<h1 id="参考">参考</h1>
+<ol type="1">
 <li><a target="_blank" rel="noopener" href="https://towardsdatascience.com/the-beauty-of-bayesian-optimization-explained-in-simple-terms-81f3ee13b10f">https://towardsdatascience.com/the-beauty-of-bayesian-optimization-explained-in-simple-terms-81f3ee13b10f</a></li>
 <li><a target="_blank" rel="noopener" href="https://chengfeng96.com/blog/2019/09/08/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E7%AC%94%E8%AE%B0/">https://chengfeng96.com/blog/2019/09/08/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E7%AC%94%E8%AE%B0/</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/459110020">https://zhuanlan.zhihu.com/p/459110020</a></li>
@@ -433,7 +424,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text"> 贝叶斯优化过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text"> 可用的贝叶斯优化框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text"> 参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">贝叶斯优化过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">可用的贝叶斯优化框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -506,17 +497,19 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">33k</span>
+    <span title="站点总字数">32k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">54 分钟</span>
+    <span title="站点阅读时长">53 分钟</span>
 </div>
 
 
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">本站访客数<span id="busuanzi_value_site_uv"></span>人</span>
 
 
         
