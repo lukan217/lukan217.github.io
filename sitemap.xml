@@ -196,13 +196,6 @@
   </url>
   
   <url>
-    <loc>https://lukan797.github.io/tags/git/</loc>
-    <lastmod>2022-02-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://lukan797.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -231,7 +224,7 @@
   </url>
   
   <url>
-    <loc>https://lukan797.github.io/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/</loc>
+    <loc>https://lukan797.github.io/tags/git/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -266,6 +259,13 @@
   </url>
   
   <url>
+    <loc>https://lukan797.github.io/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2022-02-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://lukan797.github.io/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -287,14 +287,14 @@
   </url>
   
   <url>
-    <loc>https://lukan797.github.io/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/</loc>
+    <loc>https://lukan797.github.io/tags/%E6%9C%80%E4%BC%98%E5%8C%96/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://lukan797.github.io/tags/%E6%9C%80%E4%BC%98%E5%8C%96/</loc>
+    <loc>https://lukan797.github.io/tags/%E9%94%80%E9%87%8F%E9%A2%84%E6%B5%8B/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -324,14 +324,14 @@
   </url>
   
   <url>
-    <loc>https://lukan797.github.io/categories/%E6%95%99%E7%A8%8B/</loc>
+    <loc>https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://lukan797.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/</loc>
+    <loc>https://lukan797.github.io/categories/%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2022-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
