@@ -723,6 +723,10 @@ busuanzi_count:
   enable: true
   total_visitors: true
   total_visitors_icon: fa fa-user
+  site_uv_header: 总访客
+  site_uv_footer: 人次
+  site_pv_header: 总访问量
+  site_pv_footer: 次
   total_views: true
   total_views_icon: fa fa-eye
   post_views: true
