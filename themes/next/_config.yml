@@ -719,15 +719,29 @@ firestore:
 
 # Show Views / Visitors of the website / page with busuanzi.
 # Get more information on http://ibruce.info/2015/04/04/busuanzi
+# busuanzi_count:
+#   enable: true
+#   total_visitors: true
+#   total_visitors_icon: fa fa-user
+#   total_views: true
+#   total_views_icon: fa fa-eye
+#   post_views: true
+#   post_views_icon: fa fa-eye
 busuanzi_count:
+  # count values only if the other configs are false
   enable: true
-  total_visitors: true
-  total_visitors_icon: fa fa-user
-  total_views: true
-  total_views_icon: fa fa-eye
-  post_views: true
-  post_views_icon: fa fa-eye
-
+  # custom uv span for the whole site
+  site_uv: true
+  site_uv_header: 访客数
+  site_uv_footer: 人
+  # custom pv span for the whole site
+  site_pv: true
+  site_pv_header: 总访问量
+  site_pv_footer: 次
+  # custom pv span for one page only
+  page_pv: true
+  page_pv_header: <i class="fa fa-file-o"></i>  阅读数
+  page_pv_footer:
 
 # ---------------------------------------------------------------
 # Search Services
