@@ -227,7 +227,14 @@
                 </span>
             </span>
 
-          <br>
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -253,34 +260,36 @@
 
       
         <p>线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。</p>
-<h1 id="Ridge-amp-Lasso回归"><a href="#Ridge-amp-Lasso回归" class="headerlink" title="Ridge &amp; Lasso回归"></a>Ridge &amp; Lasso回归</h1><p>在传统的线性回归中，是使用最小二乘法来估计参数的，通过最小化残差平方和来估计参数的，这个在机器学习领域也被称为损失函数：<br /><script type="math/tex">LOSS_{ols}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2\\</script><br />这种最小二乘估计的方法被证明了具有最佳线性无偏估计（Best Linear Unbias Estimator, BLUE）的性质，所谓的最佳，就是方差最小，但这是在线性无偏估计的前提下，在有偏的情况下方差就不一定是最小了，设想一下，如果牺牲这个有偏的性质来使得方差变小呢，根据bias-variance trade-off，会不会有可能使得整体的预测误差进一步降低呢？<br />于是Ridge和Lasso的形式就被提出来了，通过牺牲传统ols回归中无偏的性质来使得方差降低，以寻求更低的预测误差，这两者的损失函数分别如下：<br /><script type="math/tex">LOSS_{Ridge}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}\beta_j^2\\</script><br /><script type="math/tex">LOSS_{Lasso}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}|\beta_j|\\</script><br />可以发现，这两个损失函数呢，就是在原来的ols的损失函数上加了一个系数惩罚项，因为我们求解时是让损失函数最小，加了后面这个惩罚项呢，会使得系数变小，这个$\lambda$就用来控制惩罚的力度，如果为0的话就和传统的线性回归没有差异了，如果是无穷大的话，那么所有的回归系数都会被弄到0，最后的所有的预测结果就是样本的均值了，但在实践中，我们可以通过交叉验证的方式调节$\lambda$的大小，选取最优的惩罚力度，就可以使得最终的预测误差达到最小。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob" alt="image.png"><br />Ridge和Lasso这种加惩罚项的方式叫做正则化（Regularization），在机器学习的应用很广，比如神经网络中就有应用。因此，Ridge也被称为$L<em>2$正则化，后者被称为$L_1$正则化。<br />虽然两者的加的惩罚项看起来差不多，其实是有着非常大的区别的，具体表现为Lasso可以使得系数压缩到0，而Ridge则不会有这种效果，把系数压缩到0的话就可以起到降维和变量选择的作用，因此Lasso在高维的数据中表现更好。<br />那么为啥会有这样的差别呢，首先我们来看他们的惩罚项的形式，一个用的是平方的形式，另一个用的是绝对值的形式，我们把之前的那个损失函数转化成一个优化问题：<br />$$Ridge: \quad \min \sum</em>{i=1}^{n}(y<em>i-\beta_0-\sum</em>{j=1}^{p}\beta<em>jx</em>{ij})^2 \quad s.t.\sum<em>{j=1}^{p}\beta_j^2 \le s\<br>Lasso: \quad \min \sum</em>{i=1}^{n}(y<em>i-\beta_0-\sum</em>{j=1}^{p}\beta<em>jx</em>{ij})^2 \quad s.t.\sum_{j=1}^{p}|\beta_j| \le s\$$<br />假设只有两个系数，我们用几何的方式来表达这个优化问题，Ridge的约束条件是一个平方的形式，可行域就是一个圆，而Lasso的约束条件是绝对值的形式，可行域则是一个菱形，而目标函数在求解时，肯定是跟这个约束条件的可行域相切的，而Lasso由于他是一个菱形，那么他就更容易切到菱形的顶点，因此也会使得系数为0，而Ridge是一个圆，就不容易切到系数为0的地方，因此这就使得Lasso在压缩系数时会更倾向于压缩为0。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621697160270-8a07af21-ed57-4ad0-b2ca-de6eed23bcf8.png#align=left&amp;display=inline&amp;height=240&amp;id=hG528" alt="image.png"></p>
-<h1 id="代码实践"><a href="#代码实践" class="headerlink" title="代码实践"></a>代码实践</h1><p>使用sklearn自带的波斯顿房价数据集做个试验，分别跑一遍Ridge和Lasso回归，并且通过交叉验证来选取$\lambda$，将之与线性回归进行对比，结果如下：</p>
-<div class="table-container">
+<h1 id="ridge-lasso回归">Ridge &amp; Lasso回归</h1>
+<p>在传统的线性回归中，是使用最小二乘法来估计参数的，通过最小化残差平方和来估计参数的，这个在机器学习领域也被称为损失函数：<br /><span class="math display">\[LOSS_{ols}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2\\\]</span><br />这种最小二乘估计的方法被证明了具有最佳线性无偏估计（Best Linear Unbias Estimator, BLUE）的性质，所谓的最佳，就是方差最小，但这是在线性无偏估计的前提下，在有偏的情况下方差就不一定是最小了，设想一下，如果牺牲这个有偏的性质来使得方差变小呢，根据bias-variance trade-off，会不会有可能使得整体的预测误差进一步降低呢？<br />于是Ridge和Lasso的形式就被提出来了，通过牺牲传统ols回归中无偏的性质来使得方差降低，以寻求更低的预测误差，这两者的损失函数分别如下：<br /><span class="math display">\[LOSS_{Ridge}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}\beta_j^2\\\]</span><br /><span class="math display">\[LOSS_{Lasso}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}|\beta_j|\\\]</span><br />可以发现，这两个损失函数呢，就是在原来的ols的损失函数上加了一个系数惩罚项，因为我们求解时是让损失函数最小，加了后面这个惩罚项呢，会使得系数变小，这个<span class="math inline">\(\lambda\)</span>就用来控制惩罚的力度，如果为0的话就和传统的线性回归没有差异了，如果是无穷大的话，那么所有的回归系数都会被弄到0，最后的所有的预测结果就是样本的均值了，但在实践中，我们可以通过交叉验证的方式调节<span class="math inline">\(\lambda\)</span>的大小，选取最优的惩罚力度，就可以使得最终的预测误差达到最小。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob" alt="image.png" /><br />Ridge和Lasso这种加惩罚项的方式叫做正则化（Regularization），在机器学习的应用很广，比如神经网络中就有应用。因此，Ridge也被称为<span class="math inline">\(L_2\)</span>正则化，后者被称为<span class="math inline">\(L_1\)</span>正则化。<br />虽然两者的加的惩罚项看起来差不多，其实是有着非常大的区别的，具体表现为Lasso可以使得系数压缩到0，而Ridge则不会有这种效果，把系数压缩到0的话就可以起到降维和变量选择的作用，因此Lasso在高维的数据中表现更好。<br />那么为啥会有这样的差别呢，首先我们来看他们的惩罚项的形式，一个用的是平方的形式，另一个用的是绝对值的形式，我们把之前的那个损失函数转化成一个优化问题：<br /><span class="math display">\[Ridge: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \quad s.t.\sum_{j=1}^{p}\beta_j^2 \le s\\
+Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \quad s.t.\sum_{j=1}^{p}|\beta_j| \le s\\\]</span><br />假设只有两个系数，我们用几何的方式来表达这个优化问题，Ridge的约束条件是一个平方的形式，可行域就是一个圆，而Lasso的约束条件是绝对值的形式，可行域则是一个菱形，而目标函数在求解时，肯定是跟这个约束条件的可行域相切的，而Lasso由于他是一个菱形，那么他就更容易切到菱形的顶点，因此也会使得系数为0，而Ridge是一个圆，就不容易切到系数为0的地方，因此这就使得Lasso在压缩系数时会更倾向于压缩为0。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621697160270-8a07af21-ed57-4ad0-b2ca-de6eed23bcf8.png#align=left&amp;display=inline&amp;height=240&amp;id=hG528" alt="image.png" /></p>
+<h1 id="代码实践">代码实践</h1>
+<p>使用sklearn自带的波斯顿房价数据集做个试验，分别跑一遍Ridge和Lasso回归，并且通过交叉验证来选取<span class="math inline">\(\lambda\)</span>，将之与线性回归进行对比，结果如下：</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th></th>
 <th>MSE</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>线性回归</td>
 <td>21.8977</td>
 </tr>
-<tr>
+<tr class="even">
 <td>Ridge回归</td>
 <td>21.7536</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>Lasso回归</td>
 <td>21.8752</td>
 </tr>
 </tbody>
 </table>
-</div>
-<p>可以发现，两者的预测效果较线性回归都有一定提升，其中Lasso回归提升较小，这是因为数据集的原因，只有13个变量，并且每个变量都make sense，因此效果就一般了，在高维的数据集中Lasso从理论上      讲应该就会有较好的表现了。<br />具体代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> RidgeCV,LassoCV</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">boston = load_boston() <span class="comment"># 导入波斯顿数据集</span></span><br><span class="line">X = boston.data</span><br><span class="line">y = boston.target</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y,random_state=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">lr = LinearRegression()</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line">y_pred_lr = lr.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;线性回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lr, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ridge=RidgeCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>) <span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">ridge.fit(X_train, y_train)</span><br><span class="line">y_pred_ridge = ridge.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Ridge回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_ridge, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">lasso=LassoCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>)<span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">lasso.fit(X_train, y_train)</span><br><span class="line">y_pred_lasso = lasso.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Lasso回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lasso, y_test)&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文对Ridge和Lasso回归做了一个总结，并通过一个简单数据集做了实践。在写的同时发现需要再去看和学习的东西很多，一个流程下来对于算法原理的理解更加透彻了，这对于搭建自己的知识体系是很有帮助的，希望以后能够坚持学完一个新的东西就写篇总结。</p>
+<p>可以发现，两者的预测效果较线性回归都有一定提升，其中Lasso回归提升较小，这是因为数据集的原因，只有13个变量，并且每个变量都make sense，因此效果就一般了，在高维的数据集中Lasso从理论上 讲应该就会有较好的表现了。<br />具体代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> RidgeCV,LassoCV</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">boston = load_boston() <span class="comment"># 导入波斯顿数据集</span></span><br><span class="line">X = boston.data</span><br><span class="line">y = boston.target</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y,random_state=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">lr = LinearRegression()</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line">y_pred_lr = lr.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;线性回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lr, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ridge=RidgeCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>) <span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">ridge.fit(X_train, y_train)</span><br><span class="line">y_pred_ridge = ridge.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Ridge回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_ridge, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">lasso=LassoCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>)<span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">lasso.fit(X_train, y_train)</span><br><span class="line">y_pred_lasso = lasso.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Lasso回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lasso, y_test)&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">总结</h1>
+<p>本文对Ridge和Lasso回归做了一个总结，并通过一个简单数据集做了实践。在写的同时发现需要再去看和学习的东西很多，一个流程下来对于算法原理的理解更加透彻了，这对于搭建自己的知识体系是很有帮助的，希望以后能够坚持学完一个新的东西就写篇总结。</p>
 
     </div>
 
@@ -400,7 +409,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ridge-amp-Lasso%E5%9B%9E%E5%BD%92"><span class="nav-number">1.</span> <span class="nav-text">Ridge &amp; Lasso回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">代码实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ridge-lasso%E5%9B%9E%E5%BD%92"><span class="nav-number">1.</span> <span class="nav-text">Ridge &amp; Lasso回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">代码实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -490,6 +499,23 @@
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
 </div>
 
 
