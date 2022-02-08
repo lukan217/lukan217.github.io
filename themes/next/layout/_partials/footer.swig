@@ -59,7 +59,8 @@
 {%- endif %}
 
 {% if theme.footer.counter %}
-    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 {% endif %}
+
   
 {{- next_inject('footer') }}
