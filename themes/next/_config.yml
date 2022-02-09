@@ -649,8 +649,8 @@ gitalk:
 utteranc:
   enable: true
   repo: lukan797/lukan797.github.io
-  pathname: pathname
-  issue_term: title
+  pathname: title
+  #issue-term: title
   # theme: github-light,github-dark,github-dark-orange
   theme: github-light
   cdn: https://utteranc.es/client.js

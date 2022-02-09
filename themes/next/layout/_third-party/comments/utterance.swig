@@ -4,7 +4,7 @@
         var utterances = document.createElement('script');
         utterances.type = 'text/javascript';
         utterances.async = true;
-        utterances.setAttribute('issue-term','{{ theme.utterance.issue_term }}')
+        utterances.setAttribute('issue-term','{{ theme.utterance.pathname }}')
         utterances.setAttribute('theme','{{ theme.utterance.theme }}')
         utterances.setAttribute('repo','{{ theme.utterance.repo }}')
         utterances.crossorigin = 'anonymous';
