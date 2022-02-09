@@ -224,6 +224,20 @@
   </url>
   
   <url>
+    <loc>https://lukan797.github.io/tags/beamer/</loc>
+    <lastmod>2022-02-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://lukan797.github.io/tags/latex/</loc>
+    <lastmod>2022-02-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://lukan797.github.io/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/</loc>
     <lastmod>2022-02-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -246,20 +260,6 @@
   
   <url>
     <loc>https://lukan797.github.io/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
-    <lastmod>2022-02-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://lukan797.github.io/tags/beamer/</loc>
-    <lastmod>2022-02-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://lukan797.github.io/tags/latex/</loc>
     <lastmod>2022-02-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
