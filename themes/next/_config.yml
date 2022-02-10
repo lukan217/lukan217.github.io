@@ -680,13 +680,13 @@ add_this_id:
 
 # Google Analytics
 google_analytics:
-  tracking_id: # <app_id>
+  tracking_id: G-VT12J2H04J
   # By default, NexT will load an external gtag.js script on your site.
   # If you only need the pageview feature, set the following option to true to get a better performance.
   only_pageview: false
 
 # Baidu Analytics
-baidu_analytics: 1e002f076dbdbdaac343445ccb024dcc
+baidu_analytics: 651783cf489c4393588f8bc27a805182
 
 # Growingio Analytics
 growingio_analytics: # <project_id>
