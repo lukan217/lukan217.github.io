@@ -130,14 +130,14 @@ markdown:
     level: 2
     collisionSuffix: ''
 
-sitemap:
-  path: sitemap.xml
-  rel: false
-  tags: true
-  categories: true
+# sitemap:
+#   path: sitemap.xml
+#   rel: false
+#   tags: true
+#   categories: true
 
-baidusitemap: 
-  path: baidusitemap.xml
+# baidusitemap: 
+#   path: baidusitemap.xml
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
