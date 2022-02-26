@@ -27,7 +27,7 @@
   <meta http-equiv="Cache-Control" content="no-siteapp">
 {%- endif %}
 {%- if theme.google_site_verification %}
-  <meta name="google-site-verification" content="womgfV2TbURRpAFqJs5AXSGKA6bk9Ahb3-8dRPb6ghY" />
+  <meta name="google-site-verification" content={{ theme.google_site_verification }} />
 {%- endif %}
 {%- if theme.bing_site_verification %}
   <meta name="msvalidate.01" content="{{ theme.bing_site_verification }}">
@@ -36,7 +36,7 @@
   <meta name="yandex-verification" content="{{ theme.yandex_site_verification }}">
 {%- endif %}
 {%- if theme.baidu_site_verification %}
-  <meta name="baidu-site-verification" content="code-ZP0nMAaqHA" />
+  <meta name="baidu-site-verification" content={{ theme.baidu_site_verification }} />
 {%- endif %}
 
 <link rel="stylesheet" href="{{ url_for(theme.css) }}/main.css">
