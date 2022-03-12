@@ -22,24 +22,23 @@
     var CONFIG = {"hostname":"lukan1999.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。">
+  <meta name="description" content="对于结构化数据建模，现在主流使用的模型是都是树模型，lightgbm、xgboost等，这些模型有一个很重要的特性就是可以输出特征重要性，可以用来指导特征工程，但是却不能直接用来做特征选择，这篇文章就先主要谈谈使用特征重要性来筛选特征的缺陷，然后介绍一种基于特征重要性改进的特征选择方法——Boruta。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ridge和Lasso回归与代码实践">
-<meta property="og:url" content="https://lukan1999.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:title" content="树模型的特征选择-Boruta">
+<meta property="og:url" content="https://lukan1999.github.io/2022/03/12/%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9-Boruta/index.html">
 <meta property="og:site_name" content="Lukan&#39;s Blog">
-<meta property="og:description" content="线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。">
+<meta property="og:description" content="对于结构化数据建模，现在主流使用的模型是都是树模型，lightgbm、xgboost等，这些模型有一个很重要的特性就是可以输出特征重要性，可以用来指导特征工程，但是却不能直接用来做特征选择，这篇文章就先主要谈谈使用特征重要性来筛选特征的缺陷，然后介绍一种基于特征重要性改进的特征选择方法——Boruta。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1621697160270-8a07af21-ed57-4ad0-b2ca-de6eed23bcf8.png#align=left&amp;display=inline&amp;height=240&amp;id=hG528">
-<meta property="article:published_time" content="2021-05-22T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-06-30T18:35:23.880Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1647071703892-4bc4ec90-ff61-44dd-9c8a-87aa81ddfbff.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1647070157764-ea4e794d-f9f3-442c-92ef-61c84b48ef64.png">
+<meta property="article:published_time" content="2022-03-12T12:44:33.274Z">
+<meta property="article:modified_time" content="2022-03-12T12:47:47.137Z">
 <meta property="article:author" content="Lukan">
 <meta property="article:tag" content="机器学习">
-<meta property="article:tag" content="回归算法">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1647071703892-4bc4ec90-ff61-44dd-9c8a-87aa81ddfbff.png">
 
-<link rel="canonical" href="https://lukan1999.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
+<link rel="canonical" href="https://lukan1999.github.io/2022/03/12/%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9-Boruta/">
 
 
 <script id="page-configurations">
@@ -52,7 +51,7 @@
   };
 </script>
 
-  <title>Ridge和Lasso回归与代码实践 | Lukan's Blog</title>
+  <title>树模型的特征选择-Boruta | Lukan's Blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
     <script>
@@ -194,7 +193,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://lukan1999.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
+    <link itemprop="mainEntityOfPage" href="https://lukan1999.github.io/2022/03/12/%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9-Boruta/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -207,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Ridge和Lasso回归与代码实践
+          树模型的特征选择-Boruta
         </h1>
 
         <div class="post-meta">
@@ -216,23 +215,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-05-23 00:00:00" itemprop="dateCreated datePublished" datetime="2021-05-23T00:00:00+08:00">2021-05-23</time>
+              <time title="创建时间：2022-03-12 20:44:33 / 修改时间：20:47:47" itemprop="dateCreated datePublished" datetime="2022-03-12T20:44:33+08:00">2022-03-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-01 02:35:23" itemprop="dateModified" datetime="2021-07-01T02:35:23+08:00">2021-07-01</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">机器学习算法</span></a>
+                  <a href="/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
                 </span>
             </span>
 
@@ -249,14 +242,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2k</span>
+              <span>2.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -268,37 +261,47 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。</p>
-<h1 id="ridge-lasso回归">Ridge &amp; Lasso回归</h1>
-<p>在传统的线性回归中，是使用最小二乘法来估计参数的，通过最小化残差平方和来估计参数的，这个在机器学习领域也被称为损失函数：<br /><span class="math display">\[LOSS_{ols}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2\\\]</span><br />这种最小二乘估计的方法被证明了具有最佳线性无偏估计（Best Linear Unbias Estimator, BLUE）的性质，所谓的最佳，就是方差最小，但这是在线性无偏估计的前提下，在有偏的情况下方差就不一定是最小了，设想一下，如果牺牲这个有偏的性质来使得方差变小呢，根据bias-variance trade-off，会不会有可能使得整体的预测误差进一步降低呢？<br />于是Ridge和Lasso的形式就被提出来了，通过牺牲传统ols回归中无偏的性质来使得方差降低，以寻求更低的预测误差，这两者的损失函数分别如下：<br /><span class="math display">\[LOSS_{Ridge}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}\beta_j^2\\\]</span><br /><span class="math display">\[LOSS_{Lasso}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}|\beta_j|\\\]</span><br />可以发现，这两个损失函数呢，就是在原来的ols的损失函数上加了一个系数惩罚项，因为我们求解时是让损失函数最小，加了后面这个惩罚项呢，会使得系数变小，这个<span class="math inline">\(\lambda\)</span>就用来控制惩罚的力度，如果为0的话就和传统的线性回归没有差异了，如果是无穷大的话，那么所有的回归系数都会被弄到0，最后的所有的预测结果就是样本的均值了，但在实践中，我们可以通过交叉验证的方式调节<span class="math inline">\(\lambda\)</span>的大小，选取最优的惩罚力度，就可以使得最终的预测误差达到最小。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob" alt="image.png" /><br />Ridge和Lasso这种加惩罚项的方式叫做正则化（Regularization），在机器学习的应用很广，比如神经网络中就有应用。因此，Ridge也被称为<span class="math inline">\(L_2\)</span>正则化，后者被称为<span class="math inline">\(L_1\)</span>正则化。<br />虽然两者的加的惩罚项看起来差不多，其实是有着非常大的区别的，具体表现为Lasso可以使得系数压缩到0，而Ridge则不会有这种效果，把系数压缩到0的话就可以起到降维和变量选择的作用，因此Lasso在高维的数据中表现更好。<br />那么为啥会有这样的差别呢，首先我们来看他们的惩罚项的形式，一个用的是平方的形式，另一个用的是绝对值的形式，我们把之前的那个损失函数转化成一个优化问题：<br /><span class="math display">\[Ridge: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \quad s.t.\sum_{j=1}^{p}\beta_j^2 \le s\\
-Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \quad s.t.\sum_{j=1}^{p}|\beta_j| \le s\\\]</span><br />假设只有两个系数，我们用几何的方式来表达这个优化问题，Ridge的约束条件是一个平方的形式，可行域就是一个圆，而Lasso的约束条件是绝对值的形式，可行域则是一个菱形，而目标函数在求解时，肯定是跟这个约束条件的可行域相切的，而Lasso由于他是一个菱形，那么他就更容易切到菱形的顶点，因此也会使得系数为0，而Ridge是一个圆，就不容易切到系数为0的地方，因此这就使得Lasso在压缩系数时会更倾向于压缩为0。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621697160270-8a07af21-ed57-4ad0-b2ca-de6eed23bcf8.png#align=left&amp;display=inline&amp;height=240&amp;id=hG528" alt="image.png" /></p>
-<h1 id="代码实践">代码实践</h1>
-<p>使用sklearn自带的波斯顿房价数据集做个试验，分别跑一遍Ridge和Lasso回归，并且通过交叉验证来选取<span class="math inline">\(\lambda\)</span>，将之与线性回归进行对比，结果如下：</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>MSE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>线性回归</td>
-<td>21.8977</td>
-</tr>
-<tr class="even">
-<td>Ridge回归</td>
-<td>21.7536</td>
-</tr>
-<tr class="odd">
-<td>Lasso回归</td>
-<td>21.8752</td>
-</tr>
-</tbody>
-</table>
-<p>可以发现，两者的预测效果较线性回归都有一定提升，其中Lasso回归提升较小，这是因为数据集的原因，只有13个变量，并且每个变量都make sense，因此效果就一般了，在高维的数据集中Lasso从理论上 讲应该就会有较好的表现了。<br />具体代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> RidgeCV,LassoCV</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">boston = load_boston() <span class="comment"># 导入波斯顿数据集</span></span><br><span class="line">X = boston.data</span><br><span class="line">y = boston.target</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y,random_state=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">lr = LinearRegression()</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line">y_pred_lr = lr.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;线性回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lr, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ridge=RidgeCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>) <span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">ridge.fit(X_train, y_train)</span><br><span class="line">y_pred_ridge = ridge.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Ridge回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_ridge, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">lasso=LassoCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>)<span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">lasso.fit(X_train, y_train)</span><br><span class="line">y_pred_lasso = lasso.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Lasso回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lasso, y_test)&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+        <p>对于结构化数据建模，现在主流使用的模型是都是树模型，lightgbm、xgboost等，这些模型有一个很重要的特性就是可以输出特征重要性，可以用来指导特征工程，但是却不能直接用来做特征选择，这篇文章就先主要谈谈使用特征重要性来筛选特征的缺陷，然后介绍一种基于特征重要性改进的特征选择方法——Boruta。 <a name="oDFBy"></a></p>
+<h1 id="使用特征重要性来筛选特征的缺陷">使用特征重要性来筛选特征的缺陷</h1>
+<ol type="1">
+<li>特征重要性只能说明哪些特征在训练时起到作用了，并不能说明特征和目标变量之间一定存在依赖关系。举例来说，随机生成一大堆没用的特征，然后用这些特征来训练模型，一样可以得到特征重要性，但是这个特征重要性并不会全是0，这是完全没有意义的。</li>
+<li>特征重要性容易高估数值特征和基数高的类别特征的重要性。这个道理很简单，特征重要度是根据决策树分裂前后节点的不纯度的减少量（基尼系数或者MSE）来算的，那么对于数值特征或者基础高的类别特征，不纯度较少相对来说会比较多。</li>
+<li>特征重要度在选择特征时需要决定阈值，要保留多少特征、删去多少特征，这些需要人为决定，并且删掉这些特征后模型的效果也不一定会提升。</li>
+</ol>
+<p>正由于特征重要性存在的这些缺陷，所以一般来说，特征重要性只能用来指导特征工程，比如看排名前几的特征都有啥，之后可以怎么根据这几个特征进行交叉，但是是不能够用来作为特征选择的依据的。但是特征重要性也不是完全没有用，使用得当还是能够作为特征选择的手段的，比如Boruta和Null Importance的特征选择就是基于特征重要性来做的。 <a name="k1sKx"></a></p>
+<h1 id="boruta">Boruta</h1>
+<p>Boruta的名字来自斯拉夫神话中一个住在树上里的恶魔，专门吃贵族，大致含义就是，专门用来剔除树模型那些特征重要性看起来很大，但是实际上并没有用的特征。<br />Boruta的主要思想包含两个，阴影特征（shadow feature）和二项分布，下面一一阐述： <a name="Drf6l"></a></p>
+<h2 id="阴影特征">阴影特征</h2>
+<p>特征重要性的一个缺陷就是无论这些特征的效果如何，重要性都是在这些特征之间对比，就有可能出现矮个里面选高个的现象，那能不能让他们和随机生成的特征比呢，按理来说随机生成特征的重要性应该都很低，那么这样就有了一个基准，就可以识别出哪些特征是有用的了。<br />阴影特征的思想就是把原来所有特征的取值都打乱，打乱后的特征就叫做阴影特征（这里用打乱原来特征的取值而不是新生成特征一个好处就是就保留了原来特征的分布，而不用生成一个新的分布），然后把这些阴影特征加入到原来的数据集中进行训练，如果原始特征的特征重要性还不如阴影特征的话，那说明这个原始特征的效果还不如随机的，可以直接剔除，具体来说步骤如下：</p>
+<ol type="1">
+<li>对于一个包含有m个特征的数据集，对于每个特征都会创建一份副本</li>
+<li>将特征副本的取值打乱顺序，得到m个阴影特征</li>
+<li>将m个阴影特征加入到原数据集中进行训练，输出特征重要性</li>
+<li>观察m个阴影特征的特征重要性的最大值，将之与原始特征的重要性进行比较，如果原始特征的重要性还不如阴影特征的话，那么就说明这个原始特征是没有用的</li>
+</ol>
+<p>不过这样做还是有个问题，因为这样只做了一次实验，会不会有随机性在里面呢？碰巧某个阴影特征就是特别的强，因此需要做多次实验，才能保证结果更可靠，这就是Boruta的第二个思想，用迭代的方式来进行特征选择。 <a name="eXnle"></a></p>
+<h2 id="二项分布">二项分布</h2>
+<p>前面说到，需要做多次试验才能保证结果更可靠，那么做完多次试验后怎么判断某个特征的去留？假设做了20次实验，然后有三个变量，age、height和weight，在20次实验中，age都被保留了，height被保留了4次，而weight一次都没被保留，那么应该选择哪些变量保留？哪些变量剔除呢？<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1647071703892-4bc4ec90-ff61-44dd-9c8a-87aa81ddfbff.png" alt="image.png" /><br />这里就用到了二项分布，假设每个特征被保留和被剔除的概率都是0.5的话，就跟抛硬币一样，所以n次实验的概率遵从二项分布，就可以通过设置一个阈值（如<span class="math inline">\(p=0.01\)</span>)，把分布的两端截断，分为三个区域：</p>
+<figure>
+<img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1647070157764-ea4e794d-f9f3-442c-92ef-61c84b48ef64.png" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<ol type="1">
+<li>拒绝区域（红色）：落在这块区域的特征在大部分实验中都被剔除了，因此是无用特征，可以直接剔除</li>
+<li>不确定区域（紫色）：落在这块区域的特征，有时候被剔除了，有时候又被保留，这时候就需要自行决定是否保留，算法默认保留</li>
+<li>接受区域（绿色）：落在这块区域的特征，大部分实验中都被保留了，可以视为有用特征。</li>
+</ol>
+<p><a name="ghaYE"></a></p>
+<h1 id="使用">使用</h1>
+<p>Boruta原本是R的包，现在也有了Python实现，可以直接调包使用： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install boruta</span><br></pre></td></tr></table></figure> Bortuta使用了类sklearn的接口，用起来也很方便，理论上lightgbm、xgboost、catboost都可以放进Boruta里面，但是实操中有时候会报错，原因未明，但实际上用官方例子的随机森林就可以了： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"><span class="keyword">from</span> boruta <span class="keyword">import</span> BorutaPy</span><br><span class="line"></span><br><span class="line"><span class="comment"># load X and y</span></span><br><span class="line"><span class="comment"># NOTE BorutaPy accepts numpy arrays only, hence the .values attribute</span></span><br><span class="line">X = pd.read_csv(<span class="string">&#x27;examples/test_X.csv&#x27;</span>, index_col=<span class="number">0</span>).values</span><br><span class="line">y = pd.read_csv(<span class="string">&#x27;examples/test_y.csv&#x27;</span>, header=<span class="literal">None</span>, index_col=<span class="number">0</span>).values</span><br><span class="line">y = y.ravel()</span><br><span class="line"></span><br><span class="line"><span class="comment"># define random forest classifier, with utilising all cores and</span></span><br><span class="line"><span class="comment"># sampling in proportion to y labels</span></span><br><span class="line">rf = RandomForestClassifier(n_jobs=-<span class="number">1</span>, class_weight=<span class="string">&#x27;balanced&#x27;</span>, max_depth=<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># define Boruta feature selection method</span></span><br><span class="line">feat_selector = BorutaPy(rf, n_estimators=<span class="string">&#x27;auto&#x27;</span>, verbose=<span class="number">2</span>, random_state=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># find all relevant features - 5 features should be selected</span></span><br><span class="line">feat_selector.fit(X, y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># check selected features - first 5 features are selected</span></span><br><span class="line">feat_selector.support_</span><br><span class="line"></span><br><span class="line"><span class="comment"># check ranking of features</span></span><br><span class="line">feat_selector.ranking_</span><br><span class="line"></span><br><span class="line"><span class="comment"># call transform() on X to filter it down to selected features</span></span><br><span class="line">X_filtered = feat_selector.transform(X)</span><br></pre></td></tr></table></figure> <a name="GST3P"></a></p>
 <h1 id="总结">总结</h1>
-<p>本文对Ridge和Lasso回归做了一个总结，并通过一个简单数据集做了实践。在写的同时发现需要再去看和学习的东西很多，一个流程下来对于算法原理的理解更加透彻了，这对于搭建自己的知识体系是很有帮助的，希望以后能够坚持学完一个新的东西就写篇总结。</p>
+<p>总结来说，Boruta就是生成了随机的阴影特征加入到原数据中，并比较阴影特征和原始特征的重要性大小，然后多次迭代，最终根据二项分布来比较特征优于阴影特征的次数来决定是否保留或者剔除特征，这样筛选最后得到的特征都是对于模型的预测能够起到积极作用的特征，注意到这是能够起到积极作用，但是并不代表特征筛选后一定会使得预测的效果最好，不过根据自己的实验，使用Boruta之后的效果基本上都不亚于原来未筛选时的效果，并且训练速度也大大加快了。 <a name="KP7iR"></a></p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://towardsdatascience.com/boruta-explained-the-way-i-wish-someone-explained-it-to-me-4489d70e154a">Boruta Explained Exactly How You Wished Someone Explained to You | by Samuele Mazzanti | Towards Data Science</a></li>
+<li><a target="_blank" rel="noopener" href="https://danielhomola.com/feature%20selection/phd/borutapy-an-all-relevant-feature-selection-method/">BorutaPy - Daniel Homola</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/scikit-learn-contrib/boruta_py">scikit-learn-contrib/boruta_py: Python implementations of the Boruta all-relevant feature selection method.</a></li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/boruta-explained-the-way-i-wish-someone-explained-it-to-me-4489d70e154a"></a></p>
 
     </div>
 
@@ -338,7 +341,6 @@ Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \qua
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
-              <a href="/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/" rel="tag"># 回归算法</a>
           </div>
 
         
@@ -347,13 +349,10 @@ Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \qua
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/05/04/%E5%89%8D%E5%90%91%E5%88%86%E6%AD%A5%E5%9B%9E%E5%BD%92Forward%20Stagewise%20Regression%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/" rel="prev" title="前向分步回归Forward Stagewise Regression原理及Python实现">
-      <i class="fa fa-chevron-left"></i> 前向分步回归Forward Stagewise Regression原理及Python实现
+    <a href="/2022/03/12/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" rel="prev" title="特征选择的基本方法总结">
+      <i class="fa fa-chevron-left"></i> 特征选择的基本方法总结
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" rel="next" title="GBDT梯度提升树算法原理">
-      GBDT梯度提升树算法原理 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -418,7 +417,7 @@ Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \qua
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ridge-lasso%E5%9B%9E%E5%BD%92"><span class="nav-number">1.</span> <span class="nav-text">Ridge &amp; Lasso回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">代码实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%89%B9%E5%BE%81%E9%87%8D%E8%A6%81%E6%80%A7%E6%9D%A5%E7%AD%9B%E9%80%89%E7%89%B9%E5%BE%81%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="nav-number">1.</span> <span class="nav-text">使用特征重要性来筛选特征的缺陷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#boruta"><span class="nav-number">2.</span> <span class="nav-text">Boruta</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B4%E5%BD%B1%E7%89%B9%E5%BE%81"><span class="nav-number">2.1.</span> <span class="nav-text">阴影特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E9%A1%B9%E5%88%86%E5%B8%83"><span class="nav-number">2.2.</span> <span class="nav-text">二项分布</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

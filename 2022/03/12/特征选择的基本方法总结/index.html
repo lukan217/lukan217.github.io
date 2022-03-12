@@ -22,24 +22,22 @@
     var CONFIG = {"hostname":"lukan1999.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。">
+  <meta name="description" content="做机器学习时往往会通过特征交叉来衍生出一系列的特征，那么如何来确保这些特征是有用的呢？太多的特征一方面会加重模型的负担，跑得很慢，另一方面无效的特征也会使得模型效果下降，因此就需要一些特征选择的方法来剔除无效的特征，这篇文章就主要总结下特征选择的几种基本思路。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ridge和Lasso回归与代码实践">
-<meta property="og:url" content="https://lukan1999.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:title" content="特征选择的基本方法总结">
+<meta property="og:url" content="https://lukan1999.github.io/2022/03/12/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Lukan&#39;s Blog">
-<meta property="og:description" content="线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。">
+<meta property="og:description" content="做机器学习时往往会通过特征交叉来衍生出一系列的特征，那么如何来确保这些特征是有用的呢？太多的特征一方面会加重模型的负担，跑得很慢，另一方面无效的特征也会使得模型效果下降，因此就需要一些特征选择的方法来剔除无效的特征，这篇文章就主要总结下特征选择的几种基本思路。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1621697160270-8a07af21-ed57-4ad0-b2ca-de6eed23bcf8.png#align=left&amp;display=inline&amp;height=240&amp;id=hG528">
-<meta property="article:published_time" content="2021-05-22T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-06-30T18:35:23.880Z">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-05756baf02bd7a023f7b27842594bc2b_1440w.jpg">
+<meta property="article:published_time" content="2022-03-12T12:44:33.272Z">
+<meta property="article:modified_time" content="2022-03-12T12:46:21.242Z">
 <meta property="article:author" content="Lukan">
 <meta property="article:tag" content="机器学习">
-<meta property="article:tag" content="回归算法">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob">
+<meta name="twitter:image" content="https://pic4.zhimg.com/80/v2-05756baf02bd7a023f7b27842594bc2b_1440w.jpg">
 
-<link rel="canonical" href="https://lukan1999.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
+<link rel="canonical" href="https://lukan1999.github.io/2022/03/12/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
 
 
 <script id="page-configurations">
@@ -52,7 +50,7 @@
   };
 </script>
 
-  <title>Ridge和Lasso回归与代码实践 | Lukan's Blog</title>
+  <title>特征选择的基本方法总结 | Lukan's Blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
     <script>
@@ -194,7 +192,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://lukan1999.github.io/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/">
+    <link itemprop="mainEntityOfPage" href="https://lukan1999.github.io/2022/03/12/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -207,7 +205,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Ridge和Lasso回归与代码实践
+          特征选择的基本方法总结
         </h1>
 
         <div class="post-meta">
@@ -216,23 +214,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-05-23 00:00:00" itemprop="dateCreated datePublished" datetime="2021-05-23T00:00:00+08:00">2021-05-23</time>
+              <time title="创建时间：2022-03-12 20:44:33 / 修改时间：20:46:21" itemprop="dateCreated datePublished" datetime="2022-03-12T20:44:33+08:00">2022-03-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-01 02:35:23" itemprop="dateModified" datetime="2021-07-01T02:35:23+08:00">2021-07-01</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">机器学习算法</span></a>
+                  <a href="/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
                 </span>
             </span>
 
@@ -249,14 +241,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2k</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -268,37 +260,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>线性回归作为一个非常经典的方法，被广泛应用于计量领域，用来解释变量对y的影响，但是在机器学习领域用纯粹的线性回归来做预测的好像就很少了，因为预测效果不怎么样，因此本文将对线性回归的两种改进方法做一个总结。</p>
-<h1 id="ridge-lasso回归">Ridge &amp; Lasso回归</h1>
-<p>在传统的线性回归中，是使用最小二乘法来估计参数的，通过最小化残差平方和来估计参数的，这个在机器学习领域也被称为损失函数：<br /><span class="math display">\[LOSS_{ols}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2\\\]</span><br />这种最小二乘估计的方法被证明了具有最佳线性无偏估计（Best Linear Unbias Estimator, BLUE）的性质，所谓的最佳，就是方差最小，但这是在线性无偏估计的前提下，在有偏的情况下方差就不一定是最小了，设想一下，如果牺牲这个有偏的性质来使得方差变小呢，根据bias-variance trade-off，会不会有可能使得整体的预测误差进一步降低呢？<br />于是Ridge和Lasso的形式就被提出来了，通过牺牲传统ols回归中无偏的性质来使得方差降低，以寻求更低的预测误差，这两者的损失函数分别如下：<br /><span class="math display">\[LOSS_{Ridge}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}\beta_j^2\\\]</span><br /><span class="math display">\[LOSS_{Lasso}=\sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2+\lambda\sum_{j=1}^{p}|\beta_j|\\\]</span><br />可以发现，这两个损失函数呢，就是在原来的ols的损失函数上加了一个系数惩罚项，因为我们求解时是让损失函数最小，加了后面这个惩罚项呢，会使得系数变小，这个<span class="math inline">\(\lambda\)</span>就用来控制惩罚的力度，如果为0的话就和传统的线性回归没有差异了，如果是无穷大的话，那么所有的回归系数都会被弄到0，最后的所有的预测结果就是样本的均值了，但在实践中，我们可以通过交叉验证的方式调节<span class="math inline">\(\lambda\)</span>的大小，选取最优的惩罚力度，就可以使得最终的预测误差达到最小。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621696524735-840f5da7-5fe4-4149-80a7-13ef9c3cbec6.png#align=left&amp;display=inline&amp;height=249&amp;id=jCBob" alt="image.png" /><br />Ridge和Lasso这种加惩罚项的方式叫做正则化（Regularization），在机器学习的应用很广，比如神经网络中就有应用。因此，Ridge也被称为<span class="math inline">\(L_2\)</span>正则化，后者被称为<span class="math inline">\(L_1\)</span>正则化。<br />虽然两者的加的惩罚项看起来差不多，其实是有着非常大的区别的，具体表现为Lasso可以使得系数压缩到0，而Ridge则不会有这种效果，把系数压缩到0的话就可以起到降维和变量选择的作用，因此Lasso在高维的数据中表现更好。<br />那么为啥会有这样的差别呢，首先我们来看他们的惩罚项的形式，一个用的是平方的形式，另一个用的是绝对值的形式，我们把之前的那个损失函数转化成一个优化问题：<br /><span class="math display">\[Ridge: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \quad s.t.\sum_{j=1}^{p}\beta_j^2 \le s\\
-Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \quad s.t.\sum_{j=1}^{p}|\beta_j| \le s\\\]</span><br />假设只有两个系数，我们用几何的方式来表达这个优化问题，Ridge的约束条件是一个平方的形式，可行域就是一个圆，而Lasso的约束条件是绝对值的形式，可行域则是一个菱形，而目标函数在求解时，肯定是跟这个约束条件的可行域相切的，而Lasso由于他是一个菱形，那么他就更容易切到菱形的顶点，因此也会使得系数为0，而Ridge是一个圆，就不容易切到系数为0的地方，因此这就使得Lasso在压缩系数时会更倾向于压缩为0。<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1621697160270-8a07af21-ed57-4ad0-b2ca-de6eed23bcf8.png#align=left&amp;display=inline&amp;height=240&amp;id=hG528" alt="image.png" /></p>
-<h1 id="代码实践">代码实践</h1>
-<p>使用sklearn自带的波斯顿房价数据集做个试验，分别跑一遍Ridge和Lasso回归，并且通过交叉验证来选取<span class="math inline">\(\lambda\)</span>，将之与线性回归进行对比，结果如下：</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>MSE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>线性回归</td>
-<td>21.8977</td>
-</tr>
-<tr class="even">
-<td>Ridge回归</td>
-<td>21.7536</td>
-</tr>
-<tr class="odd">
-<td>Lasso回归</td>
-<td>21.8752</td>
-</tr>
-</tbody>
-</table>
-<p>可以发现，两者的预测效果较线性回归都有一定提升，其中Lasso回归提升较小，这是因为数据集的原因，只有13个变量，并且每个变量都make sense，因此效果就一般了，在高维的数据集中Lasso从理论上 讲应该就会有较好的表现了。<br />具体代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> RidgeCV,LassoCV</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">boston = load_boston() <span class="comment"># 导入波斯顿数据集</span></span><br><span class="line">X = boston.data</span><br><span class="line">y = boston.target</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y,random_state=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">lr = LinearRegression()</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line">y_pred_lr = lr.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;线性回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lr, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">ridge=RidgeCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>) <span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">ridge.fit(X_train, y_train)</span><br><span class="line">y_pred_ridge = ridge.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Ridge回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_ridge, y_test)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">lasso=LassoCV(alphas=np.logspace(-<span class="number">5</span>,<span class="number">5</span>,<span class="number">11</span>),cv=<span class="number">5</span>)<span class="comment"># lambda选择10的-5次方到5次方，五折交叉选择</span></span><br><span class="line">lasso.fit(X_train, y_train)</span><br><span class="line">y_pred_lasso = lasso.predict(X_test)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Lasso回归MSE：<span class="subst">&#123;mean_squared_error(y_pred_lasso, y_test)&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">总结</h1>
-<p>本文对Ridge和Lasso回归做了一个总结，并通过一个简单数据集做了实践。在写的同时发现需要再去看和学习的东西很多，一个流程下来对于算法原理的理解更加透彻了，这对于搭建自己的知识体系是很有帮助的，希望以后能够坚持学完一个新的东西就写篇总结。</p>
+        <p>做机器学习时往往会通过特征交叉来衍生出一系列的特征，那么如何来确保这些特征是有用的呢？太多的特征一方面会加重模型的负担，跑得很慢，另一方面无效的特征也会使得模型效果下降，因此就需要一些特征选择的方法来剔除无效的特征，这篇文章就主要总结下特征选择的几种基本思路。 <a name="LZb8F"></a></p>
+<h1 id="img过滤法"><img src="https://pic4.zhimg.com/80/v2-05756baf02bd7a023f7b27842594bc2b_1440w.jpg" alt="img" />过滤法</h1>
+<p>过滤法的思想就是不依赖模型，仅从特征的角度来做特征的筛选，具体又可以分为两种方法，一种是根据特征里面包含的信息量，如方差选择法，如果一列特征的方差很小，每个样本的取值都一样的话，说明这个特征的作用不大，可以直接剔除。另一种是对每一个特征，都计算关于目标特征的相关度，然后根据这个相关度来筛选特征，只保留高于某个阈值的特征，这里根据相关度的计算方式不同就可以衍生出一下很多种方法：</p>
+<ol type="1">
+<li>Pearson相关系数</li>
+<li>卡方验证</li>
+<li>互信息和最大信息系数</li>
+</ol>
+<p>过滤法的优势在于效率非常快，不用跑模型就能很快筛选出一批的特征，不过缺陷是筛选出来的特征对于模型不一定是有用的，并且可能会有冗余特征，而且也不能考虑到特征之间的相互作用。 <a name="Fnzju"></a></p>
+<h1 id="包装法">包装法</h1>
+<p>与过滤法不同，包装法是根据训练模型的效果来筛选特征的，所以第一步就是先划分训练集和测试集，然后搜索一个最优的特征子集，使得模型在测试集上的指标表现最好。根据搜索方式的不同又可以分为以下三种类型：</p>
+<ol type="1">
+<li>暴力搜索：穷举所有的特征子集，获取最好的一个，不过计算复杂度是指数级的，一般不会用</li>
+<li>贪心搜索：分为前向搜索和后向搜索，就是每次增加一个或者减少一个特征，看模型的效果会不会变好，依此来选择特征是否保留，计量里面学的逐步回归就属于这种方法</li>
+<li>启发式搜索：根据遗传算法、模拟退火、蚁群算法等启发式算法来搜索最优的特征子集</li>
+</ol>
+<p>包装法的优势在于选出的特征都是对于模型的效果有提升的，但是缺陷是需要训练很多次模型来评估特征的作用，效率低下，只能在特征和样本量相对较少的时候用一下。 <a name="hEZGe"></a></p>
+<h1 id="嵌入法">嵌入法</h1>
+<p>嵌入法的嵌入就是把特征的选择嵌入到模型的训练过程中，在模型训练完成之后便可得出哪些特征是有用的，哪些特征是没用的。这种方法就需要特定的模型才能做了，具体来说有两种：</p>
+<ol type="1">
+<li>Lasso：通过控制惩罚项<span class="math inline">\(\lambda\)</span>的大小，可以将一些变量的系数压缩为0，就起到了特征选择的作用</li>
+<li>树模型：随机森林和GBDT这些树模型，可以输出特征重要性，通过特征重要性可以大概知道哪些特征有用，哪些没用</li>
+</ol>
+<p>嵌入法的同时兼顾了包装法和嵌入法的优点，不过实际使用过程中，还是会有些问题，尤其是用特征重要性，之后更新下两篇文章，主要谈谈使用特征重要性作为特征选择的缺陷，以及两种基于特征重要性改进的特征选择方法：Boruta和Null Importance。 <a name="A8Flw"></a></p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/74198735">【机器学习】特征选择(Feature Selection)方法汇总 - 知乎</a></li>
+<li>《美团机器学习实践》</li>
+</ol>
 
     </div>
 
@@ -338,7 +328,6 @@ Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \qua
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
-              <a href="/tags/%E5%9B%9E%E5%BD%92%E7%AE%97%E6%B3%95/" rel="tag"># 回归算法</a>
           </div>
 
         
@@ -347,12 +336,12 @@ Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \qua
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/05/04/%E5%89%8D%E5%90%91%E5%88%86%E6%AD%A5%E5%9B%9E%E5%BD%92Forward%20Stagewise%20Regression%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/" rel="prev" title="前向分步回归Forward Stagewise Regression原理及Python实现">
-      <i class="fa fa-chevron-left"></i> 前向分步回归Forward Stagewise Regression原理及Python实现
+    <a href="/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/" rel="prev" title="贝叶斯优化基本原理总结">
+      <i class="fa fa-chevron-left"></i> 贝叶斯优化基本原理总结
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" rel="next" title="GBDT梯度提升树算法原理">
-      GBDT梯度提升树算法原理 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/03/12/%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9-Boruta/" rel="next" title="树模型的特征选择-Boruta">
+      树模型的特征选择-Boruta <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -418,7 +407,7 @@ Lasso: \quad \min \sum_{i=1}^{n}(y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij})^2 \qua
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ridge-lasso%E5%9B%9E%E5%BD%92"><span class="nav-number">1.</span> <span class="nav-text">Ridge &amp; Lasso回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5"><span class="nav-number">2.</span> <span class="nav-text">代码实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#img%E8%BF%87%E6%BB%A4%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">过滤法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%85%E8%A3%85%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">包装法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">嵌入法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
