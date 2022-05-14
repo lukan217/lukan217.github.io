@@ -262,14 +262,9 @@
 
       
         <p>当下时间序列预测的方法主要有三种吧，第一个是传统的时间序列预测方法，典型代表有ARIMA和指数平滑法；第二个是基于机器学习的方法，目前用的最多的是lightgbm和xgboost，在很多时序预测比赛前几名的方案都可以看到这两种方法；第三个是基于深度学习的方法，如RNN、LSTM等。现在传统时序预测的方法的预测精度都已经不如基于机器学习和深度学习的方法了，但是后者依赖于特征工程，特征调教的好的话是可以达到很高的预测精度的，因此，本文就总结下时间序列数据常见的特征工程方法。<br /></p>
-<p>一个典型的时间序列数据，会包含以下几列：时间戳，时序值，序列的属性变量，比如下图，日期就是时间戳，销量就是时序值，如果是多序列的话可能还会有序列的属性变量，如城市、产品、价格等。<br /><br>
-<img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1625930948808-5fa93c14-0cbd-4aa6-bcb3-72da3ce43176.png#align=left&amp;display=inline&amp;height=151" alt="image.png"><br /><br>
-因此，时间序列的特征工程也大多是基于这三个数据衍生出来的：<br>
-<img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1625934882012-f1feb04c-b9a7-4dda-85db-53aef26727ca.jpeg" alt="">接下来将一一展开：<br>
-<a name="ayMJm"></a></p>
-<h1>时间戳衍生的特征</h1>
-<p>时间戳虽然只有一列，但是也可以根据这个就衍生出很多很多变量了，具体可以分为三大类：时间特征、布尔特征，时间差特征<br>
-<a name="JLCjk"></a></p>
+<p>一个典型的时间序列数据，会包含以下几列：时间戳，时序值，序列的属性变量，比如下图，日期就是时间戳，销量就是时序值，如果是多序列的话可能还会有序列的属性变量，如城市、产品、价格等。<br /> <img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1625930948808-5fa93c14-0cbd-4aa6-bcb3-72da3ce43176.png#align=left&amp;display=inline&amp;height=151" alt="image.png" /><br /> 因此，时间序列的特征工程也大多是基于这三个数据衍生出来的： <img src="https://cdn.nlark.com/yuque/0/2021/jpeg/764062/1625934882012-f1feb04c-b9a7-4dda-85db-53aef26727ca.jpeg" />接下来将一一展开： <a name="ayMJm"></a></p>
+<h1 id="时间戳衍生的特征">时间戳衍生的特征</h1>
+<p>时间戳虽然只有一列，但是也可以根据这个就衍生出很多很多变量了，具体可以分为三大类：时间特征、布尔特征，时间差特征 <a name="JLCjk"></a></p>
 <h2 id="时间特征">时间特征</h2>
 <ul>
 <li>年</li>
@@ -279,8 +274,7 @@
 <li>天：一年、一月、一周的第几天</li>
 <li>小时</li>
 <li>分钟</li>
-<li>…<br>
-<a name="YHwlX"></a></li>
+<li>... <a name="YHwlX"></a></li>
 </ul>
 <h2 id="布尔特征">布尔特征</h2>
 <ul>
@@ -290,8 +284,7 @@
 <li>是否节假日</li>
 <li>是否特殊日期</li>
 <li>是否早上/中午/晚上</li>
-<li>…<br>
-<a name="8UvOr"></a></li>
+<li>... <a name="8UvOr"></a></li>
 </ul>
 <h2 id="时间差特征">时间差特征</h2>
 <ul>
@@ -300,31 +293,24 @@
 <li>距离周末的天数</li>
 <li>距离节假日的天数</li>
 <li>距离特殊日期的天数</li>
-<li>…<br>
-<a name="wnRgL"></a></li>
+<li>... <a name="wnRgL"></a></li>
 </ul>
-<h1>时序值衍生的特征</h1>
-<p>因为时间序列是通过历史来预测未来，那么，这个时序值的历史数据，也就是当前时间点之前的信息就非常有用，通过他可以发现时间序列的趋势因素、季节性周期性因素以及一些不规则的变动，具体来说这部分特征可以分为三种：滞后值、滑动窗口统计和拓展窗口统计。<br>
-<a name="YXNqf"></a></p>
+<h1 id="时序值衍生的特征">时序值衍生的特征</h1>
+<p>因为时间序列是通过历史来预测未来，那么，这个时序值的历史数据，也就是当前时间点之前的信息就非常有用，通过他可以发现时间序列的趋势因素、季节性周期性因素以及一些不规则的变动，具体来说这部分特征可以分为三种：滞后值、滑动窗口统计和拓展窗口统计。 <a name="YXNqf"></a></p>
 <h2 id="滞后值">滞后值</h2>
-<p>也称lag feature，比如对于t时刻的数据，我们认为他是跟昨天的数据、上周同一天的数据、上个月同一天的数据、去年同期的数据是高度相关的，那么，我们就可以将t-1、t-7、t-30、t-365的数据用来做特征。<br />但是在使用滞后值作为特征时需要注意一点，就是当在进行多步预测的时候，如果预测的horizon超过了滞后的期数，那么这时候就得使用递归的方式，将先前预测的值作为特征，举个例子，使用滞后一期的值作为特征，当前时间点为2021-07-10，我要预测2021-07-11和2021-07-12的股票价格，那么2021-07-11的值是可以预测的，因为我有2021-07-10的数据，但是2021-07-12的数据就不行了，因为我没有2021-07-11的数据，所以这时候一种做法就是将先前2021-07-11的预测值直接作为特征的输入，对于这种预测就得一行一行来，预测一行，拿预测值作为输入，再预测一行，再得到预测值，再预测一行，以此类推…<br>
-<a name="P4fWX"></a></p>
+<p>也称lag feature，比如对于t时刻的数据，我们认为他是跟昨天的数据、上周同一天的数据、上个月同一天的数据、去年同期的数据是高度相关的，那么，我们就可以将t-1、t-7、t-30、t-365的数据用来做特征。<br />但是在使用滞后值作为特征时需要注意一点，就是当在进行多步预测的时候，如果预测的horizon超过了滞后的期数，那么这时候就得使用递归的方式，将先前预测的值作为特征，举个例子，使用滞后一期的值作为特征，当前时间点为2021-07-10，我要预测2021-07-11和2021-07-12的股票价格，那么2021-07-11的值是可以预测的，因为我有2021-07-10的数据，但是2021-07-12的数据就不行了，因为我没有2021-07-11的数据，所以这时候一种做法就是将先前2021-07-11的预测值直接作为特征的输入，对于这种预测就得一行一行来，预测一行，拿预测值作为输入，再预测一行，再得到预测值，再预测一行，以此类推... <a name="P4fWX"></a></p>
 <h2 id="滑动窗口统计">滑动窗口统计</h2>
-<p>除了使用原始Lag值作为特征，还可以使用先前时间观察值的统计信息作为特征，这种类型的特征叫做滑动窗口统计，Rolling Window Statistics。比如对于t时刻，我们可以取前七天的统计值作为特征，也就是将t-1~t-8这个时间段数据的平均数、中位数、标准差、最大值、最小值等作为特征，这里指定的window就是7，也可以根据需要指定14，30等，可以发现，上面说的滞后值特征其实就是一种特殊的滑动窗口，他的window=1，然后滑动窗口统计也是可以指定滞后的期数来衍生出更多的特征的，比如七天前那个时刻的前七天数据的统计量。<br />同理，在构造这种特征的时候，也需要注意一下在多步预测时可能出现的问题。<br>
-<a name="pxjRE"></a></p>
+<p>除了使用原始Lag值作为特征，还可以使用先前时间观察值的统计信息作为特征，这种类型的特征叫做滑动窗口统计，Rolling Window Statistics。比如对于t时刻，我们可以取前七天的统计值作为特征，也就是将t-1~t-8这个时间段数据的平均数、中位数、标准差、最大值、最小值等作为特征，这里指定的window就是7，也可以根据需要指定14，30等，可以发现，上面说的滞后值特征其实就是一种特殊的滑动窗口，他的window=1，然后滑动窗口统计也是可以指定滞后的期数来衍生出更多的特征的，比如七天前那个时刻的前七天数据的统计量。<br />同理，在构造这种特征的时候，也需要注意一下在多步预测时可能出现的问题。 <a name="pxjRE"></a></p>
 <h2 id="扩展窗口统计">扩展窗口统计</h2>
-<p>另一种特征叫做扩展窗口统计（Expanding Window Statistics），其实也算是一种特殊的滑动窗口统计，不过他用来统计的数据是整个序列全部的数据，统计值可以是平均数、中位数、标准差、最大值、最小值等，这种特征一般是用在多序列建模，比如不同的股票价格，可能会有着不同的内在属性，在预测的时候用这个特征作为区分也是一种方式。<br>
-<a name="KCYYO"></a></p>
-<h1>序列属性衍生的特征</h1>
+<p>另一种特征叫做扩展窗口统计（Expanding Window Statistics），其实也算是一种特殊的滑动窗口统计，不过他用来统计的数据是整个序列全部的数据，统计值可以是平均数、中位数、标准差、最大值、最小值等，这种特征一般是用在多序列建模，比如不同的股票价格，可能会有着不同的内在属性，在预测的时候用这个特征作为区分也是一种方式。 <a name="KCYYO"></a></p>
+<h1 id="序列属性衍生的特征">序列属性衍生的特征</h1>
 <p><a name="CpZXA"></a></p>
 <h2 id="连续变量衍生">连续变量衍生</h2>
-<p>一个序列可能会伴有多个连续变量的特征，比如说对于股票数据，除了收盘价，可能还会有成交量、开盘价等伴随的特征，对于销量数据，可能还会伴随有价格的特征。对于这种连续变量，可以直接作为一个特征，也可以像之前时序值衍生的特征那样做处理，或者也可以与先前的数据做差值，比如t时刻的价格减去t-1时刻的价格。但是一般这种连续变量使用不多，因为这些值在未来也很可能是不可知的，那怎么能当成造特征呢？比如我要预测明天股票的收盘价，要用成交量作为一个特征，但是我怎么知道明天的成交量呢？这又是一个预测问题了。<br>
-<a name="Ui5Tb"></a></p>
-<h2 id="类别变量Encoding">类别变量Encoding</h2>
-<p>对于类别型变量，如果类别比较少，一般在机器学习里做的处理是one-hot encoding，但是如果类别一多，那么生成的特征是会很多的，容易造成维度灾难，但是也不能随便用label encoding，因为很多时候类别是不反应顺序的，如果给他编码成1、2、3、4、5，对于一些树模型来说，在分裂节点的时候可不管这些是类别型还是连续型，通通当作连续型来处理，这是有先后顺序的，肯定不能这么做。所以就有这么一种方式，就是和y做特征交互，比如预测销量，有一个特征是产品类别，那么就可以统计下这个产品类别下的销量均值、标准差等，这种其实也算是上面扩展窗口统计的一种。<br>
-<a name="J9fMZ"></a></p>
-<h1>参考</h1>
-<ol>
+<p>一个序列可能会伴有多个连续变量的特征，比如说对于股票数据，除了收盘价，可能还会有成交量、开盘价等伴随的特征，对于销量数据，可能还会伴随有价格的特征。对于这种连续变量，可以直接作为一个特征，也可以像之前时序值衍生的特征那样做处理，或者也可以与先前的数据做差值，比如t时刻的价格减去t-1时刻的价格。但是一般这种连续变量使用不多，因为这些值在未来也很可能是不可知的，那怎么能当成造特征呢？比如我要预测明天股票的收盘价，要用成交量作为一个特征，但是我怎么知道明天的成交量呢？这又是一个预测问题了。 <a name="Ui5Tb"></a></p>
+<h2 id="类别变量encoding">类别变量Encoding</h2>
+<p>对于类别型变量，如果类别比较少，一般在机器学习里做的处理是one-hot encoding，但是如果类别一多，那么生成的特征是会很多的，容易造成维度灾难，但是也不能随便用label encoding，因为很多时候类别是不反应顺序的，如果给他编码成1、2、3、4、5，对于一些树模型来说，在分裂节点的时候可不管这些是类别型还是连续型，通通当作连续型来处理，这是有先后顺序的，肯定不能这么做。所以就有这么一种方式，就是和y做特征交互，比如预测销量，有一个特征是产品类别，那么就可以统计下这个产品类别下的销量均值、标准差等，这种其实也算是上面扩展窗口统计的一种。 <a name="J9fMZ"></a></p>
+<h1 id="参考">参考</h1>
+<ol type="1">
 <li>《美团机器学习实践》</li>
 <li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/dUdGhWY8l77f1TiPsnjMQA">一度让我怀疑人生的时间戳特征处理技巧。</a></li>
 <li><a target="_blank" rel="noopener" href="https://machinelearningmastery.com/basic-feature-engineering-time-series-data-python/">Basic Feature Engineering With Time Series Data in Python</a></li>
@@ -449,7 +435,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">时间戳衍生的特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%B9%E5%BE%81"><span class="nav-number">1.1.</span> <span class="nav-text">时间特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E7%89%B9%E5%BE%81"><span class="nav-number">1.2.</span> <span class="nav-text">布尔特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%B7%AE%E7%89%B9%E5%BE%81"><span class="nav-number">1.3.</span> <span class="nav-text">时间差特征</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">时序值衍生的特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%9E%E5%90%8E%E5%80%BC"><span class="nav-number">2.1.</span> <span class="nav-text">滞后值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%BB%9F%E8%AE%A1"><span class="nav-number">2.2.</span> <span class="nav-text">滑动窗口统计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E7%AA%97%E5%8F%A3%E7%BB%9F%E8%AE%A1"><span class="nav-number">2.3.</span> <span class="nav-text">扩展窗口统计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">序列属性衍生的特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E5%8F%98%E9%87%8F%E8%A1%8D%E7%94%9F"><span class="nav-number">3.1.</span> <span class="nav-text">连续变量衍生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%88%AB%E5%8F%98%E9%87%8FEncoding"><span class="nav-number">3.2.</span> <span class="nav-text">类别变量Encoding</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E6%88%B3%E8%A1%8D%E7%94%9F%E7%9A%84%E7%89%B9%E5%BE%81"><span class="nav-number">1.</span> <span class="nav-text">时间戳衍生的特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%B9%E5%BE%81"><span class="nav-number">1.1.</span> <span class="nav-text">时间特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94%E7%89%B9%E5%BE%81"><span class="nav-number">1.2.</span> <span class="nav-text">布尔特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%B7%AE%E7%89%B9%E5%BE%81"><span class="nav-number">1.3.</span> <span class="nav-text">时间差特征</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E5%80%BC%E8%A1%8D%E7%94%9F%E7%9A%84%E7%89%B9%E5%BE%81"><span class="nav-number">2.</span> <span class="nav-text">时序值衍生的特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%9E%E5%90%8E%E5%80%BC"><span class="nav-number">2.1.</span> <span class="nav-text">滞后值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%BB%9F%E8%AE%A1"><span class="nav-number">2.2.</span> <span class="nav-text">滑动窗口统计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E7%AA%97%E5%8F%A3%E7%BB%9F%E8%AE%A1"><span class="nav-number">2.3.</span> <span class="nav-text">扩展窗口统计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%B1%9E%E6%80%A7%E8%A1%8D%E7%94%9F%E7%9A%84%E7%89%B9%E5%BE%81"><span class="nav-number">3.</span> <span class="nav-text">序列属性衍生的特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E5%8F%98%E9%87%8F%E8%A1%8D%E7%94%9F"><span class="nav-number">3.1.</span> <span class="nav-text">连续变量衍生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%88%AB%E5%8F%98%E9%87%8Fencoding"><span class="nav-number">3.2.</span> <span class="nav-text">类别变量Encoding</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -532,7 +518,7 @@
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:09</span>
+    <span title="站点阅读时长">1:10</span>
 </div>
 
 <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
