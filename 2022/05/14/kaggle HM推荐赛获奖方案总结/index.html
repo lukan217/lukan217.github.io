@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content=womgfV2TbURRpAFqJs5AXSGKA6bk9Ahb3-8dRPb6ghY />
+  <meta name="baidu-site-verification" content=code-zAKugqLYHl />
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lukan217.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Kaggle HM推荐赛获奖方案总结">
+<meta property="og:url" content="https://lukan217.github.io/2022/05/14/kaggle%20HM%E6%8E%A8%E8%8D%90%E8%B5%9B%E8%8E%B7%E5%A5%96%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Lukan&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1652519977145-990e767f-fd60-4ced-bd79-d24e225fd1a3.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1652512638734-0abf8e61-2a80-4042-9547-38db5e32de91.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1652517925129-614ba42d-e10b-44aa-87ff-980f75d216a0.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1652518291522-78e85301-578d-4bbf-9d28-f7b84a34311a.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1652518252440-b3e414e8-19fc-4429-ad96-38c68c168fb7.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1652518271421-f86f7bb6-b8d5-409a-9a52-ebd109add659.png">
+<meta property="article:published_time" content="2022-05-14T09:39:02.476Z">
+<meta property="article:modified_time" content="2022-05-14T09:39:50.677Z">
+<meta property="article:author" content="Lukan">
+<meta property="article:tag" content="kaggle">
+<meta property="article:tag" content="推荐系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1652519977145-990e767f-fd60-4ced-bd79-d24e225fd1a3.png">
+
+<link rel="canonical" href="https://lukan217.github.io/2022/05/14/kaggle%20HM%E6%8E%A8%E8%8D%90%E8%B5%9B%E8%8E%B7%E5%A5%96%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Kaggle HM推荐赛获奖方案总结 | Lukan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VT12J2H04J');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?723ab32a1115451d64c620981363cd80";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Lukan's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Lukan's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录点滴成长</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <meta name="referrer" content="no-referrer" />
+    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2022/05/14/kaggle%20HM%E6%8E%A8%E8%8D%90%E8%B5%9B%E8%8E%B7%E5%A5%96%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lukan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lukan's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kaggle HM推荐赛获奖方案总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-14 17:39:02 / 修改时间：17:39:50" itemprop="dateCreated datePublished" datetime="2022-05-14T17:39:02+08:00">2022-05-14</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a name="uOrxS"></a></p>
+<h1 id="st-place-solution">1st place solution</h1>
+<p>文档链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070">1st place solution</a><br />整体框架：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1652519977145-990e767f-fd60-4ced-bd79-d24e225fd1a3.png" alt="overview (1).png" /> <a name="agjGv"></a></p>
+<h2 id="召回策略">召回策略</h2>
+<ol type="1">
+<li>用户上次购买的商品</li>
+<li>Item CF</li>
+<li>属于同个product code的商品</li>
+<li>热门商品</li>
+<li>graph embedding：ProNE</li>
+<li>逻辑回归：训练Logistic回归模型，从前1000个热门商品中检索到50~200个商品</li>
+</ol>
+<p>召回策略一共为每个用户召回了100-500个商品，使用HitNum@100来评估召回策略的质量，尽可能覆盖更多的正样本。 <a name="jbxxm"></a></p>
+<h2 id="特征工程">特征工程</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Count</td>
+<td>user-item, user-category of last week/month/season/same week of last year/all, time weighted count…</td>
+</tr>
+<tr class="even">
+<td>Time</td>
+<td>first,last days of tranactions…</td>
+</tr>
+<tr class="odd">
+<td>Mean/Max/Min</td>
+<td>aggregation of age,price,sales_channel_id…</td>
+</tr>
+<tr class="even">
+<td>Difference/Ratio</td>
+<td>difference between age and mean age of who purchased item, ratio of one user's purchased item count and the item's count</td>
+</tr>
+<tr class="odd">
+<td>Similarity</td>
+<td>item2item的协同过滤分数, item2item(word2vec)的余弦相似度, user2item(ProNE)的余弦相似度</td>
+</tr>
+</tbody>
+</table>
+<p><a name="WKsy0"></a></p>
+<h2 id="排序模型">排序模型</h2>
+<p>5个lightgbm classifier + 7个catboost classifier<br />不同的分类器分别用不同的时间跨度以及召回数量的数据进行训练，如下图所示：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1652512638734-0abf8e61-2a80-4042-9547-38db5e32de91.png" alt="cv.png" /> <a name="rrbKI"></a></p>
+<h2 id="cv策略">CV策略</h2>
+<p>使用最后一周作为验证集 <a name="rZbAm"></a></p>
+<h2 id="优化技巧">优化技巧</h2>
+<ol type="1">
+<li>模型推理优化：使用TreeLite 来优化lightgbm推理的速度（快了2倍），caboost-gpu版本比lightgbm-cpu版本快了30倍</li>
+<li>内存优化：类别特征用了labelencoder，并且使用了reduce_mem_usage函数</li>
+<li>特征存储：将创建的特征保存为feather格式，方便使用</li>
+<li>并行：将用户分为28组，在多个服务器上同时进行推理</li>
+<li>机器：128g内存，64核CPU, TITAN RTX GPU（真特么有钱啊！） <a name="WQeOZ"></a></li>
+</ol>
+<h2 id="亮点">亮点</h2>
+<ol type="1">
+<li><p>使用逻辑回归作为pre-ranker进行召回</p></li>
+<li><p>模型融合，用了12个模型进行融合</p></li>
+<li><p>各种优化技巧 <a name="Q561R"></a></p></li>
+</ol>
+<h1 id="nd-place-solution">2nd place solution</h1>
+<p>文档链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197">2nd place solution</a> <a name="tfTnq"></a></p>
+<h2 id="召回策略-1">召回策略</h2>
+<ol type="1">
+<li><p>热门商品，基于不同的维度进行召回：</p>
+<ol type="1">
+<li>用户属性：如不同年龄、地域购买的热门商品（其中，基于地域postal_code的召回最为显著的提升了分数）</li>
+<li>商品属性：如果用户购买了具有特定属性的商品，会寻找具有相同属性的热门商品</li>
+<li>使用不同的时间窗口：1、3、7、30、90天。</li>
+</ol></li>
+<li><p>用户历史购买过的全部商品</p></li>
+<li><p>使用MobileNet embedding计算的图像相似度及进行召回</p></li>
+<li><p>graph embedding：random walk <a name="xCAkG"></a></p></li>
+</ol>
+<h2 id="特征工程-1">特征工程</h2>
+<ol type="1">
+<li><p>用户基本特征：包括购买数量、价格、sales_channel_id</p></li>
+<li><p>商品基本特征：根据商品的每个属性进行统计，包括：times, price, age, sales_channel_id, FN, Active, club_member_status, fashion_news_frequency, last purchase time, average purchase interval</p></li>
+<li><p>用户商品组合特征：基于商品每个属性的统计信息，包括：num, time, sales_channel_id, last purchase time, and average purchase interval</p></li>
+<li><p>年龄商品组合特征：每个年龄组的商品受欢迎程度。</p></li>
+<li><p>用户商品回购特征：用户是否会回购商品以及商品是否会被回购</p></li>
+<li><p>高阶组合特征：例如，预测用户下次购买商品的时间</p></li>
+<li><p>相似度特征：通过各种手段计算商品与客户购买的商品的平均相似度 <a name="M5TgH"></a></p></li>
+</ol>
+<h2 id="排序模型-1">排序模型</h2>
+<p>魔改的lightgbm ranker，使用lambdarankmap作为目标函数（从xgboost里面copy的代码），比lightgbm原生的lambdarank目标要好。 <a name="J9f3W"></a></p>
+<h2 id="cv策略-1">cv策略</h2>
+<p>2-3个月作为训练集，最后一周作为测试集。 <a name="GX3mX"></a></p>
+<h2 id="亮点-1">亮点</h2>
+<ol type="1">
+<li><p>使用MobileNet生成了图像的embedding特征</p></li>
+<li><p>各种高阶特征：用户是否会回购商品以及商品是否会被回购、用户下次购买商品的时间等</p></li>
+<li><p>使用lambdarankmap作为目标函数的lgb ranker <a name="G7QZT"></a></p></li>
+</ol>
+<h1 id="rd-place-solution">3rd place solution</h1>
+<p>文档链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129">3rd place solution</a><br />作者说他整体建模的套路都和其他人差不多，因此分享了两点他觉得跟别人不同但是有用的东西：</p>
+<ol type="1">
+<li><p>召回策略特征：这个商品被哪种策略召回，以及被召回时的排名，加上这两个特征，以及将召回的数量从几十增加到上百，将LB分数从0.02855提高到0.03262，直接从银牌区进去了金牌区，此外，如果只增加召回的数量，而不添加增加召回的特征的话，CV分数非常低。</p></li>
+<li><p>BPR 矩阵分解得到的用户-商品相似度特征：用户和商品的相似性特征对排序模型很重要。关于item2item相似性的特征，例如Buyd together计数和word2vec，在大多数竞争对手的模型中都很常用，这些特征也大大提高了我的分数，但最能改善我的模型的是通过BPR矩阵分解获得的user2item相似性。这个BPR模型是在目标周之前（每周训练一个BPR）使用<a target="_blank" rel="noopener" href="https://implicit.readthedocs.io/en/latest/bpr.html">implicit</a>训练所有交易数据的。BPR相似性的auc约为0.720，而整个排序模型的auc约为0.806，其他单一特征的最佳auc约为0.680。最后，这个相似性特征将我的LB分数从0.03363提高到了0.03510，这将我从金牌区带到了奖品区。 <a name="fU9mA"></a></p></li>
+</ol>
+<h1 id="th-place-solution">4th place solution</h1>
+<p>文档链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324094">4th place solution</a><br />整体思路：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1652517925129-614ba42d-e10b-44aa-87ff-980f75d216a0.png" alt="arch.png" /> <a name="qL1xq"></a></p>
+<h2 id="召回策略-2">召回策略</h2>
+<ol type="1">
+<li>item CF</li>
+<li>最近购买：用户最近购买的12个商品</li>
+<li>热门商品：上周的热门商品</li>
+<li>Two Tower MMoE：作者主要关注这个模型的训练，因为它不仅能够为用户生成任意多的候选商品，还能够创建用户-商品相似度特征，这是模型的架构：</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1652518291522-78e85301-578d-4bbf-9d28-f7b84a34311a.png" alt="loss.png" /><br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1652518252440-b3e414e8-19fc-4429-ad96-38c68c168fb7.png" alt="item-tower.png" /><br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1652518271421-f86f7bb6-b8d5-409a-9a52-ebd109add659.png" alt="user-tower.png" /><br />对于用户侧的tower，作者还用了一个门控网络，以确保用户塔可以通过使用不同的expert为最近的活跃客户和非活跃客户进行学习。 <a name="ZYVEp"></a></p>
+<h2 id="冷启动">冷启动</h2>
+<ul>
+<li><p>用户冷启动：双塔MMoE可以使用用户基础特征为没有购买日志的用户生成候选商品。</p></li>
+<li><p>商品冷启动：除了商品的基本特征，作者还用了图像和文本的特征</p>
+<ul>
+<li><p>文本：从商品描述中提取TF-IDF特征，使用SVD+K-Means对商品进行聚类。然后使用聚类的label作为特征。</p></li>
+<li><p>图像：使用预训练的tf_efficientnet_b3_ns提取图像向量，使用PCA+K-均值聚类。然后使用聚类的label作为特征。 <a name="eXWZi"></a></p></li>
+</ul></li>
+</ul>
+<h2 id="亮点-2">亮点</h2>
+<ol type="1">
+<li><p>召回策略用了Two Tower MMoE</p></li>
+<li><p>文本和图像特征用的是embedding过后再进行一次聚类的标签 <a name="BctOx"></a></p></li>
+</ol>
+<h1 id="th-place-solution-1">5th place solution</h1>
+<p>文档链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324098">5th place solution</a> <a name="yjDMN"></a></p>
+<h2 id="召回策略-3">召回策略</h2>
+<ol type="1">
+<li>用户上一篮子的购买（以及和用户上次购买商品相同product code的商品），最近购买的商品</li>
+<li>User CF</li>
+<li>Item CF</li>
+<li>word2vec</li>
+<li>经常会被一起购买的商品</li>
+<li>根据用户的属性（年龄、性别等）召回的热门商品</li>
+</ol>
+<p>关于召回的数量，作者使用一个正样本的比例作为阈值来控制的，比如把阈值设为0.05的话，然后某个策略召回100个商品，正样本比例为0.01，那么可以召回少一点的商品，比如50个，这样刚好可以使得正样本比例刚好卡在0.05. <a name="EANNj"></a></p>
+<h2 id="embedding方法">Embedding方法</h2>
+<ol type="1">
+<li><p>商品的图像信息：使用swin transformer来提取embedding</p></li>
+<li><p>商品的文本信息：使用SentenceTransformer提取</p></li>
+<li><p>tf-idf获取商品的embedding</p></li>
+<li><p>word2vec获取商品的embedding <a name="V67L5"></a></p></li>
+</ol>
+<h2 id="特征工程-2">特征工程</h2>
+<ol type="1">
+<li>用户特征</li>
+<li>商品特征</li>
+<li>用户-商品特征：如相似度特征，聚合的统计特征等</li>
+</ol>
+<p>对于第1部分和第2部分，可以进行计算并保存一次，然后与第3部分的特征合并。这种方法可以节省很多时间，尤其是在推理的时候。 <a name="iBcjc"></a></p>
+<h2 id="模型">模型</h2>
+<p>作者用了大量时间在召回策略的设计上，因此只用了lightgbm单模 <a name="pKWxi"></a></p>
+<h2 id="亮点-3">亮点</h2>
+<ol type="1">
+<li>召回策略非常丰富，一共用了21种</li>
+<li>图像和文本的embedding，图像用了swin transformer，文本用了SentenceTransformer</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://www.zhihu.com/people/su-zhao-pei">
+            <span class="icon">
+              <i class="fab fa-zhihu"></i>
+            </span>
+
+            <span class="label">知乎</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kaggle/" rel="tag"># kaggle</a>
+              <a href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag"># 推荐系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/08/Bert%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/" rel="prev" title="BERT原理总结">
+      <i class="fa fa-chevron-left"></i> BERT原理总结
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="lukan217/lukan217.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#st-place-solution"><span class="nav-number">1.</span> <span class="nav-text">1st place solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E7%AD%96%E7%95%A5"><span class="nav-number">1.1.</span> <span class="nav-text">召回策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">排序模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cv%E7%AD%96%E7%95%A5"><span class="nav-number">1.4.</span> <span class="nav-text">CV策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7"><span class="nav-number">1.5.</span> <span class="nav-text">优化技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%AE%E7%82%B9"><span class="nav-number">1.6.</span> <span class="nav-text">亮点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nd-place-solution"><span class="nav-number">2.</span> <span class="nav-text">2nd place solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E7%AD%96%E7%95%A5-1"><span class="nav-number">2.1.</span> <span class="nav-text">召回策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-1"><span class="nav-number">2.2.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E6%A8%A1%E5%9E%8B-1"><span class="nav-number">2.3.</span> <span class="nav-text">排序模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cv%E7%AD%96%E7%95%A5-1"><span class="nav-number">2.4.</span> <span class="nav-text">cv策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%AE%E7%82%B9-1"><span class="nav-number">2.5.</span> <span class="nav-text">亮点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rd-place-solution"><span class="nav-number">3.</span> <span class="nav-text">3rd place solution</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#th-place-solution"><span class="nav-number">4.</span> <span class="nav-text">4th place solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E7%AD%96%E7%95%A5-2"><span class="nav-number">4.1.</span> <span class="nav-text">召回策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%B7%E5%90%AF%E5%8A%A8"><span class="nav-number">4.2.</span> <span class="nav-text">冷启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%AE%E7%82%B9-2"><span class="nav-number">4.3.</span> <span class="nav-text">亮点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#th-place-solution-1"><span class="nav-number">5.</span> <span class="nav-text">5th place solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E7%AD%96%E7%95%A5-3"><span class="nav-number">5.1.</span> <span class="nav-text">召回策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#embedding%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">Embedding方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-2"><span class="nav-number">5.3.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.4.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%AE%E7%82%B9-3"><span class="nav-number">5.5.</span> <span class="nav-text">亮点</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lukan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Lukan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lukan217" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lukan217" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:suzhaopei1999@gmail.com" title="E-Mail → mailto:suzhaopei1999@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/su-zhao-pei" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;su-zhao-pei" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lukan</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">42k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:10</span>
+</div>
+
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+
+    function createtime() {
+        var grt = new Date("07/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间 
+        now.setTime(now.getTime() + 250);
+        days = (now - grt) / 1000 / 60 / 60 / 24;
+        dnum = Math.floor(days);
+        hours = (now - grt) / 1000 / 60 / 60 - (24 * dnum);
+        hnum = Math.floor(hours);
+        if (String(hnum).length == 1) {
+            hnum = "0" + hnum;
+        }
+        minutes = (now - grt) / 1000 / 60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes);
+        if (String(mnum).length == 1) {
+            mnum = "0" + mnum;
+        }
+        seconds = (now - grt) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds);
+        if (String(snum).length == 1) {
+            snum = "0" + snum;
+        }
+        document.getElementById("timeDate").innerHTML = " | 本站已运行 " + dnum + " 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+    setInterval("createtime()", 250);
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>总访客数：
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>总访问量: 
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
