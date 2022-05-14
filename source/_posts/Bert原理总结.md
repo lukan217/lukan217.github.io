@@ -3,8 +3,9 @@ title: BERT原理总结
 mathjax: true
 tags:
 - 自然语言处理
+- 深度学习
 categories:
-- 算法原理
+- 深度学习
 ---
 
 

@@ -3,8 +3,9 @@ title: 树模型的特征选择-Boruta
 mathjax: true
 tags:
 - 机器学习
+- 特征选择
 categories:
-- 教程
+- 机器学习
 ---
 
 

@@ -3,7 +3,7 @@ title: Git常用操作总结
 tags:
 - git
 categories:
-- 教程
+- 计算机
 ---
 
 

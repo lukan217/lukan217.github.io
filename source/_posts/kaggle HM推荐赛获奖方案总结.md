@@ -3,6 +3,8 @@ title: Kaggle HM推荐赛获奖方案总结
 tags:
 - kaggle
 - 推荐系统
+categories:
+- 比赛
 ---
 
 

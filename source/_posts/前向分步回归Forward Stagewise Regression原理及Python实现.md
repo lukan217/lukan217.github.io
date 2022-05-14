@@ -4,10 +4,10 @@ mathjax: true
 date: 2021/5/4
 tags:
 - 机器学习
-- 回归算法
+- 线性回归
 - boosting
 categories:
-- 机器学习算法
+- 机器学习
 ---
 最近偶然接触到一种回归算法，叫做前向分布回归（Forward Stagewise Regression），注意这不是那个向前逐步回归（Forward stepwise regression），stepwise和stagewise，还是有区别的，网上关于他的介绍非常少，中文社区基本就没怎么看到了，就顺手写一下吧，算法的思想来源于boosting，理解这个也有助于之后对各种树模型的boosting算法的学习。
 
