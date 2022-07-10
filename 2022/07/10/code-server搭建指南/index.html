@@ -22,23 +22,23 @@
     var CONFIG = {"hostname":"lukan217.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="做机器学习时往往会通过特征交叉来衍生出一系列的特征，那么如何来确保这些特征是有用的呢？太多的特征一方面会加重模型的负担，跑得很慢，另一方面无效的特征也会使得模型效果下降，因此就需要一些特征选择的方法来剔除无效的特征，这篇文章就主要总结下特征选择的几种基本思路。">
+  <meta name="description" content="虽然自己之前搞了一台服务器，也在服务器上部署了jupyter notebook，但是仍有两个痛点没有解决：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="特征选择的基本方法总结">
-<meta property="og:url" content="https://lukan217.github.io/2022/03/12/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:title" content="code-server搭建指南">
+<meta property="og:url" content="https://lukan217.github.io/2022/07/10/code-server%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/index.html">
 <meta property="og:site_name" content="Lukan&#39;s Blog">
-<meta property="og:description" content="做机器学习时往往会通过特征交叉来衍生出一系列的特征，那么如何来确保这些特征是有用的呢？太多的特征一方面会加重模型的负担，跑得很慢，另一方面无效的特征也会使得模型效果下降，因此就需要一些特征选择的方法来剔除无效的特征，这篇文章就主要总结下特征选择的几种基本思路。">
+<meta property="og:description" content="虽然自己之前搞了一台服务器，也在服务器上部署了jupyter notebook，但是仍有两个痛点没有解决：">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://pic4.zhimg.com/80/v2-05756baf02bd7a023f7b27842594bc2b_1440w.jpg">
-<meta property="article:published_time" content="2022-03-12T12:44:33.272Z">
-<meta property="article:modified_time" content="2022-05-14T16:24:45.617Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1657447452075-701b98ea-8435-4da3-b86a-5181aac0797d.png#clientId=u7f73bf32-1eb1-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=841&amp;id=u78da3e34&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1262&amp;originWidth=2560&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=83496&amp;status=done&amp;style=none&amp;taskId=ucf3b3635-f4a1-4f4e-ab2c-a5e8c1e0bd3&amp;title=&amp;width=1706.6666666666667">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1657434255367-9c6b978a-c2c9-4976-86d6-8588c85b01d1.png#clientId=u7f73bf32-1eb1-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=355&amp;id=u5a4e0ffc&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=533&amp;originWidth=2034&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=93394&amp;status=done&amp;style=none&amp;taskId=uc9c8c788-7296-44dd-bfb1-93ba8620160&amp;title=&amp;width=1356">
+<meta property="article:published_time" content="2022-07-10T10:17:42.730Z">
+<meta property="article:modified_time" content="2022-07-10T10:24:59.765Z">
 <meta property="article:author" content="Lukan">
-<meta property="article:tag" content="机器学习">
-<meta property="article:tag" content="特征选择">
+<meta property="article:tag" content="服务器">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://pic4.zhimg.com/80/v2-05756baf02bd7a023f7b27842594bc2b_1440w.jpg">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1657447452075-701b98ea-8435-4da3-b86a-5181aac0797d.png#clientId=u7f73bf32-1eb1-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=841&amp;id=u78da3e34&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1262&amp;originWidth=2560&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=83496&amp;status=done&amp;style=none&amp;taskId=ucf3b3635-f4a1-4f4e-ab2c-a5e8c1e0bd3&amp;title=&amp;width=1706.6666666666667">
 
-<link rel="canonical" href="https://lukan217.github.io/2022/03/12/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
+<link rel="canonical" href="https://lukan217.github.io/2022/07/10/code-server%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/">
 
 
 <script id="page-configurations">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>特征选择的基本方法总结 | Lukan's Blog</title>
+  <title>code-server搭建指南 | Lukan's Blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
     <script>
@@ -193,7 +193,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2022/03/12/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
+    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2022/07/10/code-server%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -206,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          特征选择的基本方法总结
+          code-server搭建指南
         </h1>
 
         <div class="post-meta">
@@ -215,23 +215,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-03-12 20:44:33" itemprop="dateCreated datePublished" datetime="2022-03-12T20:44:33+08:00">2022-03-12</time>
+              <time title="创建时间：2022-07-10 18:17:42 / 修改时间：18:24:59" itemprop="dateCreated datePublished" datetime="2022-07-10T18:17:42+08:00">2022-07-10</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-15 00:24:45" itemprop="dateModified" datetime="2022-05-15T00:24:45+08:00">2022-05-15</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
                 </span>
             </span>
 
@@ -260,35 +254,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>做机器学习时往往会通过特征交叉来衍生出一系列的特征，那么如何来确保这些特征是有用的呢？太多的特征一方面会加重模型的负担，跑得很慢，另一方面无效的特征也会使得模型效果下降，因此就需要一些特征选择的方法来剔除无效的特征，这篇文章就主要总结下特征选择的几种基本思路。 <a name="LZb8F"></a></p>
-<h1 id="img过滤法"><img src="https://pic4.zhimg.com/80/v2-05756baf02bd7a023f7b27842594bc2b_1440w.jpg" alt="img" />过滤法</h1>
-<p>过滤法的思想就是不依赖模型，仅从特征的角度来做特征的筛选，具体又可以分为两种方法，一种是根据特征里面包含的信息量，如方差选择法，如果一列特征的方差很小，每个样本的取值都一样的话，说明这个特征的作用不大，可以直接剔除。另一种是对每一个特征，都计算关于目标特征的相关度，然后根据这个相关度来筛选特征，只保留高于某个阈值的特征，这里根据相关度的计算方式不同就可以衍生出一下很多种方法：</p>
+        <p>虽然自己之前搞了一台服务器，也在服务器上<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/384888122">部署了jupyter notebook</a>，但是仍有两个痛点没有解决：</p>
 <ol type="1">
-<li>Pearson相关系数</li>
-<li>卡方验证</li>
-<li>互信息和最大信息系数</li>
+<li>服务器部署了一些代码，有时候需要修改，通过vim直接修改是不现实的，因为没有补全高亮，改起来很麻烦，只能本地改好再上传上去</li>
+<li>虽然部署了jupyter，能够实现一些简单的代码编辑需求，但是仅限于ipynb，其他文件无法编辑查看，并且补全功能十分鸡肋</li>
 </ol>
-<p>过滤法的优势在于效率非常快，不用跑模型就能很快筛选出一批的特征，不过缺陷是筛选出来的特征对于模型不一定是有用的，并且可能会有冗余特征，而且也不能考虑到特征之间的相互作用。 <a name="Fnzju"></a></p>
-<h1 id="包装法">包装法</h1>
-<p>与过滤法不同，包装法是根据训练模型的效果来筛选特征的，所以第一步就是先划分训练集和测试集，然后搜索一个最优的特征子集，使得模型在测试集上的指标表现最好。根据搜索方式的不同又可以分为以下三种类型：</p>
+<p>因此，为了能够在浏览器里面得到和本地编程一样丝滑的体验，最终决定部署一个code-server，也就是web版的vscode，实测体验和本地的vscode没有任何区别，效果如下：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1657447452075-701b98ea-8435-4da3-b86a-5181aac0797d.png#clientId=u7f73bf32-1eb1-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=841&amp;id=u78da3e34&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1262&amp;originWidth=2560&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=83496&amp;status=done&amp;style=none&amp;taskId=ucf3b3635-f4a1-4f4e-ab2c-a5e8c1e0bd3&amp;title=&amp;width=1706.6666666666667" alt="image.png" /></p>
+<p><a name="FavUM"></a></p>
+<h1 id="搭建过程">搭建过程</h1>
+<p><a name="wJ0di"></a></p>
+<h2 id="准备">准备</h2>
 <ol type="1">
-<li>暴力搜索：穷举所有的特征子集，获取最好的一个，不过计算复杂度是指数级的，一般不会用</li>
-<li>贪心搜索：分为前向搜索和后向搜索，就是每次增加一个或者减少一个特征，看模型的效果会不会变好，依此来选择特征是否保留，计量里面学的逐步回归就属于这种方法</li>
-<li>启发式搜索：根据遗传算法、模拟退火、蚁群算法等启发式算法来搜索最优的特征子集</li>
+<li>一台云服务器</li>
+<li>一个经过公安部备案的域名</li>
 </ol>
-<p>包装法的优势在于选出的特征都是对于模型的效果有提升的，但是缺陷是需要训练很多次模型来评估特征的作用，效率低下，只能在特征和样本量相对较少的时候用一下。 <a name="hEZGe"></a></p>
-<h1 id="嵌入法">嵌入法</h1>
-<p>嵌入法的嵌入就是把特征的选择嵌入到模型的训练过程中，在模型训练完成之后便可得出哪些特征是有用的，哪些特征是没用的。这种方法就需要特定的模型才能做了，具体来说有两种：</p>
+<p>为什么要域名呢？因为我经常需要用jupyter notebook，但是这玩意在code-server里面由于安全性的原因需要通过https才能打开，但是通过ip地址是没办法走https的，因此就需要一个域名，而且是要经过备案的，不然没法访问。当然，如果你不需要用到jupyter notebook可以直接跳过这个步骤。<br />具体申请流程如下，以腾讯云为例：</p>
 <ol type="1">
-<li>Lasso：通过控制惩罚项<span class="math inline">\(\lambda\)</span>的大小，可以将一些变量的系数压缩为0，就起到了特征选择的作用</li>
-<li>树模型：随机森林和GBDT这些树模型，可以输出特征重要性，通过特征重要性可以大概知道哪些特征有用，哪些没用</li>
+<li>购买一个域名：<a target="_blank" rel="noopener" href="https://console.cloud.tencent.com/domain">https://console.cloud.tencent.com/domain</a></li>
+<li>为域名备案，走完整套流程大概要2周：<a target="_blank" rel="noopener" href="https://console.cloud.tencent.com/beian">https://console.cloud.tencent.com/beian</a></li>
+<li>最后一步，添加DNS解析：<a target="_blank" rel="noopener" href="https://console.dnspod.cn/">https://console.dnspod.cn/</a></li>
 </ol>
-<p>嵌入法的同时兼顾了包装法和嵌入法的优点，不过实际使用过程中，还是会有些问题，尤其是用特征重要性，之后更新下两篇文章，主要谈谈使用特征重要性作为特征选择的缺陷，以及两种基于特征重要性改进的特征选择方法：Boruta和Null Importance。 <a name="A8Flw"></a></p>
-<h1 id="参考">参考</h1>
-<ol type="1">
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/74198735">【机器学习】特征选择(Feature Selection)方法汇总 - 知乎</a></li>
-<li>《美团机器学习实践》</li>
-</ol>
+<p>主机记录可以填一个前缀，比如code，最后就是通过code.xxx.com来访问，记录值填写服务器公网ip，这样就在浏览器里面输入域名就会自动解析到服务器的地址了<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1657434255367-9c6b978a-c2c9-4976-86d6-8588c85b01d1.png#clientId=u7f73bf32-1eb1-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=355&amp;id=u5a4e0ffc&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=533&amp;originWidth=2034&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=93394&amp;status=done&amp;style=none&amp;taskId=uc9c8c788-7296-44dd-bfb1-93ba8620160&amp;title=&amp;width=1356" alt="image.png" /> <a name="BqcT9"></a></p>
+<h2 id="code-server配置">code-server配置</h2>
+<p>完成准备步骤后，就可以配置code-server了，安装步骤也很简单，依次输入以下命令就行了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://code-server.dev/install.sh | sh </span><br></pre></td></tr></table></figure>
+<p>如果上面的命令因为墙的原因下载不了，就只能通过本地下载安装包，传到服务器，再手动安装，这里以ubuntu为例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i code-server_4.5.0_amd64.deb</span><br></pre></td></tr></table></figure>
+<p>然后输入命令行输入<code>code-server</code>, 会生成一个本地配置文件，ctrl+C关闭，再去改配置文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.config/code-server/config.yaml</span><br><span class="line">===============</span><br><span class="line">bind-addr: 0.0.0.0:8080 # 如果没域名需要改成这个</span><br><span class="line">auth: password</span><br><span class="line">password: 123456</span><br><span class="line">cert: false</span><br><span class="line">===============</span><br><span class="line">code-server</span><br></pre></td></tr></table></figure>
+<p>这时候浏览器输入：公网ip:8080应该就能访问了 <a name="HBU8I"></a></p>
+<h2 id="配置https访问">配置https访问</h2>
+<p>完成以上的操作，code-server的基本配置就完成了，但是之前说过，这样是不完整的，因为没有域名，并且没有https，很多操作进行不了，所以建立弄一个备案好的域名，然后根据官网给的操作说明，配置nginx和用Let's Encrypt生成证书，依次进行以下操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装nginx并配置</span></span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install -y nginx certbot python3-certbot-nginx</span><br><span class="line">vim /etc/nginx/sites-available/code-server</span><br><span class="line"><span class="meta">#</span><span class="bash"> 填入以下内容，域名记得改一下</span></span><br><span class="line">===========================================</span><br><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen [::]:80;</span><br><span class="line">    server_name mydomain.com;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">      proxy_pass http://localhost:8080/;</span><br><span class="line">      proxy_set_header Host $host;</span><br><span class="line">      proxy_set_header Upgrade $http_upgrade;</span><br><span class="line">      proxy_set_header Connection upgrade;</span><br><span class="line">      proxy_set_header Accept-Encoding gzip;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">============================================</span><br><span class="line">sudo ln -s ../sites-available/code-server /etc/nginx/sites-enabled/code-server</span><br><span class="line"><span class="meta">#</span><span class="bash"> 为域名生成证书，最后那个是你的邮箱</span></span><br><span class="line">sudo certbot --non-interactive --redirect --agree-tos --nginx -d mydomain.com -m me@example.com</span><br></pre></td></tr></table></figure>
+<p><a name="eaemE"></a></p>
+<h2 id="配置守护进程">配置守护进程</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/lib/systemd/system/code-server.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入以下配置</span></span><br><span class="line">=========================</span><br><span class="line">[Unit]</span><br><span class="line">Description=code-server</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=exec</span><br><span class="line">Environment=HOME=/root</span><br><span class="line">ExecStart=/usr/bin/code-server</span><br><span class="line">Restart=always</span><br><span class="line">=========================</span><br><span class="line"><span class="meta">#</span><span class="bash"> 然后就可以通过以下命令来启动和关闭code-server服务了</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> start code-server</span></span><br><span class="line">systemctl start code-server</span><br><span class="line"><span class="meta">#</span><span class="bash"> stop code-server</span></span><br><span class="line">systemctl stop code-server</span><br><span class="line"><span class="meta">#</span><span class="bash"> code-server status</span></span><br><span class="line">systemctl status code-server</span><br></pre></td></tr></table></figure>
+<p>这样就基本配置成功了，之后再根据自己的需要装上插件，换下主题，就完全和本地的vscode没啥区别，可以随时随地在浏览器连接服务器进行编程了！</p>
 
     </div>
 
@@ -327,8 +328,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
-              <a href="/tags/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9/" rel="tag"># 特征选择</a>
+              <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag"># 服务器</a>
           </div>
 
         
@@ -337,13 +337,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/01/23/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E6%80%BB%E7%BB%93/" rel="prev" title="贝叶斯优化基本原理总结">
-      <i class="fa fa-chevron-left"></i> 贝叶斯优化基本原理总结
+    <a href="/2022/05/14/kaggle%20HM%E6%8E%A8%E8%8D%90%E8%B5%9B%E8%8E%B7%E5%A5%96%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/" rel="prev" title="Kaggle HM推荐赛获奖方案总结">
+      <i class="fa fa-chevron-left"></i> Kaggle HM推荐赛获奖方案总结
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/03/12/%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9-Boruta/" rel="next" title="树模型的特征选择-Boruta">
-      树模型的特征选择-Boruta <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -408,7 +405,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#img%E8%BF%87%E6%BB%A4%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">过滤法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%85%E8%A3%85%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">包装法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">嵌入法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">搭建过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-number">1.1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code-server%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">code-server配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEhttps%E8%AE%BF%E9%97%AE"><span class="nav-number">1.3.</span> <span class="nav-text">配置https访问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">配置守护进程</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -574,59 +571,6 @@
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
 

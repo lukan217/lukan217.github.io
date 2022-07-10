@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917260219-846072de-d101-46ff-9674-9907085d1ff0.png#align=left&amp;display=inline&amp;height=286">
 <meta property="article:published_time" content="2021-06-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-05-14T16:21:24.763Z">
+<meta property="article:modified_time" content="2022-07-10T10:18:44.967Z">
 <meta property="article:author" content="Lukan">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-15 00:21:24" itemprop="dateModified" datetime="2022-05-15T00:21:24+08:00">2022-05-15</time>
+                <time title="修改时间：2022-07-10 18:18:44" itemprop="dateModified" datetime="2022-07-10T18:18:44+08:00">2022-07-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -279,14 +279,14 @@
 </ol>
 <p>提升树每次迭代都拟合上一次模型中所没有能够学习到的东西，也就是残差，这使得提升树是肯定比一般决策树要强的，但是呢，这种拟合残差的方式也会存在一定的缺陷，这个先留到后面说，因此，基于提升树的改进算法就诞生了，也就是GBDT。<br />从上述提升树算法中，我们可以发现，boosting的核心思想就是在每次训练模型的时候，都用新的模型来弥补之前模型的不足，使得模型越来越好，这实际上就是一个优化问题，提升树每次迭代的时候优化的就是残差，那有没有存在更好的优化方式呢？当然有，就是将这个模型的“不足”用损失函数的方式来表示，在每次迭代时优化这个损失函数就行了！<br />损失函数可以用<span class="math inline">\(L(y,f(x))\)</span>，这里先用一个通用的形式来表示，具体的损失函数可以是各种各样的，比如回归问题的MSE,MAE，分类问题的交叉熵，然后我们的目标就是使得这个损失函数最小，问题就来了，怎么优化这个损失函数使他变小呢？<br />根据凸优化的理论，梯度的方向是函数值增长最快的方向，那么负梯度的方向自然就是函数值下降最快的方向，所以根据负梯度就可以找到函数值最小的地方，那么，我们就可以通过拟合负梯度的形式来优化损失函数，也就是说，<strong>在每次训练一个新模型的时候，都拟合上一个模型的损失函数的负梯度值，然后把这个新模型加到原来的模型中，这样必然使得更新后的模型的损失函数更小</strong>，这个就是Gradient Boosting了，具体步骤如下：</p>
 <ol type="1">
-<li>初始化：$f_0(x)=0 $</li>
-<li>对于<span class="math inline">\(m=1,2,3...M\)</span>
+<li><p>初始化：$f_0(x)=0 $</p></li>
+<li><p>对于<span class="math inline">\(m=1,2,3...M\)</span></p>
 <ol type="1">
 <li><p>计算负梯度：<span class="math display">\[-g_m(x_i)=-[\frac{\partial L(y,f(x_i))}{\partial f(x_i)}]_{f(x)=f_{m-1}(x)}\\\]</span></p></li>
 <li><p>以负梯度<span class="math inline">\(-g_m(x_i)\)</span>为预测值，训练一个回归树<span class="math inline">\(T_m(x,\Theta)\)</span></p></li>
 <li><p>更新<span class="math display">\[f_m(x)=f_{m-1}(x)+\rho T_m(x,\Theta)\]</span></p></li>
 </ol></li>
-<li>经过M次迭代后得到最终的提升树模型：<span class="math display">\[f_{M}(x)=\sum_{i=1}^{M}\rho T(x,\Theta)\]</span></li>
+<li><p>经过M次迭代后得到最终的提升树模型：<span class="math display">\[f_{M}(x)=\sum_{i=1}^{M}\rho T(x,\Theta)\]</span></p></li>
 </ol>
 <p>注意到这里对于每次迭代的决策树都加了一个系数<span class="math inline">\(\rho\)</span>，这个<span class="math inline">\(\rho\)</span>也被称为学习率（learning rate），为什么要加这个学习率呢？是因为如果将学习率设为1，就等于一下子学习全部的不足，会导致过拟合。据说在调参的时候，可以通过设置较小的学习率和较大的迭代次数以得到一个较优的模型，当然，这是以计算效率为代价的。<br /></p>
 <h2 id="gbdt为什么使用负梯度而不是残差">GBDT为什么使用负梯度而不是残差？</h2>
@@ -435,7 +435,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -496,13 +496,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">42k</span>
+    <span title="站点总字数">43k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:10</span>
+    <span title="站点阅读时长">1:11</span>
 </div>
 
 <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
