@@ -22,23 +22,22 @@
     var CONFIG = {"hostname":"lukan217.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="GBDT应该是我了解到的最能打的传统机器学习算法了，即使在当前各种基于深度学习模型泛滥的当下，依旧在一些中小型规模的数据集上有着非常亮眼的表现，如kaggle和天池上的一些比赛，高分的模型基本上都是使用的基于GBDT框架的xgboost、catboost、lightgbm。本文将介绍下这个最基础的GBDT算法，方便之后其他模型的学习，这次虽然花了很多时间看了不少资料，但是限于个人水平，只能结合自己">
+  <meta name="description" content="一般我们做时间序列预测都是做点预测（point forecasting），很少会去考虑区间预测（interval forecasting），或者概率预测（probabilistic forecasting），但实际上区间预测也是很重要的，具体来说有这三方面的作用：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GBDT梯度提升树算法原理">
-<meta property="og:url" content="https://lukan217.github.io/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:title" content="时间序列的区间预测&#x2F;概率预测">
+<meta property="og:url" content="https://lukan217.github.io/2022/08/17/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%8C%BA%E9%97%B4%E9%A2%84%E6%B5%8B_%E6%A6%82%E7%8E%87%E9%A2%84%E6%B5%8B/index.html">
 <meta property="og:site_name" content="Lukan&#39;s Blog">
-<meta property="og:description" content="GBDT应该是我了解到的最能打的传统机器学习算法了，即使在当前各种基于深度学习模型泛滥的当下，依旧在一些中小型规模的数据集上有着非常亮眼的表现，如kaggle和天池上的一些比赛，高分的模型基本上都是使用的基于GBDT框架的xgboost、catboost、lightgbm。本文将介绍下这个最基础的GBDT算法，方便之后其他模型的学习，这次虽然花了很多时间看了不少资料，但是限于个人水平，只能结合自己">
+<meta property="og:description" content="一般我们做时间序列预测都是做点预测（point forecasting），很少会去考虑区间预测（interval forecasting），或者概率预测（probabilistic forecasting），但实际上区间预测也是很重要的，具体来说有这三方面的作用：">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917260219-846072de-d101-46ff-9674-9907085d1ff0.png#align=left&amp;display=inline&amp;height=286">
-<meta property="article:published_time" content="2021-06-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-07-10T10:18:44.967Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1660099121338-60770410-fc82-4fa4-806a-5131f66769b8.png#clientId=u6d0bf445-93be-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u3b9790df&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=433&amp;originWidth=603&amp;originalType=url&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=93491&amp;status=done&amp;style=none&amp;taskId=u69c564d1-67c8-4b3c-b8f4-17b9e5e996e&amp;title=">
+<meta property="article:published_time" content="2022-08-16T17:57:01.824Z">
+<meta property="article:modified_time" content="2022-08-16T18:05:47.287Z">
 <meta property="article:author" content="Lukan">
-<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="时间序列">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1660099121338-60770410-fc82-4fa4-806a-5131f66769b8.png#clientId=u6d0bf445-93be-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u3b9790df&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=433&amp;originWidth=603&amp;originalType=url&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=93491&amp;status=done&amp;style=none&amp;taskId=u69c564d1-67c8-4b3c-b8f4-17b9e5e996e&amp;title=">
 
-<link rel="canonical" href="https://lukan217.github.io/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+<link rel="canonical" href="https://lukan217.github.io/2022/08/17/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%8C%BA%E9%97%B4%E9%A2%84%E6%B5%8B_%E6%A6%82%E7%8E%87%E9%A2%84%E6%B5%8B/">
 
 
 <script id="page-configurations">
@@ -51,7 +50,7 @@
   };
 </script>
 
-  <title>GBDT梯度提升树算法原理 | Lukan's Blog</title>
+  <title>时间序列的区间预测/概率预测 | Lukan's Blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
     <script>
@@ -193,7 +192,7 @@
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <meta name="referrer" content="no-referrer" />
-    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2021/06/17/GBDT%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2022/08/17/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E7%9A%84%E5%8C%BA%E9%97%B4%E9%A2%84%E6%B5%8B_%E6%A6%82%E7%8E%87%E9%A2%84%E6%B5%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -206,7 +205,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          GBDT梯度提升树算法原理
+          时间序列的区间预测/概率预测
         </h1>
 
         <div class="post-meta">
@@ -215,16 +214,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-06-17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-17T00:00:00+08:00">2021-06-17</time>
+              <time title="创建时间：2022-08-17 01:57:01 / 修改时间：02:05:47" itemprop="dateCreated datePublished" datetime="2022-08-17T01:57:01+08:00">2022-08-17</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-10 18:18:44" itemprop="dateModified" datetime="2022-07-10T18:18:44+08:00">2022-07-10</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -241,14 +234,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.4k</span>
+              <span>3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -260,46 +253,62 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>GBDT应该是我了解到的最能打的传统机器学习算法了，即使在当前各种基于深度学习模型泛滥的当下，依旧在一些中小型规模的数据集上有着非常亮眼的表现，如kaggle和天池上的一些比赛，高分的模型基本上都是使用的基于GBDT框架的xgboost、catboost、lightgbm。本文将介绍下这个最基础的GBDT算法，方便之后其他模型的学习，这次虽然花了很多时间看了不少资料，但是限于个人水平，只能结合自己的理解，尽力把一些最精华和比较难懂的地方稍微总结一下，有不恰当的地方还请指正！</p>
-<h1 id="gbdt核心思想">GBDT核心思想</h1>
-<p>GBDT，全称为Gradient Boosting Decision Tree，顾名思义，分为两部分， Gradient Boosting和Decision Tree，具体来说，就是使用<strong>决策树</strong>为基学习器的<strong>梯度提升算法</strong>，因此分别了解下这两部分的原理就可以很好的学习GBDT的思想。</p>
-<h2 id="decision-tree">Decision Tree</h2>
-<p>先说决策树部分，由于在GBDT中，每次迭代都需要用到<strong>负梯度</strong>，求<strong>负梯度</strong>就需要用到连续值，因此GBDT用的决策树都是CART（classification and regression tree）回归树，而不是分类树，CART回归树一般使用的节点分裂准则为平均平方误差MSE，即在节点分裂时穷举每一个特征的每一个阈值，来寻找最优切分特征和最优切分点，衡量的方法是平方误差最小化，这部分算法在很多机器学习的书中都有涉及，这里不详细展开。</p>
-<h2 id="gradient-boosting">Gradient Boosting</h2>
-<p>在说Gradient Boosting之前，先讲下boosting算法，所谓的boosting，就是使用前向分布算法（Forward Stagewise Algorithm）来训练加法模型，这个加法模型表现如下：<br /><span class="math display">\[f_M(x)=\sum_{i=1}^{M}T_(x,\Theta)\\\]</span><br />这里<span class="math inline">\(f_M(x)\)</span>表示的就是经过M次迭代后最终得到的模型，而<span class="math inline">\(T_(x,\Theta)\)</span>代表的就是单颗CART回归树，这里的<span class="math inline">\(\Theta\)</span>代表树的参数，这个模型的意义就是每次训练一个弱学习器<span class="math inline">\(T(x,\Theta)\)</span>，经过M次之后给他们加总起来得到一个强的学习器<span class="math inline">\(f_M(x)\)</span>，那么怎么来训练这个加法模型呢？<br />我们的目标是使得最后的预测误差尽可能的小，但是预测集我们事先是不知道的，我们只能使得训练集的训练误差最小，那么如何使得这种加法模型的训练误差最小？有一个方法就是在每次训练模型的时候都拟合上一个模型预测值与真实值之间的差值<span class="math inline">\(y-\hat{y}\)</span>，也就是残差，然后在把这个模型加到原来的模型中，这样就可以使得更新后的模型的预测误差更小，这种方法也被称为前向分布算法，如果基学习器是线性回归的话就是前向分布回归，关于前向分布回归可以参考我上一篇文章：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/369732767">前向分步回归Forward Stagewise Regression原理及Python实现</a>，而这里我们用的基学习器是树模型，这种方法也被称为提升树（boosting tree），具体步骤如下：</p>
+        <p>一般我们做时间序列预测都是做点预测（point forecasting），很少会去考虑区间预测（interval forecasting），或者概率预测（probabilistic forecasting），但实际上区间预测也是很重要的，具体来说有这三方面的作用：</p>
 <ol type="1">
-<li>初始化<span class="math inline">\(f_0(x)=0\)</span></li>
-<li>对于<span class="math inline">\(m=1,2,3...M\)</span>
-<ol type="1">
-<li>计算残差：<span class="math inline">\(r_{mi}=y_i-f_{m-1}(x),i=1,2,3,..N\)</span></li>
-<li>以残差<span class="math inline">\(r_{mi}\)</span>为预测值，训练一个回归树<span class="math inline">\(T_m(x,\Theta)\)</span></li>
-<li>更新<span class="math inline">\(f_m(x)=f_{m-1}(x)+T_m(x,\Theta)\)</span></li>
-</ol></li>
-<li>经过M次迭代后得到最终的提升树模型：<span class="math inline">\(f_{M}(x)=\sum_{i=1}^{M}T(x,\Theta)\)</span></li>
+<li>刻画不确定性以应对风险，预测都是服务于决策，那么在决策时就必然要考虑到可能的风险，也就是最好的情况和最坏的情况，因此就需要使用区间预测来描述预测值可能的上下限</li>
+<li>特定场景下的用处，比如供应链中的库存管理模型，使用区间预测/概率预测可以用来最优化补货量，如果需要满足95%的服务水平，那么就可以输出95%分位数下对应的销量预测值来作为补货量</li>
+<li>好看，业务方和老板在看你预测结果时，如果只有一条干巴巴的曲线是不好说服他们的，毕竟预测就是个玄学，那就整一些花里胡哨的的，比如加个区间，这样他们看着就很开心了（）</li>
 </ol>
-<p>提升树每次迭代都拟合上一次模型中所没有能够学习到的东西，也就是残差，这使得提升树是肯定比一般决策树要强的，但是呢，这种拟合残差的方式也会存在一定的缺陷，这个先留到后面说，因此，基于提升树的改进算法就诞生了，也就是GBDT。<br />从上述提升树算法中，我们可以发现，boosting的核心思想就是在每次训练模型的时候，都用新的模型来弥补之前模型的不足，使得模型越来越好，这实际上就是一个优化问题，提升树每次迭代的时候优化的就是残差，那有没有存在更好的优化方式呢？当然有，就是将这个模型的“不足”用损失函数的方式来表示，在每次迭代时优化这个损失函数就行了！<br />损失函数可以用<span class="math inline">\(L(y,f(x))\)</span>，这里先用一个通用的形式来表示，具体的损失函数可以是各种各样的，比如回归问题的MSE,MAE，分类问题的交叉熵，然后我们的目标就是使得这个损失函数最小，问题就来了，怎么优化这个损失函数使他变小呢？<br />根据凸优化的理论，梯度的方向是函数值增长最快的方向，那么负梯度的方向自然就是函数值下降最快的方向，所以根据负梯度就可以找到函数值最小的地方，那么，我们就可以通过拟合负梯度的形式来优化损失函数，也就是说，<strong>在每次训练一个新模型的时候，都拟合上一个模型的损失函数的负梯度值，然后把这个新模型加到原来的模型中，这样必然使得更新后的模型的损失函数更小</strong>，这个就是Gradient Boosting了，具体步骤如下：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1660099121338-60770410-fc82-4fa4-806a-5131f66769b8.png#clientId=u6d0bf445-93be-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;id=u3b9790df&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=433&amp;originWidth=603&amp;originalType=url&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=93491&amp;status=done&amp;style=none&amp;taskId=u69c564d1-67c8-4b3c-b8f4-17b9e5e996e&amp;title=" alt="image.png" /><br />目前关于时间序列区间预测的方法似乎还没有一个系统性的总结，这里我就把自己调研看到的几种方法整理出来，根据我的分类，区间预测具体可以分为两类方法：</p>
 <ol type="1">
-<li><p>初始化：$f_0(x)=0 $</p></li>
-<li><p>对于<span class="math inline">\(m=1,2,3...M\)</span></p>
-<ol type="1">
-<li><p>计算负梯度：<span class="math display">\[-g_m(x_i)=-[\frac{\partial L(y,f(x_i))}{\partial f(x_i)}]_{f(x)=f_{m-1}(x)}\\\]</span></p></li>
-<li><p>以负梯度<span class="math inline">\(-g_m(x_i)\)</span>为预测值，训练一个回归树<span class="math inline">\(T_m(x,\Theta)\)</span></p></li>
-<li><p>更新<span class="math display">\[f_m(x)=f_{m-1}(x)+\rho T_m(x,\Theta)\]</span></p></li>
-</ol></li>
-<li><p>经过M次迭代后得到最终的提升树模型：<span class="math display">\[f_{M}(x)=\sum_{i=1}^{M}\rho T(x,\Theta)\]</span></p></li>
+<li><p>统计学方法，使用统计学上的一些方法来估计区间</p></li>
+<li><p>损失函数法，通过定义特定的损失函数来输出区间</p></li>
 </ol>
-<p>注意到这里对于每次迭代的决策树都加了一个系数<span class="math inline">\(\rho\)</span>，这个<span class="math inline">\(\rho\)</span>也被称为学习率（learning rate），为什么要加这个学习率呢？是因为如果将学习率设为1，就等于一下子学习全部的不足，会导致过拟合。据说在调参的时候，可以通过设置较小的学习率和较大的迭代次数以得到一个较优的模型，当然，这是以计算效率为代价的。<br /></p>
-<h2 id="gbdt为什么使用负梯度而不是残差">GBDT为什么使用负梯度而不是残差？</h2>
-<p>好了，现在可以说说为什么GBDT要使用负梯度而不是直接使用残差了，这也是我之前比较困惑的点，原因就是残差只是损失函数负梯度的一种特例，而采用负梯度更加通用，可以使用不同的损失函数。<br />为什么说残差只是一种特例呢？我们考虑下面这个损失函数：<br /><span class="math display">\[L(y,f(x))=\frac{(y-f(x))^2}{2}\\\]</span><br />这也就是平均平方误差MSE，然后他的负梯度就是：<br /><span class="math display">\[-[\frac{\partial L(y,f(x))}{\partial f(x)}]=y-f(x)\\\]</span><br />这不就是上面说的残差吗？也就是说，残差就等价于当损失函数采用MSE时的负梯度，而损失函数采用MSE其实会有一些缺点，比如对异常值敏感，所以在实际问题中我们有可能采用MAE或者更为折中的Huber损失函数以避免这一缺陷，如图：<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917120462-f7060d81-1511-4423-b70b-7d647b78711d.png#align=left&amp;display=inline&amp;height=368&amp;margin=%5Bobject%20Object%5D&amp;originHeight=490&amp;originWidth=728&amp;size=0&amp;status=done&amp;style=none&amp;width=546" /><br />并且呢，这些损失函数的负梯度其实也可以看作是残差的一个近似，如图：<br /><img src="https://cdn.nlark.com/yuque/0/2021/png/764062/1623917260219-846072de-d101-46ff-9674-9907085d1ff0.png#align=left&amp;display=inline&amp;height=286" alt="image.png" /><br />而且，由于决策树容易过拟合的特点，我们通常也会采用一些正则化的手段控制模型的复杂度来改进损失函数，如控制树的深度等<br /><span class="math display">\[obj=L(y,f(x))+\Omega(\Theta)\\\]</span><br />这里的<span class="math inline">\(\Omega(\Theta)\)</span>是正则项，用来控制模型的复杂度，使得模型在保持良好的性能的同时尽可能简单，以防止过拟合，这也是xgboost相对于GBDT的优化手段之一。<br />综上，由于负梯度可以应付各种各样千奇百怪的损失函数，所以GBDT用负梯度来拟合明显相比于残差是有着巨大的优势的。</p>
+<h1 id="统计学方法">统计学方法</h1>
+<h2 id="区间估计法">区间估计法</h2>
+<p>学过统计学的都会知道区间估计，要估计一个值的区间，首先会假设它服从正态分布，进一步再计算出这个值的估计标准差，然后给定某个置信度，比如95%，查表就可以得到Z值为1.96，那么就可以把Z值乘上标准差，再用均值加减一下，就可以得到区间的左端和右端。<br />区间预测也用到的同样的思路，但是在区间预测里，我们并不会假设预测值服从正态分布，而是假设误差服从正态分布，然后估计出误差的上下限，再把他加到预测值里面，就可以得到预测值的上下限了，具体来说，步骤如下：</p>
+<ol type="1">
+<li><p>假设预测误差服从均值为0的正态分布，估计预测误差的标准差</p></li>
+<li><p>给定置信度，查表得到Z值</p></li>
+<li><p>计算预测误差的上限和下限</p></li>
+<li><p>将上下限加到预测值里面，得到一个预测区间</p></li>
+</ol>
+<p><span class="math inline">\(\hat{y}_{T+h \mid T} \pm k \hat{\sigma}_{h}\)</span><br />但是，怎么得到预测误差的标准差呢？很多传统统计学的预测方法都是直接用训练误差的标准差，也有了很多成熟的估计方法，但是由于训练数据上是过拟合的，会导致这个标准差比较小，就导致最后出来的预测区间也比较小，所以，比较合理的做法是在训练数据集上先划分出一个验证集，然后使用验证集上的预测误差来估计标准差。 <a name="lPNfh"></a></p>
+<h2 id="bootstrap">Bootstrap</h2>
+<p>bootstrap，也就是自助采样法，这个方法的思路也是先估计出一个误差的上下限，然后把这个上下限加到原来的预测值中，进而得到预测区间，不过，bootstrap不需要假定误差服从正态分布，而是通过采用N次的预测误差，然后取这N次的误差的分位数作为上下限，比如抽样了三次误差，分别为[-50,0,50], 则5%分位数为-45，95%分位数为45，把这个分位数误差加到预测值上就得到了预测区间。<br />参考链接：<a target="_blank" rel="noopener" href="https://otexts.com/fppcn/prediction-intervals.html">https://otexts.com/fppcn/prediction-intervals.html</a> <a name="fO0kk"></a></p>
+<h1 id="损失函数">损失函数</h1>
+<p>最近几年，基于深度的时序预测方法也很多，所以也衍生出了一些区间预测的方法，但具体来说都是从损失函数层面来实现的。 <a name="jQRFV"></a></p>
+<h2 id="分位数损失">分位数损失</h2>
+<p>分位数的损失函数形式如下所示：<br /><span class="math inline">\(L_{q}(y, \hat{y})=q(y-\hat{y})_{+}+(1-q)(\hat{y}-y)_{+}\)</span><br />其中，<span class="math inline">\((\cdot)_{+}=\max (0, \cdot)\)</span>.，加号左边那项代表的就是预测值小于真实值的loss，右边那项代表队是预测值大于真实值时的loss，我们通过取不同的q来理解下这个函数：</p>
+<ul>
+<li>当 <span class="math inline">\(q=0.5\)</span>时，两边的权重相等，这个损失函数就和MAE一样</li>
+<li>当<span class="math inline">\(q=0.95\)</span>时，左边那项的loss权重比较大，因此，模型就会尽可能的使得预测值大于真实值，这样才能使得整体的loss小，这就起到了一个拉高预测值的作用，也可以理解为预测区间的上限</li>
+<li>当<span class="math inline">\(q=0.05\)</span>时，这时候就是右边的那项loss权重比较大，因此，模型就会尽可能使得预测值小于真实值，才能保证整体的loss小，这就起到了一个拉低预测值的作用，也可以理解为预测区间的下限</li>
+</ul>
+<p>在实操时，我们一般会指定三个分位数，如（0.1, 0.5, 0.9），把这三个分位数损失加起来作为最终的损失函数，在预测时就可以输出三个值，分别对应：10%的区间预测，点预测以及90%的区间预测，目前很多基于深度学习的时序预测算法都用到了这个损失函数，比如MQRNN/CNN, TFT等，GBDT也可以使用这个损失，像lightgbm和xgboost的objective里面也都有quantile这个选项，也都可以输出区间预测。 <a name="vQtET"></a></p>
+<h2 id="负对数似然损失">负对数似然损失</h2>
+<p>这个思路我最早是在DeepAR那看到的，大概思路是首先指定一个预测值服从的概率分布，如正态分布，然后，使用神经网络模型分别预测这个概率分布的参数，比如正态分布就是预测他的均值和方差，接着构造负对数似然函数作为损失函数，优化这个损失函数就可以到得到概率分布的参数，最后就可以得到预测时每一步的概率分布，知道了概率分布，那么就可以通过蒙特卡洛采样的方式来生成预测值和区间预测了，比如对这个概率分布采样100次，那这100次的均值就是点预测的结果，95%分位数和5%分位数就可以对应区间预测的结果。 # 开源工具包的实现</p>
+<h2 id="gluonts">GluonTS</h2>
+<ol type="1">
+<li><p>对于自回归模型，通过预测概率分布来实现概率预测</p></li>
+<li><p>对于其他模型，使用分位数回归</p></li>
+</ol>
+<h2 id="darts">Darts</h2>
+<ol start="3" type="1">
+<li><p>对于传统统计学模型，使用区间估计法进行概率预测</p></li>
+<li><p>对于部分深度学习模型，使用负对数似然损失</p></li>
+</ol>
+<h2 id="mapie">MAPIE</h2>
+<p>这是一个专门用来做区间预测的包，基于sklearn接口进行开发的，支持回归、分类、时序回归的区间预测，其中，时序部分的区间预测用了一篇论文（<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2010.09107">https://arxiv.org/abs/2010.09107</a>）的算法，叫做EnbPI，号称是一个通用的distribution-free的时序区间预测框架，不需要划分验证集重新训练，原理太复杂没去看，试着跑了下demo有点慢，并且目前这个包只支持sklearn那边的模型。</p>
 <h1 id="总结">总结</h1>
-<p>本文主要介绍了GBDT的核心思想，先引入基于加法模型和前向分布算法的提升树模型，提升树模型每次迭代的拟合的是残差，然后介绍了GBDT，GBDT每次迭代拟合的是负梯度，通过拟合负梯度使得每次迭代后的损失函数值都能下降最快，最后说明了为什么负梯度与残差的关联以及为什么拟合负梯度更好。</p>
+<p>时间序列的区间预测方法按照我的分类方式大致可以分为两大类，其中，统计学方法通过估计误差的上下限再加到原来的预测值上面进行区间预测，一般在传统统计学模型（ARIMA、指数平滑法等）上应用很多，因为估计误差的方法已经有了非常成熟的公式，很多包也集成了这些区间预测，但应用在其他模型上面可能先需要划分训练集和验证集，估计出误差后再对测试集进行区间预测。</p>
+<p>而损失函数的方法只能用在深度学习和GBDT这些靠优化损失函数来预测的模型，具体可以分为分位数损失和负对数似然损失，分位数损失通过损失函数拉高/拉低预测值来实现区间预测的效果，GBDT和深度学习都能用，而负对数似然损失通过直接预测概率分布，然后采样的方式来实现预测，只能用在深度学习模型上</p>
 <h1 id="参考">参考</h1>
 <ol type="1">
-<li>《The Elements of Statistical Learning Data Mining,Inference,and Prediction》</li>
-<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/9SrciKW-nJJMA2BbTs5CLg">GBDT算法原理以及代码实现</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/shine19930820/article/details/65633436">『机器学习笔记 』GBDT原理-Gradient Boosting Decision Tree</a></li>
-<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Gradient_boosting">Gradient boosting</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/63560633">gbdt的残差为什么用负梯度代替？</a></li>
+<li><p><a target="_blank" rel="noopener" href="https://unit8.com/resources/probabilistic-forecasting-in-darts/">Probabilistic Forecasting in Darts - Unit8</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/time-series-forecasting-prediction-intervals-360b1bf4b085">Time Series Forecasting: Prediction Intervals | by Brendan Artley | Towards Data Science</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://otexts.com/fppcn/prediction-intervals.html">3.5 预测区间 | 预测： 方法与实践</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1906.05264">[1906.05264] GluonTS: Probabilistic Time Series Models in Python</a></p></li>
 </ol>
 
     </div>
@@ -339,7 +348,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag"># 时间序列</a>
           </div>
 
         
@@ -348,13 +357,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/05/23/Ridge%E5%92%8CLasso%E5%9B%9E%E5%BD%92%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E8%B7%B5/" rel="prev" title="Ridge和Lasso回归与代码实践">
-      <i class="fa fa-chevron-left"></i> Ridge和Lasso回归与代码实践
+    <a href="/2022/07/10/code-server%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/" rel="prev" title="code-server搭建指南">
+      <i class="fa fa-chevron-left"></i> code-server搭建指南
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/08/07/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8Bjupyter%20notebook%E7%8E%AF%E5%A2%83/" rel="next" title="云服务器配置远程jupyter notebook环境">
-      云服务器配置远程jupyter notebook环境 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -419,7 +425,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gbdt%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">GBDT核心思想</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#decision-tree"><span class="nav-number">1.1.</span> <span class="nav-text">Decision Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gradient-boosting"><span class="nav-number">1.2.</span> <span class="nav-text">Gradient Boosting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gbdt%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E8%B4%9F%E6%A2%AF%E5%BA%A6%E8%80%8C%E4%B8%8D%E6%98%AF%E6%AE%8B%E5%B7%AE"><span class="nav-number">1.3.</span> <span class="nav-text">GBDT为什么使用负梯度而不是残差？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%AD%A6%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">统计学方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E4%BC%B0%E8%AE%A1%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">区间估计法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bootstrap"><span class="nav-number">1.2.</span> <span class="nav-text">Bootstrap</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">损失函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E4%BD%8D%E6%95%B0%E6%8D%9F%E5%A4%B1"><span class="nav-number">2.1.</span> <span class="nav-text">分位数损失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9F%E5%AF%B9%E6%95%B0%E4%BC%BC%E7%84%B6%E6%8D%9F%E5%A4%B1"><span class="nav-number">2.2.</span> <span class="nav-text">负对数似然损失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gluonts"><span class="nav-number">2.3.</span> <span class="nav-text">GluonTS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#darts"><span class="nav-number">2.4.</span> <span class="nav-text">Darts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mapie"><span class="nav-number">2.5.</span> <span class="nav-text">MAPIE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
