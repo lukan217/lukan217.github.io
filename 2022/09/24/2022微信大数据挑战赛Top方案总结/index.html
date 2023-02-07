@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content=womgfV2TbURRpAFqJs5AXSGKA6bk9Ahb3-8dRPb6ghY />
+  <meta name="baidu-site-verification" content=code-zAKugqLYHl />
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lukan217.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="上周微信大数据挑战赛的决赛结束了，自己之前也投入了不少的时间来做，所以还是需要好好学习一下决赛的方案  # 赛题介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2022w微信大数据挑战赛Top方案总结">
+<meta property="og:url" content="https://lukan217.github.io/2022/09/24/2022%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9BTop%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Lukan&#39;s Blog">
+<meta property="og:description" content="上周微信大数据挑战赛的决赛结束了，自己之前也投入了不少的时间来做，所以还是需要好好学习一下决赛的方案  # 赛题介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663962743344-48189f70-eb1c-43a8-a117-7e005af137c8.png#clientId=u04545e1a-2ebf-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=342&amp;id=ufedde171&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=684&amp;originWidth=1672&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=62398&amp;status=done&amp;style=none&amp;taskId=ucf3d64e5-261c-4b9f-94f8-5c573ed8fe6&amp;title=&amp;width=836">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663636603759-8daf9518-86ba-42a1-b1e5-06c6472a1a65.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=557&amp;id=u09c940ec&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1114&amp;originWidth=2698&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=462998&amp;status=done&amp;style=none&amp;taskId=ua4ba0bc2-5233-49e4-bea0-3f8f45fa82e&amp;title=&amp;width=1349">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663656074613-070c60d0-f475-48d5-9289-8b41c26aedac.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=460&amp;id=u5dee590d&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=919&amp;originWidth=2724&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=328607&amp;status=done&amp;style=none&amp;taskId=u2d47d71c-ae92-4443-a982-8067e59dc89&amp;title=&amp;width=1362">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663641177228-b70ef751-32e0-4710-b00f-cc5b13b63625.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=414&amp;id=u987683bc&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=828&amp;originWidth=1475&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=507248&amp;status=done&amp;style=none&amp;taskId=u6f4c191e-6ea1-491c-bac2-edaca28c97d&amp;title=&amp;width=737.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663699381018-1de11cd0-658e-4ec8-9efa-38427ea34eea.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=613&amp;id=u876d1188&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1226&amp;originWidth=2671&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=575987&amp;status=done&amp;style=none&amp;taskId=ufccfd26b-dbb2-4449-9c8c-9a6b7c9c322&amp;title=&amp;width=1335.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663699534745-92784cb8-5a4f-4836-8e5a-d29958670998.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=78&amp;id=u77b1889e&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=156&amp;originWidth=794&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=38890&amp;status=done&amp;style=none&amp;taskId=ufe5e77b4-57c1-4880-ad16-52df2dc170c&amp;title=&amp;width=397">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663700198529-3017edd9-c156-4887-ba1d-06926cc3550e.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=638&amp;id=u548daa6a&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1276&amp;originWidth=1955&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=183162&amp;status=done&amp;style=none&amp;taskId=uecf60a59-f745-41ea-adfc-15b7a47e2c5&amp;title=&amp;width=977.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663700469412-44c0019e-94a7-41be-b026-4dfd820df250.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=447&amp;id=ude6fd0f7&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=894&amp;originWidth=1820&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=111335&amp;status=done&amp;style=none&amp;taskId=u344be838-fa37-4d01-9269-9478cfcc1fe&amp;title=&amp;width=910">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663700522791-ddd1a1da-3b2d-4c54-9be6-65def1971554.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=286&amp;id=u54d71ecd&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=571&amp;originWidth=2272&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=115170&amp;status=done&amp;style=none&amp;taskId=ue38ae86f-b960-44c3-ba8c-e1f7c77ab96&amp;title=&amp;width=1136">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663934670257-6c1329f4-1f4e-43e0-a750-3b8ac38771a6.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=476&amp;id=ub70c7338&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=951&amp;originWidth=924&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=99115&amp;status=done&amp;style=none&amp;taskId=u5ac6e148-dbe6-4c5a-a264-7b698804b8e&amp;title=&amp;width=462">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663934859662-ad03421c-eb7b-48e2-bbe3-b0a48a1ffd16.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=385&amp;id=uae51d491&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=770&amp;originWidth=970&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=80080&amp;status=done&amp;style=none&amp;taskId=uc06d7f22-ea83-4bf8-b475-e48d6ef653a&amp;title=&amp;width=485">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663959623942-972f9aff-7364-43ed-a5e9-fdd81c6140ed.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=379&amp;id=u33f7d946&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=757&amp;originWidth=750&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=73800&amp;status=done&amp;style=none&amp;taskId=ud967cd6e-b229-4f3a-9cf6-4672d4523a7&amp;title=&amp;width=375">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663959707174-17d4adb1-ee8d-4045-84f7-9db8fc27833a.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=65&amp;id=u3a663643&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=129&amp;originWidth=1854&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=73126&amp;status=done&amp;style=none&amp;taskId=u02446e53-18b3-4582-b8b2-3cec33e937a&amp;title=&amp;width=927">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663960085419-374cbdf9-f964-4395-a14f-6aec0e526b08.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=546&amp;id=u2df1793f&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1092&amp;originWidth=1510&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=131280&amp;status=done&amp;style=none&amp;taskId=ucd3b0fb8-d643-4cd2-8466-75348555dcf&amp;title=&amp;width=755">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663960515768-1ed8f970-f469-45ca-907e-23878ccf8afa.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=625&amp;id=u0a9d3046&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1250&amp;originWidth=2791&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=473620&amp;status=done&amp;style=none&amp;taskId=u62807e18-888d-4342-8170-4c9048eed3d&amp;title=&amp;width=1395.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663960585819-8b1f57a6-f9d0-4144-b2d1-8e76a9ba9dbb.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=479&amp;id=u92764a6e&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=957&amp;originWidth=1321&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=99035&amp;status=done&amp;style=none&amp;taskId=u691cb9f3-a5da-43c4-ae30-7d16556c47c&amp;title=&amp;width=660.5">
+<meta property="article:published_time" content="2022-09-24T02:26:35.231Z">
+<meta property="article:modified_time" content="2022-09-24T02:28:31.919Z">
+<meta property="article:author" content="Lukan">
+<meta property="article:tag" content="比赛">
+<meta property="article:tag" content="多模态">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/764062/1663962743344-48189f70-eb1c-43a8-a117-7e005af137c8.png#clientId=u04545e1a-2ebf-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=342&amp;id=ufedde171&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=684&amp;originWidth=1672&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=62398&amp;status=done&amp;style=none&amp;taskId=ucf3d64e5-261c-4b9f-94f8-5c573ed8fe6&amp;title=&amp;width=836">
+
+<link rel="canonical" href="https://lukan217.github.io/2022/09/24/2022%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9BTop%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2022w微信大数据挑战赛Top方案总结 | Lukan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VT12J2H04J');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?723ab32a1115451d64c620981363cd80";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Lukan's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Lukan's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录点滴成长</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <meta name="referrer" content="no-referrer" />
+    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2022/09/24/2022%E5%BE%AE%E4%BF%A1%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%8C%91%E6%88%98%E8%B5%9BTop%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lukan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lukan's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2022w微信大数据挑战赛Top方案总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-24 10:26:35 / 修改时间：10:28:31" itemprop="dateCreated datePublished" datetime="2022-09-24T10:26:35+08:00">2022-09-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%AF%94%E8%B5%9B/" itemprop="url" rel="index"><span itemprop="name">比赛</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>上周微信大数据挑战赛的决赛结束了，自己之前也投入了不少的时间来做，所以还是需要好好学习一下决赛的方案 <a name="wCpG0"></a> # 赛题介绍</p>
+<ul>
+<li>赛题名称：多模态短视频分类</li>
+<li>赛题链接：<a target="_blank" rel="noopener" href="https://algo.weixin.qq.com/">微信大数据挑战赛</a></li>
+<li>数据
+<ul>
+<li>10w有标注数据（包含视频类别）</li>
+<li>100w无标注数据</li>
+<li>每条数据包含短视频的：标题/OCR/ASR文本，32帧视频图像（初赛为抽取的特征，复赛为原始视频图像）</li>
+</ul></li>
+</ul>
+<figure>
+<img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663962743344-48189f70-eb1c-43a8-a117-7e005af137c8.png#clientId=u04545e1a-2ebf-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=342&amp;id=ufedde171&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=684&amp;originWidth=1672&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=62398&amp;status=done&amp;style=none&amp;taskId=ucf3d64e5-261c-4b9f-94f8-5c573ed8fe6&amp;title=&amp;width=836" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<ul>
+<li><p>预测任务：预测每个视频所属的子类别，一共200类</p></li>
+<li><p>评价指标：一二级分类F1的micro和macro平均值</p></li>
+<li><p>决赛回放：<a target="_blank" rel="noopener" href="https://live.csdn.net/room/wl5875/Z7h0CxuN">2022中国高校计算机大赛——微信大数据挑战赛决赛-CSDN直播</a> <a name="sVF9i"></a> # 1st 苟进决赛 <a name="V4Xbk"></a> ## 模型架构 采用三种模型架构进行融合：</p></li>
+<li><p>模型一：单流架构，文本过embedding层，视频过clip的vit，然后拼接起来送入bert，最后mean pooing后接分类层</p></li>
+<li><p>模型二，双流架构，文本过bert，视频过clip，然后将视频向量和文本向量拼接起来，再过一个transformer，mean pooing后接分类层</p></li>
+<li><p>模型三，双流架构，文本过bert，视频过clip，得到视频向量和文本向量，然后做cross attention,即对于视频向量，用文本向量作为Q进行注意力加权，而对于文本向量，用视频向量作为Q进行注意力加权，最后mean pooing后接分类层</p></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663636603759-8daf9518-86ba-42a1-b1e5-06c6472a1a65.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=557&amp;id=u09c940ec&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1114&amp;originWidth=2698&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=462998&amp;status=done&amp;style=none&amp;taskId=ua4ba0bc2-5233-49e4-bea0-3f8f45fa82e&amp;title=&amp;width=1349" alt="image.png" /><br />其他选手的模型架构基本也都是这三种的一种，之后就不详细展开 <a name="j5Snx"></a> ## 预训练任务</p>
+<ol type="1">
+<li><p>MLM（Mask languge model）：输入时随机mask掉一个文本，预测被mask掉的文本</p></li>
+<li><p>VTM (Video text match)：输入时以50%概率随机采样替换掉一个视频，然后预测这个视频是不是原来的视频，即输入的文本是否与视频匹配</p></li>
+<li><p>ICT (Inverse Cloze Task)：文本包含标题、OCR,ASR，随机取一段作为query，其余的作为condidate，做对比学习</p></li>
+<li><p>SimCSE：对于一个文本输入，经过两次dropout后作为正样本，其他文本作为负样本，进行对比学习 <a name="xHRcQ"></a> ## 其他技巧</p></li>
+<li><p>知识蒸馏</p></li>
+</ol>
+<p>这部分应该是整个方案的核心亮点了，也是拉开和后面几位差距的关键点。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663656074613-070c60d0-f475-48d5-9289-8b41c26aedac.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=460&amp;id=u5dee590d&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=919&amp;originWidth=2724&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=328607&amp;status=done&amp;style=none&amp;taskId=u2d47d71c-ae92-4443-a982-8067e59dc89&amp;title=&amp;width=1362" alt="image.png" /><br />具体步骤应该是：</p>
+<ol type="1">
+<li><p>在标注数据上，训练更长（32帧）的帧和更大（CLIP-Large）更多（ensemble）的模型</p></li>
+<li><p>使用1得到的模型为无标注数据打伪标签，得到一份带伪标签的无标注数据</p></li>
+<li><p>在2得到的这份数据上进行预训练，预训练任务包含伪标签预测以及之前提到的那4个，预训练时随机使用5/32帧的视频，以缓解预训练和微调过程的不一致性</p></li>
+<li><p>重复2和3步骤，将最后得到的模型用来做下一步微调模型的初始化</p></li>
+<li><p>在有标注数据上进行微调，得到最终预测结果 <a name="ZJl8y"></a> ## 亮点</p></li>
+<li><p>伪标签知识蒸馏，直接提了两个百分点，还是很厉害的 <a name="aS6ll"></a> # 2nd 冲冲冲 <a name="LPCcV"></a> ## 模型架构 就是一个普通的单流架构，不过引入了Memory Bank来缓解batchsize过小导致预训练效果差的问题<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663641177228-b70ef751-32e0-4710-b00f-cc5b13b63625.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=414&amp;id=u987683bc&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=828&amp;originWidth=1475&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=507248&amp;status=done&amp;style=none&amp;taskId=u6f4c191e-6ea1-491c-bac2-edaca28c97d&amp;title=&amp;width=737.5" alt="image.png" /> <a name="IdPl2"></a> ## 预训练任务</p></li>
+<li><p>MLM</p></li>
+<li><p>MMA（Multi-modal Alignment）：最特色的地方，在对比学习时引入了三类共六个的任务，使得模态间信息更加对齐，并且在训练时随机丢弃一个模态，以缓解模态缺失的问题，并加快训练</p></li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663699381018-1de11cd0-658e-4ec8-9efa-38427ea34eea.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=613&amp;id=u876d1188&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1226&amp;originWidth=2671&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=575987&amp;status=done&amp;style=none&amp;taskId=ufccfd26b-dbb2-4449-9c8c-9a6b7c9c322&amp;title=&amp;width=1335.5" alt="image.png" /> <a name="T7mpQ"></a> ## 其他技巧</p>
+<ol type="1">
+<li>EMA</li>
+<li>Label smoothing</li>
+<li>Rdrop</li>
+<li>Class Balanced Loss</li>
+</ol>
+<figure>
+<img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663699534745-92784cb8-5a4f-4836-8e5a-d29958670998.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=78&amp;id=u77b1889e&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=156&amp;originWidth=794&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=38890&amp;status=done&amp;style=none&amp;taskId=ufe5e77b4-57c1-4880-ad16-52df2dc170c&amp;title=&amp;width=397" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<ol start="5" type="1">
+<li><p>模型加速</p>
+<ol type="1">
+<li>图片解码加速，GPU预处理加速</li>
+<li>TensorRT + 数据并行 + 共享内存</li>
+<li>FP16推理 + 分桶预测 + 多进程模型并行</li>
+</ol></li>
+<li><p>伪标签：用10万有标记样本，训练DML模型并提取特征，然后用无标记数据检索有标记数据，用Top10样本进行类目投票，这里生成伪标签跟其他选手用的方案不一样，不是直接预测，而是用检索的方式来生成，也算一大特色 <a name="dnatb"></a> ## 亮点</p></li>
+<li><p>预训练的MMA任务</p></li>
+<li><p>伪标签用检索的方式生成 <a name="T5K4L"></a> # 3rd 抱朴子 <a name="Z8Jah"></a> ## 模型架构 这组一共用了5个模型，双流的三个模型共用编码器，编码器采用中文预训练的R2D2的Roberta-base和VIT-large，具体每个模型的架构也都和第一名提到的三个没太大差别<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663700198529-3017edd9-c156-4887-ba1d-06926cc3550e.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=638&amp;id=u548daa6a&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1276&amp;originWidth=1955&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=183162&amp;status=done&amp;style=none&amp;taskId=uecf60a59-f745-41ea-adfc-15b7a47e2c5&amp;title=&amp;width=977.5" alt="image.png" /><br />单流架构的Alpro应该是先把文本过6层的transformer后再和视频特征拼起来送入后6层<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663700469412-44c0019e-94a7-41be-b026-4dfd820df250.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=447&amp;id=ude6fd0f7&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=894&amp;originWidth=1820&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=111335&amp;status=done&amp;style=none&amp;taskId=u344be838-fa37-4d01-9269-9478cfcc1fe&amp;title=&amp;width=910" alt="image.png" /><br />双流架构一个使用cross-encoder的方式，另外两个用了cross-attention，这两个的差别在于处理视频向量时一个采用视频patch聚合另一个采用视频帧之间平均<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663700522791-ddd1a1da-3b2d-4c54-9be6-65def1971554.png#clientId=ua1e5a05c-66ec-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=286&amp;id=u54d71ecd&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=571&amp;originWidth=2272&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=115170&amp;status=done&amp;style=none&amp;taskId=ue38ae86f-b960-44c3-ba8c-e1f7c77ab96&amp;title=&amp;width=1136" alt="image.png" /> <a name="w2tM4"></a> ## 预训练任务</p></li>
+<li><p>MLM</p></li>
+<li><p>VTM</p></li>
+<li><p>MFM (mask frame model)：随机mask掉一个帧，然后在输出时还原对应的帧 <a name="W3Xfo"></a> ## 其他技巧</p></li>
+<li><p>EMA, FGM等</p></li>
+<li><p>TensorRT优化加速 <a name="xSJB8"></a> ## 亮点</p></li>
+<li><p>文本和视频编码器用的中文预训练模型R2D2 <a name="pOEsX"></a> # 3rd 机器不学习啦 <a name="VHyZI"></a> ## 模型架构 使用双流的ALBEF架构，视频过clip，文本过六层的bert，最后在后六层的bert做交互。<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663934670257-6c1329f4-1f4e-43e0-a750-3b8ac38771a6.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=476&amp;id=ub70c7338&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=951&amp;originWidth=924&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=99115&amp;status=done&amp;style=none&amp;taskId=u5ac6e148-dbe6-4c5a-a264-7b698804b8e&amp;title=&amp;width=462" alt="image.png" /> <a name="OejXd"></a> ## 预训练任务</p></li>
+<li><p>MLM</p></li>
+<li><p>MFM</p></li>
+<li><p>VTA: 输出层前的视频向量和文本向量mean pool后用infoCSE做对比学习</p></li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663934859662-ad03421c-eb7b-48e2-bbe3-b0a48a1ffd16.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=385&amp;id=uae51d491&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=770&amp;originWidth=970&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=80080&amp;status=done&amp;style=none&amp;taskId=uc06d7f22-ea83-4bf8-b475-e48d6ef653a&amp;title=&amp;width=485" alt="image.png" /> <a name="UvR1C"></a> ## 其他技巧</p>
+<ol type="1">
+<li>多任务finetune</li>
+</ol>
+<p>这个队伍finetune时还用了多任务，除了正常的分类头，还给视觉编码器后面添加了一个分类头，还有加了一个对比学习的任务：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663959623942-972f9aff-7364-43ed-a5e9-fdd81c6140ed.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=379&amp;id=u33f7d946&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=757&amp;originWidth=750&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=73800&amp;status=done&amp;style=none&amp;taskId=ud967cd6e-b229-4f3a-9cf6-4672d4523a7&amp;title=&amp;width=375" alt="image.png" /><br />具体loss形式为：<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663959707174-17d4adb1-ee8d-4045-84f7-9db8fc27833a.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=65&amp;id=u3a663643&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=129&amp;originWidth=1854&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=73126&amp;status=done&amp;style=none&amp;taskId=u02446e53-18b3-4582-b8b2-3cec33e937a&amp;title=&amp;width=927" alt="image.png" /></p>
+<ol start="2" type="1">
+<li><p>训练技巧：EMA, R-drop</p></li>
+<li><p>针对长尾问题，单独训练更强的尾部类别分类器，并进行集成</p></li>
+<li><p>模型加速：TensorRT-FP16加速ViT-B/16 + Torch-FP16加速其他模块，多模型共用视觉特征，并行 <a name="Ms9Ve"></a> ## 亮点</p></li>
+<li><p>多任务finetune，这个居然能取得不错的结果</p></li>
+<li><p>针对长尾问题单独训练分类器 <a name="y8og2"></a> # 5th warriors <a name="HMLEE"></a> ## 模型架构 单流架构，不过针对视频特征和文本特征单独进行mean pooling后再进行一次mean pooling<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663960085419-374cbdf9-f964-4395-a14f-6aec0e526b08.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=546&amp;id=u2df1793f&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1092&amp;originWidth=1510&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=131280&amp;status=done&amp;style=none&amp;taskId=ucd3b0fb8-d643-4cd2-8466-75348555dcf&amp;title=&amp;width=755" alt="image.png" /> <a name="pkgQv"></a> ## 预训练任务</p></li>
+<li><p>MLM</p></li>
+<li><p>MFM</p></li>
+<li><p>VTA</p></li>
+<li><p>VTM <a name="TBLri"></a> ## 其他技巧</p></li>
+<li><p>使用词粒度的分词方案使得序列变短，处理速度更快，并且和字粒度的方案融合</p></li>
+<li><p>针对类别不均衡对小于200个类别重采样， 对无标签数据打伪标签，根据类别数量进行不均衡采样，加入训练集</p></li>
+<li><p>训练技巧：FGM, label smoothing</p></li>
+<li><p>加速：混合精度训练，Fp16推理 <a name="QHgR1"></a> ## 亮点</p></li>
+<li><p>分别对视频和文本进行mean pooing</p></li>
+<li><p>使用了词粒度的分词方案 <a name="nJmhz"></a> # 6th 蜜度信息 <a name="M9A9S"></a> ## 模型架构 一个单流模型，不过最后时生成了四个pooling送入线性分类层<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663960515768-1ed8f970-f469-45ca-907e-23878ccf8afa.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=625&amp;id=u0a9d3046&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1250&amp;originWidth=2791&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=473620&amp;status=done&amp;style=none&amp;taskId=u62807e18-888d-4342-8170-4c9048eed3d&amp;title=&amp;width=1395.5" alt="image.png" /><br />一个双流模型:<br /><img src="https://cdn.nlark.com/yuque/0/2022/png/764062/1663960585819-8b1f57a6-f9d0-4144-b2d1-8e76a9ba9dbb.png#clientId=u47c39a7c-ef19-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=479&amp;id=u92764a6e&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=957&amp;originWidth=1321&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=99035&amp;status=done&amp;style=none&amp;taskId=u691cb9f3-a5da-43c4-ae30-7d16556c47c&amp;title=&amp;width=660.5" alt="image.png" /><br />这里双流模型和别的选手不同的地方是他们做了很多手工的特征拼接进来，具体包括：</p></li>
+</ol>
+<ul>
+<li>视频第一帧的embedding</li>
+<li>Nextvlad特征</li>
+<li>Netvlad特征</li>
+<li>Netrvlad特征</li>
+<li>Softdbow特征</li>
+<li>Netfv特征</li>
+<li>Bottleneck fusion融合特征</li>
+<li>帧相似度（shift 1 frame）</li>
+<li>帧相似度（shift 2 frame）</li>
+<li>帧相似度（shift 3 frame） <a name="S8lEF"></a> ## 预训练任务</li>
+</ul>
+<ol type="1">
+<li><p>MLM（单流、双流）</p></li>
+<li><p>VTM（单流）</p></li>
+<li><p>VTA（单流）</p></li>
+<li><p>MFM（双流）</p></li>
+<li><p>First Image Prediction（双流）: 这个是其他选手没有的，他们认为第一张图片很重要，于是加了一个这样的任务，让模型能够还原出第一帧的图片</p></li>
+<li><p>单模态-交叉模态 CLIP（双流）：在交叉模态融合前与融合后，分别做CLIP loss</p></li>
+<li><p>Caption（双流）： 使用融合过的多模态hidden当做encoder output， 来对拼接后的text inputs做解码预测 <a name="OCRul"></a> ## 其他技巧</p></li>
+<li><p>训练技巧：对抗训练（预训练和finetune阶段都用了）</p></li>
+<li><p>概率后处理：具体做法是 1/value_count,每个类别得到一个放大的概率值，大类是1，小类&gt;1</p></li>
+<li><p>模型加速：BF16加速训练，FP16加速推理</p></li>
+<li><p>伪标签 <a name="ZSuRL"></a> ## 亮点</p></li>
+<li><p>加入了很多手工特征，拼接到模型中</p></li>
+<li><p>设计了多种独特的预训练任务</p></li>
+<li><p>后处理 <a name="lBDgU"></a> # 总结 总结一下六个队伍方案的基本都有用到的的东西，抽象出一套有效的方案：</p></li>
+<li><p>模型架构上：单流、双流的各种架构都可以，融合起来更好</p></li>
+<li><p>模型backbone：文本编码器用macbert或roberta，视觉编码器用clip的vit（这个尤为重要，因为是多模态的预训练模型，据说比swin高两个百分点，而且最好用large，冻结训练）</p></li>
+<li><p>预训练任务：MLM、MFM、VTM、VTA等</p></li>
+<li><p>训练技巧：FGM、EMA、Rdrop、label smoothing</p></li>
+<li><p>类别不平衡处理：这个处理方式就多种多样，可以改CE loss的权重，也可以对类别少的样本过采样，从伪标签中生成，也可以后处理类别少的概率、训练单独分类器等</p></li>
+<li><p>伪标签，可以将微调好的模型直接预测作为伪标签加入训练（蜜度信息），也可以用检索的方式投票（冲冲冲），也可以把伪标签当成一种预训练的方式（苟进决赛）</p></li>
+<li><p>加速：tensor RT, FP16推理，并行等</p></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://www.zhihu.com/people/su-zhao-pei">
+            <span class="icon">
+              <i class="fab fa-zhihu"></i>
+            </span>
+
+            <span class="label">知乎</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%AF%94%E8%B5%9B/" rel="tag"># 比赛</a>
+              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81/" rel="tag"># 多模态</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/04/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9B%9E%E5%BD%92%E4%BB%BB%E5%8A%A1%E4%B8%8D%E8%83%BD%E7%94%A8Dropout/" rel="prev" title="为什么回归任务不能用Dropout">
+      <i class="fa fa-chevron-left"></i> 为什么回归任务不能用Dropout
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/07/%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9-Null%20Importance/" rel="next" title="树模型的特征选择-Boruta">
+      树模型的特征选择-Boruta <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="lukan217/lukan217.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lukan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Lukan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lukan217" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lukan217" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:suzhaopei1999@gmail.com" title="E-Mail → mailto:suzhaopei1999@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/su-zhao-pei" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;su-zhao-pei" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lukan</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">57k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:35</span>
+</div>
+
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+
+    function createtime() {
+        var grt = new Date("07/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间 
+        now.setTime(now.getTime() + 250);
+        days = (now - grt) / 1000 / 60 / 60 / 24;
+        dnum = Math.floor(days);
+        hours = (now - grt) / 1000 / 60 / 60 - (24 * dnum);
+        hnum = Math.floor(hours);
+        if (String(hnum).length == 1) {
+            hnum = "0" + hnum;
+        }
+        minutes = (now - grt) / 1000 / 60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes);
+        if (String(mnum).length == 1) {
+            mnum = "0" + mnum;
+        }
+        seconds = (now - grt) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds);
+        if (String(snum).length == 1) {
+            snum = "0" + snum;
+        }
+        document.getElementById("timeDate").innerHTML = " | 本站已运行 " + dnum + " 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+    setInterval("createtime()", 250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
