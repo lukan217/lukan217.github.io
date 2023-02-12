@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content=womgfV2TbURRpAFqJs5AXSGKA6bk9Ahb3-8dRPb6ghY />
+  <meta name="baidu-site-verification" content=code-zAKugqLYHl />
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lukan217.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近Otto的比赛完结了，总结学习一下奖金区的方案，顺便在文末放自己一份单模在榜单上能排大概22名的代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kaggle Otto推荐系统比赛TOP方案总结">
+<meta property="og:url" content="https://lukan217.github.io/2023/02/12/Kaggle%20Otto%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%B5%9BTOP%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Lukan&#39;s Blog">
+<meta property="og:description" content="最近Otto的比赛完结了，总结学习一下奖金区的方案，顺便在文末放自己一份单模在榜单上能排大概22名的代码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1676140497214-d77571c3-0428-4271-a1fc-c3706d4dc714.png#averageHue=%23fbfafa&amp;clientId=u80392229-df4f-4&amp;from=paste&amp;id=u99e9652b&amp;name=image.png&amp;originHeight=976&amp;originWidth=1816&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=150055&amp;status=done&amp;style=none&amp;taskId=uc81087a6-3e89-4bc1-8dcc-050a272f709&amp;title=">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1676140504832-5d5bf01c-f5aa-43cf-887a-b95836a9f3b8.png#averageHue=%23fcfcfc&amp;clientId=u80392229-df4f-4&amp;from=paste&amp;id=ue687111c&amp;name=image.png&amp;originHeight=1002&amp;originWidth=1804&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=104807&amp;status=done&amp;style=none&amp;taskId=u57e04ce1-e9fc-4157-932b-5f6c6d6811a&amp;title=">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1676143052203-c7656281-db7b-4429-aa0d-3b4cf35de8ee.png#averageHue=%23fefefd&amp;clientId=ucaaefed0-cb00-4&amp;from=paste&amp;height=600&amp;id=u971916f7&amp;name=image.png&amp;originHeight=1199&amp;originWidth=1627&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=142420&amp;status=done&amp;style=none&amp;taskId=uc188f676-e414-4259-8788-f5d740c7e5b&amp;title=&amp;width=813.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1676192192198-34d4e62c-179e-47bb-bcb2-c6d1e61ce8ad.png#averageHue=%23fefcfb&amp;clientId=ucaaefed0-cb00-4&amp;from=paste&amp;height=595&amp;id=ucf5e6861&amp;name=image.png&amp;originHeight=892&amp;originWidth=1736&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=241733&amp;status=done&amp;style=none&amp;taskId=u3b116f93-4c21-41c2-8012-f76501c922c&amp;title=&amp;width=1157.3333333333333">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1676192180483-c727ca56-b609-47c3-bfdd-967b1fb96a27.png#averageHue=%23fcfaf9&amp;clientId=ucaaefed0-cb00-4&amp;from=paste&amp;height=353&amp;id=u5dd99973&amp;name=image.png&amp;originHeight=529&amp;originWidth=1917&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=108710&amp;status=done&amp;style=none&amp;taskId=u999e678b-77b4-4c2d-9f03-33fe7287ad1&amp;title=&amp;width=1278">
+<meta property="article:published_time" content="2023-02-12T13:52:01.863Z">
+<meta property="article:modified_time" content="2023-02-12T13:57:18.121Z">
+<meta property="article:author" content="Lukan">
+<meta property="article:tag" content="kaggle">
+<meta property="article:tag" content="推荐系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1676140497214-d77571c3-0428-4271-a1fc-c3706d4dc714.png#averageHue=%23fbfafa&amp;clientId=u80392229-df4f-4&amp;from=paste&amp;id=u99e9652b&amp;name=image.png&amp;originHeight=976&amp;originWidth=1816&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=150055&amp;status=done&amp;style=none&amp;taskId=uc81087a6-3e89-4bc1-8dcc-050a272f709&amp;title=">
+
+<link rel="canonical" href="https://lukan217.github.io/2023/02/12/Kaggle%20Otto%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%B5%9BTOP%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Kaggle Otto推荐系统比赛TOP方案总结 | Lukan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VT12J2H04J');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?723ab32a1115451d64c620981363cd80";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Lukan's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Lukan's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录点滴成长</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <meta name="referrer" content="no-referrer" />
+    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2023/02/12/Kaggle%20Otto%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%B5%9BTOP%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lukan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lukan's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kaggle Otto推荐系统比赛TOP方案总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-02-12 21:52:01 / 修改时间：21:57:18" itemprop="dateCreated datePublished" datetime="2023-02-12T21:52:01+08:00">2023-02-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%AF%94%E8%B5%9B/" itemprop="url" rel="index"><span itemprop="name">比赛</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近Otto的比赛完结了，总结学习一下奖金区的方案，顺便在文末放自己一份单模在榜单上能排大概22名的代码</p>
+<h1 id="赛题介绍">赛题介绍</h1>
+<ul>
+<li>赛题名称：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/otto-recommender-system">OTTO – Multi-Objective Recommender System</a></li>
+<li>赛题简介：本次比赛的目标是预测电子商务点击量、购物车添加量和订单。您将根据用户会话中的先前事件构建一个多目标推荐系统。</li>
+<li>数据：训练数据包含4周的电子商务会话信息，每个session（可以理解为用户）中包含用户交互过的多个aid（商品），每个aid都有用户交互的行为（clicks,carts,orders）以及发生的时间戳，测试数据包含未来一周session按照均匀分布随机截断的数据，需要预测测试session中最后一个时间戳之后三种交互行为(clicks， carts，orders)可能对应的aid</li>
+<li>评价指标：对每种交互类型的加权recall@20:
+<ul>
+<li><span class="math inline">\(\textit{score}=0.10\cdot R_{clicks}+0.30\cdot R_{carts}+0.60\cdot R_{orders}\)</span></li>
+<li><span class="math inline">\(R_{t ype}=\dfrac{\sum_{i}^{N}\left|\{\text{predicted aids}\}_{t,type}\cap\{\text{ground truth aids}\}_{i,type}\right|}{\sum_{i}^{N}\min\left(20,\left|\{\text{ground truth aids}\}_{i,tye}\right|\right)}\)</span></li>
+</ul></li>
+</ul>
+<p>整体比赛还是比较难的，一方面数据量大，需要较大的内存，同时需要懂的=各种优化操作，另一方面特征很少，用户和商品特征几乎没有，需要自行构建较多的相似度特征才能取得比较好的成绩。</p>
+<h1 id="st-place-solution">1st Place Solution</h1>
+<ul>
+<li>链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/otto-recommender-system/discussion/384022">https://www.kaggle.com/competitions/otto-recommender-system/discussion/384022</a></li>
+<li>方案亮点：生成了1200个候选，并且使用一个精心设计的NN模型来进行召回，这个应该是在top方案里面唯一使用NN模型的</li>
+</ul>
+<h2 id="召回阶段">召回阶段</h2>
+<p>召回了1200个候选，召回策略包括：</p>
+<ol type="1">
+<li>session内交互过的aid</li>
+<li>共同访问矩阵
+<ol type="1">
+<li>构建了多个版本，分别对类别以及时间进行不同的加权</li>
+<li>像beam search一样多次从共同访问矩阵中进行召回</li>
+</ol></li>
+<li>NN召回
+<ol type="1">
+<li>构建了多个版本的NN模型来召回候选以及生成特征，NN的架构是MLP或者Transformer，具体方式如下：</li>
+<li>在训练阶段，将session进行切分，一部分作为x_aids, 一部分作为y_aids，x_aids与一些时间特征还有拼接后输入一个NN，然后pooling后得到一个session embedding，同时，为了能够输出不同类型的embedding，将想要得到的类型也作为一个特征输入到NN中，然后y_aids则作为负样本，过embedding层后与session embedding计算余弦相似度，然后将计算的相似度取平均和最小值加和除以2，同时，也采样一些负样本，得到负样本的embedding后与session embedding计算余弦相似度后取top k个，最后计算 cross entropy损失。</li>
+<li>在测试阶段，对于每一个session，将session内的所有aid丢进去计算一个session embedding，然后把所有的aid与session embedding计算余弦相似度后取top k作为最终的召回结果。</li>
+</ol></li>
+</ol>
+<p>不得不说这个NN的训练方式设计的真的很巧妙，流程图如下：<br /><img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1676140497214-d77571c3-0428-4271-a1fc-c3706d4dc714.png#averageHue=%23fbfafa&amp;clientId=u80392229-df4f-4&amp;from=paste&amp;id=u99e9652b&amp;name=image.png&amp;originHeight=976&amp;originWidth=1816&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=150055&amp;status=done&amp;style=none&amp;taskId=uc81087a6-3e89-4bc1-8dcc-050a272f709&amp;title=" alt="image.png" /><br /><img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1676140504832-5d5bf01c-f5aa-43cf-887a-b95836a9f3b8.png#averageHue=%23fcfcfc&amp;clientId=u80392229-df4f-4&amp;from=paste&amp;id=ue687111c&amp;name=image.png&amp;originHeight=1002&amp;originWidth=1804&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=104807&amp;status=done&amp;style=none&amp;taskId=u57e04ce1-e9fc-4157-932b-5f6c6d6811a&amp;title=" alt="image.png" /></p>
+<h2 id="排序阶段">排序阶段</h2>
+<h3 id="特征工程">特征工程</h3>
+<ol type="1">
+<li>session特征: 长度、aid重复率、最后一个aid与倒数第二个aid的时间差</li>
+<li>aid特征：aid的热门程度（使用多个时间窗进行加权），不同行为类型的比率等</li>
+<li>session与aid交互特征
+<ol type="1">
+<li>共同访问矩阵的排名</li>
+<li>NN模型生成的余弦相似度</li>
+<li>session中的aid特征（何时出现、交互类型等）</li>
+</ol></li>
+</ol>
+<h3 id="模型">模型</h3>
+<p>LightGBM Ranker, 单模0.604，使用了9个不同超参训练的Lightgbm, 最终得分0.605</p>
+<h2 id="其他">其他</h2>
+<ol type="1">
+<li>负样本采样：click 5%, carts: 25%, orders: 40%</li>
+<li>cv策略：采用开源的方案，为了快速迭代，采用5%的数据进行训练，10%的数据作为验证</li>
+<li>消融实验，可以看到这个NN模型提升还是挺大的，提升了5个千分位</li>
+</ol>
+<figure>
+<img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1676143052203-c7656281-db7b-4429-aa0d-3b4cf35de8ee.png#averageHue=%23fefefd&amp;clientId=ucaaefed0-cb00-4&amp;from=paste&amp;height=600&amp;id=u971916f7&amp;name=image.png&amp;originHeight=1199&amp;originWidth=1627&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=142420&amp;status=done&amp;style=none&amp;taskId=uc188f676-e414-4259-8788-f5d740c7e5b&amp;title=&amp;width=813.5" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h1 id="nd-place-solution-part-1">2nd Place Solution Part 1</h1>
+<ul>
+<li>链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839">https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839</a></li>
+<li>方案亮点：对于item cf的召回做了很多工作</li>
+</ul>
+<h2 id="召回阶段-1">召回阶段</h2>
+<p>由于这个比赛没有什么用户/商品特征，然后热门召回也不起作用，因此主要的召回方式包括：</p>
+<ol type="1">
+<li>session内交互过的aid</li>
+<li>next action: 与共同访问矩阵类似，统计每个aid和下一个aid的出现次数，排序进行召回</li>
+<li>itemcf，使用了多种矩阵和加权方式
+<ol type="1">
+<li>矩阵：cart-order，click-cart&amp;order，click-cart-order</li>
+<li>加权方式：交互类别，共现时间距离，共现的顺序，session action 顺序，热门程度</li>
+</ol></li>
+</ol>
+<h2 id="排序阶段-1">排序阶段</h2>
+<h3 id="特征工程-1">特征工程</h3>
+<ol type="1">
+<li>聚合特征：session，aid, session*aid，以及分类别的计数</li>
+<li>next action特征：候选商品与最后一个商品共同出现的次数</li>
+<li>时间：session和aid的开始时间和结束时间</li>
+<li>itemcf分数，候选商品与session最后一个商品、最后一个小时商品、所有商品的最大、加和、加权和的itemcf分数</li>
+<li>embedding相似度，word2vec生成的候选商品与最后一个商品的相似度，ProNE生成的session和aid相似度</li>
+</ol>
+<h3 id="模型-1">模型</h3>
+<p>catboost ranker+lightgbm classifier融合</p>
+<h2 id="其他-1">其他</h2>
+<ol type="1">
+<li>使用polars代替pandas，在数据merge时可以加速40倍（不过我自己用的时候很坑的一点是如果有空值会把数据类型改成float 64，虽然速度很快，但极大加剧了我的内存占用）</li>
+<li>使用TreeLite来加速lightgbm的推理速度(快2倍)，CatBoost-GPU比lightgbm-CPU的推理快30倍</li>
+</ol>
+<h1 id="nd-place-solution-part-2">2nd Place Solution Part 2</h1>
+<ul>
+<li>链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/otto-recommender-system/discussion/382790">https://www.kaggle.com/competitions/otto-recommender-system/discussion/382790</a></li>
+<li>方案亮点：这是他们队另外一个人写的方案，写的有点少，item2item的特征做的比较出色</li>
+</ul>
+<h2 id="召回阶段-2">召回阶段</h2>
+<p>略，用的队友@psilogram的方案，没有写</p>
+<h2 id="排序阶段-2">排序阶段</h2>
+<h3 id="特征工程-2">特征工程</h3>
+<p>一部分略，用的队友@psilogram的方案，主要做了一些的item2item特征，包括：</p>
+<ol type="1">
+<li>计数</li>
+<li>时间差</li>
+<li>sequence difference(<span class="citation" data-cites="psilogram发明的">@psilogram发明的</span>)</li>
+<li>2种以上提到的加权特征</li>
+<li>上述特征的聚合</li>
+</ol>
+<p>最终得到400-500个特征</p>
+<h3 id="模型-2">模型</h3>
+<p>xgboost+catboost</p>
+<h2 id="其他-2">其他</h2>
+<ol type="1">
+<li>伪标签？：模型分两阶段，第一阶段训练好后输出oof prediciton, 然后作为特征再训练一次模型，虽然可能会过拟合，但是分数提升了</li>
+<li>使用了cudf和cuml进行加速</li>
+</ol>
+<h1 id="rd-place-solution-part-1">3rd Place Solution Part 1</h1>
+<ul>
+<li>链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/otto-recommender-system/discussion/383013">https://www.kaggle.com/competitions/otto-recommender-system/discussion/383013</a></li>
+<li>方案亮点：这个部分是Chris大神做的，非常简洁，没有各种花里胡哨的召回和特征工程，仅仅靠各种规则生成的共同访问矩阵就能单模0.601</li>
+</ul>
+<h2 id="召回阶段-3">召回阶段</h2>
+<ol type="1">
+<li>session内交互过的aid</li>
+<li>共同访问矩阵，根据不同的规则一共做了20个共同访问矩阵，具体可以看他开源的notebook<a target="_blank" rel="noopener" href="https://www.kaggle.com/code/cdeotte/rules-only-model-achieves-lb-590/notebook">https://www.kaggle.com/code/cdeotte/rules-only-model-achieves-lb-590/notebook</a></li>
+</ol>
+<h2 id="排序阶段-3">排序阶段</h2>
+<h3 id="特征工程-3">特征工程</h3>
+<ol type="1">
+<li>session特征</li>
+<li>aid特征</li>
+<li>session aid交互特征</li>
+<li>共同访问矩阵生成的分数特征</li>
+</ol>
+<h3 id="模型-3">模型</h3>
+<p>单模xgboost</p>
+<h2 id="其他-3">其他</h2>
+<ol type="1">
+<li>使用了cudf进行加速，在4块v100的GPU上生成共同访问矩阵，生成了上百个，一个一分钟左右就能跑完，最终计算local cv挑了20个</li>
+</ol>
+<h1 id="rd-place-solution-part-2">3rd Place Solution Part 2</h1>
+<ul>
+<li>链接：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/otto-recommender-system/discussion/382975">https://www.kaggle.com/competitions/otto-recommender-system/discussion/382975</a></li>
+<li>方案亮点：和上面的方案大差不差，主要是后面提到一两个trick比较有意思</li>
+</ul>
+<h2 id="召回阶段-4">召回阶段</h2>
+<p>用的Chris的候选，经过一点点调整</p>
+<h2 id="排序阶段-4">排序阶段</h2>
+<h3 id="特征工程-4">特征工程</h3>
+<ol type="1">
+<li>常规特征</li>
+<li>item2item相似度特征：（w2v相似度，矩阵分解相似度，共同访问矩阵相似度），对session内的aid进行各种加权（时间、位置、类别）计算相似度，然后聚合（mean、max、sum等），如下图</li>
+</ol>
+<figure>
+<img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1676192192198-34d4e62c-179e-47bb-bcb2-c6d1e61ce8ad.png#averageHue=%23fefcfb&amp;clientId=ucaaefed0-cb00-4&amp;from=paste&amp;height=595&amp;id=ucf5e6861&amp;name=image.png&amp;originHeight=892&amp;originWidth=1736&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=241733&amp;status=done&amp;style=none&amp;taskId=u3b116f93-4c21-41c2-8012-f76501c922c&amp;title=&amp;width=1157.3333333333333" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h3 id="模型-4">模型</h3>
+<p>xgboost</p>
+<h2 id="其他-4">其他</h2>
+<ol type="1">
+<li>增加训练数据，由于主办方在训练和预测分割时，丢掉了一部分数据，于是他把这些数据也加进来训练，有0.0005 到 0.001的提升</li>
+</ol>
+<figure>
+<img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1676192180483-c727ca56-b609-47c3-bfdd-967b1fb96a27.png#averageHue=%23fcfaf9&amp;clientId=ucaaefed0-cb00-4&amp;from=paste&amp;height=353&amp;id=u5dd99973&amp;name=image.png&amp;originHeight=529&amp;originWidth=1917&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=108710&amp;status=done&amp;style=none&amp;taskId=u999e678b-77b4-4c2d-9f03-33fe7287ad1&amp;title=&amp;width=1278" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<ol start="2" type="1">
+<li>使用optuna来调整多折训练融合的权重</li>
+<li>代码已开源：<a target="_blank" rel="noopener" href="https://github.com/TheoViel/kaggle_otto_rs">https://github.com/TheoViel/kaggle_otto_rs</a></li>
+</ol>
+<p>另外，这里原本的第三名应该是另外一支队伍的，因为有个GM作弊，导致整只队伍被取消成绩，他们的方案也很值得学习，并且也有代码开源：<a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/otto-recommender-system/discussion/382879">https://www.kaggle.com/competitions/otto-recommender-system/discussion/382879</a></p>
+<h1 id="总结">总结</h1>
+<p>这次比赛还是学到挺多的，更多的是认清了kaggle的水深，敬告大家组队时一定要擦亮双眼，防止队友作弊导致全队几个月的工作付之一炬，最后放一份自己的代码：<br /><a target="_blank" rel="noopener" href="https://github.com/lukan217/kaggle_otto_rec_sys">https://github.com/lukan217/kaggle_otto_rec_sys</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://www.zhihu.com/people/su-zhao-pei">
+            <span class="icon">
+              <i class="fab fa-zhihu"></i>
+            </span>
+
+            <span class="label">知乎</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kaggle/" rel="tag"># kaggle</a>
+              <a href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag"># 推荐系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/07/%E6%A0%91%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9-Null%20Importance/" rel="prev" title="树模型的特征选择-Boruta">
+      <i class="fa fa-chevron-left"></i> 树模型的特征选择-Boruta
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="lukan217/lukan217.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%9B%E9%A2%98%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">赛题介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#st-place-solution"><span class="nav-number">2.</span> <span class="nav-text">1st Place Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E9%98%B6%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">召回阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E9%98%B6%E6%AE%B5"><span class="nav-number">2.2.</span> <span class="nav-text">排序阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.2.</span> <span class="nav-text">模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">2.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nd-place-solution-part-1"><span class="nav-number">3.</span> <span class="nav-text">2nd Place Solution Part 1</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E9%98%B6%E6%AE%B5-1"><span class="nav-number">3.1.</span> <span class="nav-text">召回阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E9%98%B6%E6%AE%B5-1"><span class="nav-number">3.2.</span> <span class="nav-text">排序阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-1"><span class="nav-number">3.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nd-place-solution-part-2"><span class="nav-number">4.</span> <span class="nav-text">2nd Place Solution Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E9%98%B6%E6%AE%B5-2"><span class="nav-number">4.1.</span> <span class="nav-text">召回阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E9%98%B6%E6%AE%B5-2"><span class="nav-number">4.2.</span> <span class="nav-text">排序阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-2"><span class="nav-number">4.2.1.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-2"><span class="nav-number">4.2.2.</span> <span class="nav-text">模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-2"><span class="nav-number">4.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rd-place-solution-part-1"><span class="nav-number">5.</span> <span class="nav-text">3rd Place Solution Part 1</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E9%98%B6%E6%AE%B5-3"><span class="nav-number">5.1.</span> <span class="nav-text">召回阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E9%98%B6%E6%AE%B5-3"><span class="nav-number">5.2.</span> <span class="nav-text">排序阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-3"><span class="nav-number">5.2.1.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-3"><span class="nav-number">5.2.2.</span> <span class="nav-text">模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-3"><span class="nav-number">5.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rd-place-solution-part-2"><span class="nav-number">6.</span> <span class="nav-text">3rd Place Solution Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E9%98%B6%E6%AE%B5-4"><span class="nav-number">6.1.</span> <span class="nav-text">召回阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E9%98%B6%E6%AE%B5-4"><span class="nav-number">6.2.</span> <span class="nav-text">排序阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-4"><span class="nav-number">6.2.1.</span> <span class="nav-text">特征工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B-4"><span class="nav-number">6.2.2.</span> <span class="nav-text">模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-4"><span class="nav-number">6.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lukan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Lukan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lukan217" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lukan217" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:suzhaopei1999@gmail.com" title="E-Mail → mailto:suzhaopei1999@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/su-zhao-pei" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;su-zhao-pei" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lukan</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">61k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:42</span>
+</div>
+
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+
+    function createtime() {
+        var grt = new Date("07/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间 
+        now.setTime(now.getTime() + 250);
+        days = (now - grt) / 1000 / 60 / 60 / 24;
+        dnum = Math.floor(days);
+        hours = (now - grt) / 1000 / 60 / 60 - (24 * dnum);
+        hnum = Math.floor(hours);
+        if (String(hnum).length == 1) {
+            hnum = "0" + hnum;
+        }
+        minutes = (now - grt) / 1000 / 60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes);
+        if (String(mnum).length == 1) {
+            mnum = "0" + mnum;
+        }
+        seconds = (now - grt) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds);
+        if (String(snum).length == 1) {
+            snum = "0" + snum;
+        }
+        document.getElementById("timeDate").innerHTML = " | 本站已运行 " + dnum + " 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+    setInterval("createtime()", 250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
