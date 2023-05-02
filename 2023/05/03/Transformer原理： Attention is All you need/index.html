@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content=womgfV2TbURRpAFqJs5AXSGKA6bk9Ahb3-8dRPb6ghY />
+  <meta name="baidu-site-verification" content=code-zAKugqLYHl />
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"lukan217.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="transformer自诞生以来，基本上在每个领域都取得了非常大的成功，如nlp领域的Bert、GPT，cv领域的ViT，swin transformer，推荐系统领域的autoint，behavior sequence transformer，还有时序里面的tft、informer，以及强化学习也搞了个Decision Transformer，而这些都源自于谷歌团队在2017年提出的这篇文章《A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transformer原理： Attention is All you need">
+<meta property="og:url" content="https://lukan217.github.io/2023/05/03/Transformer%E5%8E%9F%E7%90%86%EF%BC%9A%20Attention%20is%20All%20you%20need/index.html">
+<meta property="og:site_name" content="Lukan&#39;s Blog">
+<meta property="og:description" content="transformer自诞生以来，基本上在每个领域都取得了非常大的成功，如nlp领域的Bert、GPT，cv领域的ViT，swin transformer，推荐系统领域的autoint，behavior sequence transformer，还有时序里面的tft、informer，以及强化学习也搞了个Decision Transformer，而这些都源自于谷歌团队在2017年提出的这篇文章《A">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1682947966354-94b238d6-2831-40e1-8261-d089d31f2ea9.png#averageHue=%23e8d8b1&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=665&amp;id=bSmYE&amp;originHeight=1329&amp;originWidth=973&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=158965&amp;status=done&amp;style=none&amp;taskId=u46468e17-f1e6-4414-9043-8d82622cb05&amp;title=&amp;width=486.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1683021721901-d303b0e5-a809-4a92-ab0f-6ad41b23c984.png#averageHue=%23e8e8e7&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=260&amp;id=u101479f6&amp;originHeight=520&amp;originWidth=396&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=27728&amp;status=done&amp;style=none&amp;taskId=u1132fe2a-d878-4dd6-80c3-6cd48b056dd&amp;title=&amp;width=198">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1683037323640-aa425494-682d-4127-a367-a1ecc87dd961.png#averageHue=%23faf9f9&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=177&amp;id=udd39dd4b&amp;originHeight=354&amp;originWidth=1651&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=84594&amp;status=done&amp;style=none&amp;taskId=ud449b069-d10a-4758-b0d0-a23aa0ec9bd&amp;title=&amp;width=825.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1683021827190-b7a9efc7-f27b-4748-b26c-18844199c7e5.png#averageHue=%23f1f1f0&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=332&amp;id=u8a8476ea&amp;originHeight=664&amp;originWidth=760&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=61201&amp;status=done&amp;style=none&amp;taskId=u960fc399-b110-4089-bcea-f30efd47dde&amp;title=&amp;width=380">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1683044251788-9270e9f2-b90c-4b86-b94f-4050f1767ddb.png#averageHue=%237e7e77&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=230&amp;id=u30d76700&amp;originHeight=170&amp;originWidth=296&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=13441&amp;status=done&amp;style=none&amp;taskId=u5d211bc2-3472-4122-ac3d-1c5d2af708b&amp;title=&amp;width=400">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/svg/764062/1683041720960-e8f41c4e-d26e-4128-8944-51e627b87cc5.svg#clientId=ucb8551b1-5e38-4&amp;from=paste&amp;id=u4f813c97&amp;originHeight=419&amp;originWidth=628&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;status=done&amp;style=none&amp;taskId=uc7eea4d4-7ff0-4dc0-a47f-5ed489735e5&amp;title=">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1683040501030-192c29d9-9c58-49c1-a95e-8ff01183053b.png#averageHue=%23f4f3f3&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=196&amp;id=u9d3a93fd&amp;originHeight=391&amp;originWidth=1632&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=93005&amp;status=done&amp;style=none&amp;taskId=u040c5d01-b9ae-4ded-a2ea-abf29cbae2b&amp;title=&amp;width=816">
+<meta property="article:published_time" content="2023-05-02T16:37:27.818Z">
+<meta property="article:modified_time" content="2023-05-02T16:41:20.455Z">
+<meta property="article:author" content="Lukan">
+<meta property="article:tag" content="面经">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2023/png/764062/1682947966354-94b238d6-2831-40e1-8261-d089d31f2ea9.png#averageHue=%23e8d8b1&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=665&amp;id=bSmYE&amp;originHeight=1329&amp;originWidth=973&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=158965&amp;status=done&amp;style=none&amp;taskId=u46468e17-f1e6-4414-9043-8d82622cb05&amp;title=&amp;width=486.5">
+
+<link rel="canonical" href="https://lukan217.github.io/2023/05/03/Transformer%E5%8E%9F%E7%90%86%EF%BC%9A%20Attention%20is%20All%20you%20need/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Transformer原理： Attention is All you need | Lukan's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VT12J2H04J"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VT12J2H04J');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?723ab32a1115451d64c620981363cd80";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Lukan's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Lukan's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">记录点滴成长</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <meta name="referrer" content="no-referrer" />
+    <link itemprop="mainEntityOfPage" href="https://lukan217.github.io/2023/05/03/Transformer%E5%8E%9F%E7%90%86%EF%BC%9A%20Attention%20is%20All%20you%20need/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Lukan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lukan's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Transformer原理： Attention is All you need
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-05-03 00:37:27 / 修改时间：00:41:20" itemprop="dateCreated datePublished" datetime="2023-05-03T00:37:27+08:00">2023-05-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>transformer自诞生以来，基本上在每个领域都取得了非常大的成功，如nlp领域的Bert、GPT，cv领域的ViT，swin transformer，推荐系统领域的autoint，behavior sequence transformer，还有时序里面的tft、informer，以及强化学习也搞了个Decision Transformer，而这些都源自于谷歌团队在2017年提出的这篇文章《Attention is All you Need》，本着阅读经典，顺便复习面经的精神，这次我们就来阅读transformer这篇论文，深入到每一个细节之中，确保对这个模型知根知底，当然，具体在写的时候不会严格按照原文来，而是按照我自己的想法来进行组织的。</p>
+<h1 id="背景">背景</h1>
+<p>在传统的序列建模任务（如语言模型，机器翻译）中，一般使用的模型架构都是循环神经网络（LSTM和GRU），并且都是一个encoder-decoder的架构。这种基于RNN的模型结构不管在输入或者输出一个序列的时候都是把当前隐状态<span class="math inline">\(h_t\)</span>建模成一个关于当前输入以及上一时刻隐状态的函数，即<span class="math inline">\(h_t = f(h_{t-1},X_t)\)</span>，这种自回归式的建模方法意味着他只能串行计算，而没办法并行处理，如果序列的长度很长的话，计算就会很慢，除了通过把batch_size增大来提高运算速度之外好像也没别的方法，并且这么做对于内存要求还比较高。由于在序列这个维度上只能进行串行计算，这也成了模型计算速度的瓶颈所在。<br />有一些工作想要突破RNN这个无法并行的问题，比如Extended Neural GPU，ByteNet，ConvS2S等，但是这些网络都是用CNN作为模型的一部分，因为CNN是可以实现并行计算的，但是在长序列问题上还是存在问题，CNN很难捕捉序列上两个离得很远的点的依赖关系。<br />注意力机制是可以实现并行的，而且他对于远距离的两个点的依赖关系建模的也比较好，也被运用在了nlp的各种任务中，但是更多的是和RNN进行结合使用，增强RNN的效果，起到锦上添花的作用，还是突破不了RNN的局限性。<br />因此，这篇文章提出的Transformer就是想要用一个纯粹的注意力机制来解决机器翻译问题，当然也是采用encoder-decoder的架构，不过encoder和decoder都是基于自注意力，这么做的优点有以下三个：</p>
+<ol type="1">
+<li>长序列建模，可以捕捉长序列之间的依赖关系</li>
+<li>可以并行计算, 在工业界应用比较友好</li>
+<li>效果好，在一系列任务上吊打其他模型</li>
+</ol>
+<h1 id="模型结构">模型结构</h1>
+<p>基本上所有的序列建模模型都是采用encoder-decoder的架构，encoder负责把输入的序列表征<span class="math inline">\((x_1,...,x_n)\)</span>编码成另一个序列<span class="math inline">\((z_1,...,z_n)\)</span>，然后decoder再把编码好的<span class="math inline">\((z_1,...,z_n)\)</span>解码成输出<span class="math inline">\((y_1,...,y_n)\)</span>, 但是编码器和解码器的具体实现方式不同，以RNN系列的模型举例，都是在每个时间步<span class="math inline">\(t\)</span>上都采用自回归的方式，把当前时间步的输入分为两个，一个是当前时间步的输入以及上一个时间步的hidden state，如对于编码器<span class="math inline">\(z_t = f_{encoder}(z_{t-1},x_t)\)</span>, 而对于解码器<span class="math inline">\(y_t = f_{decoder}(y_{t-1},z_t)\)</span>。<br />这里的transformer整体上也是采用同样的encoder-decoder架构，不过编码器和解码器的函数换成了纯注意力机制。来看一下他整体的架构，整体的结构还是encoder+decoder的方式，encoder接收来自一个句子的每个词embedding，为了表征每一个词的位置信息，先把句子的每个词的embedding加上一个位置编码（positional embedding），这是因为transformer的自注意力机制计算时不像RNN那样有先后顺序，对所有词向量都是一视同仁的，而decoder这边接收的则是要翻译的目标句子的词embedding，同样也加上位置编码，同时也接受来自encoder的输入，最后用softmax输出每一个位置上每个词元可能的概率。接下来再说一下encoder和decoder的一些细节。</p>
+<figure>
+<img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1682947966354-94b238d6-2831-40e1-8261-d089d31f2ea9.png#averageHue=%23e8d8b1&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=665&amp;id=bSmYE&amp;originHeight=1329&amp;originWidth=973&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=158965&amp;status=done&amp;style=none&amp;taskId=u46468e17-f1e6-4414-9043-8d82622cb05&amp;title=&amp;width=486.5" alt="image.png" /><figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h2 id="encoder">Encoder</h2>
+<p>首先看encoder这边，encoder由6个相同的层组成，每个层都有两个子层，第一个子层是多头注意力层，第二个子层是一个基于位置的前馈神经网络层，这两个子层之间使用了残差连接和layer normalization，用公式来说明的话就是，对每个子层的输出做了这样一个操作：<br /><span class="math inline">\(LayerNorm(x+Sublayer(x))\\\)</span><br />这边的<span class="math inline">\(x\)</span>就是子层的输入，<span class="math inline">\(Sublayer(x)\)</span>就是子层的输出，把输入和输出加起来，就是一个残差连接，然后再使用LayerNorm对输出进行层归一化。</p>
+<h2 id="decoder">Decoder</h2>
+<p>再来看decoder这边，decoder同样由6个相同的层组成，每个层由三个子层组成，其中，两个子层和encoder的结构类似，多头注意力层和基于位置的前馈神经网络层，但是这个多头注意力层采用了mask的方式，这里的mask是指把当前词元之后的词元mask掉，不参与注意力的计算，这是因为对于翻译任务来说，训练时你能知道完整目标句子的输入，但是在预测时词元只能一个个生成，没办法看到后面的词，所以需要在训练时也把后面的词也给屏蔽掉。然后decoder在这两个子层之间又插入了一个子层，用来接收encoder的输入做注意力的计算，这个子层也是一个多头注意力层，细节之后展开。</p>
+<h2 id="注意力机制">注意力机制</h2>
+<p>首先说一下注意力机制的一些基本概念，注意力机制其实就是一个加权函数，要加权的东西，我们把它称为Value，既然是加权，权重如何计算呢？在注意力机制里面，我们一般是通过计算Query和Key的相似度得到的权重，每个Key和Value都是一一对应的，假设有n个key和value对，我们就可以通过一个query分别计算和key的相似度，得到n个相似度，这个就可以当作权重，然后乘到value里面，就可以得到加权后的输出。<br />这里的Query、Key、Value也就是注意力机制的三个要素，俗称QKV，<strong>一句话概括注意力机制就是使用Q和K计算相似度作为权重来对V进行加权</strong>，根据不同的相似度计算方法我们就有不同的注意力函数，transformer用的是缩放点积注意力。</p>
+<h3 id="缩放点积注意力">缩放点积注意力</h3>
+<p>衡量向量相似度的一个方式就是计算他们的点积，因此点积便可以作为一种注意力函数，transformer使用的缩放点积注意力公式如下：<br /><span class="math inline">\(\operatorname{Atention}(Q,K,V)=\operatorname{softmax}(\dfrac{QK^T}{\sqrt{d_k}})V\)</span><br />这里的Q和K和V都是一个矩阵，Q之所以是个矩阵是因为transformer中输出都是多个位置的，每个Query对应一个位置，所以直接用矩阵的方式计算便可以并行计算，加快效率，这也是transformer的优势所在。<br />对输出的相似度使用了softmax可以把每个query下的相似度归一化，加起来正好是1。<br />这里点积还进行了一个缩放操作，即除以<span class="math inline">\(\sqrt{d_k}\)</span>, 为什么要进行这样一个操作呢？具体来说，如果我们仅仅做点积操作，当向量的维度<span class="math inline">\(d_k\)</span>很大时，点积的结果也会变大。因为点积操作本身就是将两个向量的对应元素相乘后再求和，如果向量的维度增大，点积的结果会相应地增大。这会导致点积注意力计算softmax时，输入值过大可能会导致梯度消失问题。因为softmax函数的输出是一个概率分布，而其梯度在其输入值非常大或非常小的时候会变得非常小。这种情况下，在反向传播中梯度就会消失，影响模型的学习。为了避免这个问题，我们需要对点积的结果进行缩放，即除以<span class="math inline">\(\sqrt{d_{k}}\)</span>。这样做的主要目的是使得点积的结果的范围不会随着d_k的增大而变得过大，从而避免梯度消失的问题，使得模型能够更好地学习和优化。<br /><img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1683021721901-d303b0e5-a809-4a92-ab0f-6ad41b23c984.png#averageHue=%23e8e8e7&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=260&amp;id=u101479f6&amp;originHeight=520&amp;originWidth=396&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=27728&amp;status=done&amp;style=none&amp;taskId=u1132fe2a-d878-4dd6-80c3-6cd48b056dd&amp;title=&amp;width=198" alt="image.png" /></p>
+<h3 id="多头注意力">多头注意力</h3>
+<p>在transformer中，为了进一步增强模型的表征能力，会使用多个注意力头，也就是多头注意力，来对整个序列进行加权，具体的做法是分别使用h个线性层把Q、K、V从原始的维度<span class="math inline">\(d_{model}\)</span>映射到<span class="math inline">\(d_k\)</span>，就能得到h个Q, K, V，然后分别计算h次attention，最后把这些拼接起来，过一个线性层再映射回原来的维度<span class="math inline">\(d_{model}\)</span>，如下图所示：<br /><img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1683037323640-aa425494-682d-4127-a367-a1ecc87dd961.png#averageHue=%23faf9f9&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=177&amp;id=udd39dd4b&amp;originHeight=354&amp;originWidth=1651&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=84594&amp;status=done&amp;style=none&amp;taskId=ud449b069-d10a-4758-b0d0-a23aa0ec9bd&amp;title=&amp;width=825.5" alt="image.png" /><br /><img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1683021827190-b7a9efc7-f27b-4748-b26c-18844199c7e5.png#averageHue=%23f1f1f0&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=332&amp;id=u8a8476ea&amp;originHeight=664&amp;originWidth=760&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=61201&amp;status=done&amp;style=none&amp;taskId=u960fc399-b110-4089-bcea-f30efd47dde&amp;title=&amp;width=380" alt="image.png" /><br />具体到论文里面的细节，transformer使用了8个注意力头，<span class="math inline">\(d_{model}\)</span>为512，<span class="math inline">\(d_k\)</span>设置为<span class="math inline">\(d_{model}/8=64\)</span>，虽然多头注意力多了一些权重矩阵，但是由于每个注意力头的维度只有64，并且是可以并行计算的，因此计算成本和不使用多头注意力是差不多的。而使用了多头注意力可以使得每个注意力头关注序列不同部分的信息，进而捕捉到不同的语义信息，比如有的注意力头可能关注语法，而有的关注句子结构等，从而有效地提高模型的性能。</p>
+<h3 id="注意力机制在模型中的应用">注意力机制在模型中的应用</h3>
+<p>说完了Attention的计算方式，再回到transformer模型中，这里有三种不同的attention，主要的区别就是Q, K, V的不同：</p>
+<ol type="1">
+<li>encoder中的自注意力，在encoder的自注意力层中，所有的Q, K, V都是来自于输入的序列，所以称为自注意力，具体来说，要得到当前位置的自注意力输出，会使用当前位置的词元表征作为query，然后整个序列的词元作为key和value，然后进行多头注意力的计算，最终得到当前位置的输出。</li>
+<li>decoder的自注意力，与encoder的自注意力相似，所有的Q, K, V都是来源于输入的序列，不过由于是翻译任务，在预测时的时候需要以自回归的方式一个个生成词元，因此在训练时需要屏蔽当前词元之后的词元，这里的具体做法就是在送入softmax之前，把当前词元的query和之后词元的key的缩放点积置为负无穷，这样，他们进入softmax计算得到的相似度就是0，通过这种方式来进行屏蔽。</li>
+<li>decoder中的encoder-decoder注意力，注意这里的QKV就不是都来源于输入的序列了，而是Q来源于上一个decoder的输入序列，而K和V来源于encoder的输出序列，一般的seq2seq模型使用注意力机制也都是这么做的。</li>
+</ol>
+<h2 id="残差连接与layernorm">残差连接与LayerNorm</h2>
+<p>残差连接是来源于ResNet, 为了解决深度神经网络中的梯度消失和梯度爆炸问题, 我们这里的transformer由于网络深度也非常深, 因此也引入了残差连接<br />而LayerNorm与BatchNorm类似, 都是一种归一化的方法, 不过归一化的维度不同, BatchNorm在mini-batch中对每个特征维度进行归一化，使得得到值的均值和方差都接近于0和1, 计算的维度是特征这个维度, 假设有C个特征会得到C个特征的统计值, 而LayerNorm则是对每个样本的特征维度进行归一化，使得每个样本上的每个特征的均值和方差接近于0和1, 计算的维度是样本这个维度, 有N个样本的话就会得到N个样本的统计值<br /><img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1683044251788-9270e9f2-b90c-4b86-b94f-4050f1767ddb.png#averageHue=%237e7e77&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=230&amp;id=u30d76700&amp;originHeight=170&amp;originWidth=296&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=13441&amp;status=done&amp;style=none&amp;taskId=u5d211bc2-3472-4122-ac3d-1c5d2af708b&amp;title=&amp;width=400" alt="image.png" /><br />那么为什么在transformer里面要用LayerNorm而不用BatchNorm呢, 虽然 BatchNorm 可以在训练过程中缓解内部协变量移位的问题，但在处理序列数据时却存在一些问题。因为序列数据的长度通常是变化的，因此每个 mini-batch 的大小也是变化的。这意味着在训练过程中，每个 mini-batch 的统计信息可能会变化，从而导致 BatchNorm 的效果变差, 并且在测试时还需要维护均值和方差<br />相比之下，LayerNorm 是一种对每个样本中的每个特征维度进行归一化的技术，不受 mini-batch 大小的影响，因此更适合处理变长序列数据。另外，LayerNorm 不需要维护 mini-batch 统计信息，因此可以减少模型训练时的内存消耗，并且可以在测试时使用相同的归一化参数，从而避免了训练和测试时的不一致性。<br />在 Transformer 中，每个编码器和解码器层中的子层之间都使用了 LayerNorm，包括多头自注意力层和前馈网络层。这使得 Transformer 在处理序列数据时更加稳定和高效，并且可以在不同的任务中进行共享，提高了模型的泛化能力。因此，使用 LayerNorm 而不是 BatchNorm 是 Transformer 模型的一个重要设计选择。</p>
+<h2 id="基于位置的前馈神经网络">基于位置的前馈神经网络</h2>
+<p>这个其实就是一个普通的两层的线性神经网络，分别作用于输入序列的每一个位置，参数共享，并且在过完第一层之后使用ReLU激活函数，输入维度为512，隐藏层维度为2048，输出维度再变为512，具体如下：<br /><span class="math inline">\(\operatorname{FFN}(x)=\max(0,xW_1+b_1)W_2+b_2\)</span></p>
+<h2 id="输出层">输出层</h2>
+<p>在decoder输出时，使用了一个线性层+softmax，得到预测的每个位置上的词元的概率，并且这个线性层和encoder与decoder的两个嵌入层是共享参数矩阵的，同样的为了防止softmax可能导致的梯度消失，这里在计算时把嵌入层的权重乘以了<span class="math inline">\(\sqrt{d_{model} }\)</span>。</p>
+<h2 id="位置编码">位置编码</h2>
+<p>由于自注意力对于所有的词元都是一视同仁的，不会考虑到位置上的信息，因此，为了能够捕捉到位置上的信息，transformer考虑在输入的embedding上面加上位置编码，这个位置编码有两种方式，一种是训练得到的，也就是你赋予每一个位置一个embedding，让模型自己学，另一种是使用固定的，也就是论文里面采用的方式，他这里使用了一个余弦函数：<br /><span class="math inline">\(\begin{gathered} P E_{(p o s,2i)} =sin(pos/10000^{2i/d_\mathrm{model}}) \\ PE_{(pos,2i+1)} =cos(pos/10000^{2i/d_\text{model}}) \end{gathered}\)</span><br />其中pos是位置，i是维度。也就是说，位置编码的每个维度对应于一个正弦函数。<br />论文还试验了使用可学习的位置编码与固定的位置编码的效果，发现两个版本产生的结果几乎相同，而选择固定的正弦版本是因为它可以允许模型外推到比训练期间遇到的序列长度更长的序列长度。</p>
+<h1 id="为什么要使用自注意力">为什么要使用自注意力？</h1>
+<p>文章的最后来探讨一下在序列建模任务中为什么要使用自注意力，这里和卷积以及RNN做了对比，分别从计算复杂度、可并行度，以及长序列建模能力来进行讨论。<br /><img src="https://cdn.nlark.com/yuque/0/2023/svg/764062/1683041720960-e8f41c4e-d26e-4128-8944-51e627b87cc5.svg#clientId=ucb8551b1-5e38-4&amp;from=paste&amp;id=u4f813c97&amp;originHeight=419&amp;originWidth=628&amp;originalType=url&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;status=done&amp;style=none&amp;taskId=uc7eea4d4-7ff0-4dc0-a47f-5ed489735e5&amp;title=" /><br />首先是计算复杂度，自注意力的计算复杂度可以说和卷积以及RNN的差不多，取决于输入的序列长度和embedding维度的大小，对于长序列计算attention会更为复杂。<br />然后是可并行度，这里的可并行度用的是以所需的最小顺序操作数来衡量，RNN建模需要满足先后关系，因此他是<span class="math inline">\(O(n)\)</span>,而attention和cnn则是<span class="math inline">\(O(1)\)</span><br />最后是长序列建模能力，长序列的建模能力是用使用序列头尾之间相连的网络路径长度来计算的，attention可以直接通过计算头尾之间的相似度并且进行加权，因此他是<span class="math inline">\(O(1)\)</span>, 而RNN的头尾则需要一步步传导，因此他是<span class="math inline">\(O(n)\)</span>, 而CNN则是<span class="math inline">\(O(log_k(n))\)</span>, 取决于卷积核的大小<br /><img src="https://cdn.nlark.com/yuque/0/2023/png/764062/1683040501030-192c29d9-9c58-49c1-a95e-8ff01183053b.png#averageHue=%23f4f3f3&amp;clientId=ucb8551b1-5e38-4&amp;from=paste&amp;height=196&amp;id=u9d3a93fd&amp;originHeight=391&amp;originWidth=1632&amp;originalType=binary&amp;ratio=2&amp;rotation=0&amp;showTitle=false&amp;size=93005&amp;status=done&amp;style=none&amp;taskId=u040c5d01-b9ae-4ded-a2ea-abf29cbae2b&amp;title=&amp;width=816" alt="image.png" /><br />因此attention的好处在于他不仅计算复杂度可以接受, 并且由于可以并行, 工业界的模型都是在集群上并行计算的, 因此由于其并行能力强也可以看作他计算速度快了, 而且由于可以连接一个序列上的任意两个位置,对于长序列建模能力也很不错<br />还有一个就是他效果好, 而且由于可以输出注意力的分布, 使得他还具备一定的可解释性, 因此慢慢地在各个领域里面就都有应用了</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="http://arxiv.org/abs/1706.03762">Attention Is All You Need</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh-v2.d2l.ai/">《动手学深度学习》</a></li>
+<li>chatgpt</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://www.zhihu.com/people/su-zhao-pei">
+            <span class="icon">
+              <i class="fab fa-zhihu"></i>
+            </span>
+
+            <span class="label">知乎</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/" rel="tag"># 面经</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/12/Kaggle%20Otto%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%B5%9BTOP%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/" rel="prev" title="Kaggle Otto推荐系统比赛TOP方案总结">
+      <i class="fa fa-chevron-left"></i> Kaggle Otto推荐系统比赛TOP方案总结
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="lukan217/lukan217.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">模型结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#encoder"><span class="nav-number">2.1.</span> <span class="nav-text">Encoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decoder"><span class="nav-number">2.2.</span> <span class="nav-text">Decoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6"><span class="nav-number">2.3.</span> <span class="nav-text">注意力机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%A9%E6%94%BE%E7%82%B9%E7%A7%AF%E6%B3%A8%E6%84%8F%E5%8A%9B"><span class="nav-number">2.3.1.</span> <span class="nav-text">缩放点积注意力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B"><span class="nav-number">2.3.2.</span> <span class="nav-text">多头注意力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E5%9C%A8%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.3.</span> <span class="nav-text">注意力机制在模型中的应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%E4%B8%8Elayernorm"><span class="nav-number">2.4.</span> <span class="nav-text">残差连接与LayerNorm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E4%BD%8D%E7%BD%AE%E7%9A%84%E5%89%8D%E9%A6%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">2.5.</span> <span class="nav-text">基于位置的前馈神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%B1%82"><span class="nav-number">2.6.</span> <span class="nav-text">输出层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81"><span class="nav-number">2.7.</span> <span class="nav-text">位置编码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B"><span class="nav-number">3.</span> <span class="nav-text">为什么要使用自注意力？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lukan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Lukan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lukan217" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lukan217" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:suzhaopei1999@gmail.com" title="E-Mail → mailto:suzhaopei1999@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/su-zhao-pei" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;su-zhao-pei" rel="noopener" target="_blank"><i class="fab fa-zhihu fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lukan</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">68k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:53</span>
+</div>
+
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+
+    function createtime() {
+        var grt = new Date("07/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间 
+        now.setTime(now.getTime() + 250);
+        days = (now - grt) / 1000 / 60 / 60 / 24;
+        dnum = Math.floor(days);
+        hours = (now - grt) / 1000 / 60 / 60 - (24 * dnum);
+        hnum = Math.floor(hours);
+        if (String(hnum).length == 1) {
+            hnum = "0" + hnum;
+        }
+        minutes = (now - grt) / 1000 / 60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes);
+        if (String(mnum).length == 1) {
+            mnum = "0" + mnum;
+        }
+        seconds = (now - grt) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds);
+        if (String(snum).length == 1) {
+            snum = "0" + snum;
+        }
+        document.getElementById("timeDate").innerHTML = " | 本站已运行 " + dnum + " 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+    setInterval("createtime()", 250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
